@@ -16,6 +16,7 @@ body:
         - Waves
         - Physical Mathematics
         - Mathematics
+        - Quantum Physics
         - Something else (say which below)
     validations:
       required: true

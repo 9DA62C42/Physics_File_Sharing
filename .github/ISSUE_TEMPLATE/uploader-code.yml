@@ -1,0 +1,29 @@
+name: 🆔 Register an uploader code
+description: Get your personal uploader code (e.g. AW1) for file IDs.
+title: "[Uploader code] "
+labels: ["uploader-code"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Your uploader code goes at the end of a file's ID, e.g. `01140086_HWS_2627W_01_AW1 Waves Homework 1 Solution.pdf`.
+        The website checks it against your GitHub account, so files you upload show as **verified**.
+        A maintainer will add you to `uploaders.json`. (You can also add yourself directly with a pull request.)
+  - type: input
+    id: code
+    attributes:
+      label: Code you'd like
+      description: 2–3 capital letters (usually your initials) and one digit 1–9. Check the website's ID page to see which codes are taken.
+      placeholder: AW1
+    validations:
+      required: true
+  - type: input
+    id: name
+    attributes:
+      label: Name to show on the website
+      placeholder: Alice Wang
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: The code will be linked to the GitHub account that opens this issue.

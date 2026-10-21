@@ -8,12 +8,14 @@ A simple website where physics students share notes, problem-set solutions, form
 
 | | |
 | --- | --- |
-| 📚 **Library** | Sidebar navigation by subject, search (press <kbd>/</kbd>), filter by file type, sort by name, date or size, grid or list view |
+| 🆔 **ID system** | Optional file IDs like `01140086_HWS_2627W_01_AW1` that say the course, type, term, item and uploader. Decode, search and build them on the **ID system** page |
+| 👤 **Uploader codes** | Register a code like `AW1` once. Your files are credited to you and **verified** against your GitHub account |
+| 📚 **Library** | Sidebar navigation by subject, course and material type, search (press <kbd>/</kbd>), filter by file type, sort by name, date or size, grid or list view |
 | 👁️ **Preview** | Read PDFs, images, text, LaTeX and code right on the site. Word, PowerPoint and Excel files open in an Office viewer, and notebooks open in nbviewer or Colab |
 | ⭐ **Favorites** | Star files to find them again later (saved in your browser) |
 | 🕒 **Recently added** | Newest uploads, with upload date and uploader name |
 | 🔗 **Share links** | Copy a link that opens a specific file directly |
-| 🏆 **Contributors** | Leaderboard of who has shared the most |
+| 🏆 **Uploaders** | Everyone who shares files, with a profile page each |
 | 📨 **File requests** | Ask for files you need; requests are GitHub Issues |
 | ⚛️ **Physical constants** | CODATA 2022 values with one-click copy |
 | 🔁 **Unit converter** | Energy (J, eV, cm⁻¹, Hz, K, nm…), length, mass, time, temperature, pressure, power, magnetic field and angle |
@@ -27,7 +29,8 @@ A simple website where physics students share notes, problem-set solutions, form
 - [How the site works](#how-the-site-works)
 - [Add a file from your browser (easiest)](#add-a-file-from-your-browser-easiest)
 - [Add files with Git (for many files)](#add-files-with-git-for-many-files)
-- [Naming your files](#naming-your-files)
+- [File IDs (recommended)](#file-ids-recommended)
+- [Get an uploader code](#get-an-uploader-code)
 - [Rules for sharing](#rules-for-sharing)
 - [Updating or removing a file](#updating-or-removing-a-file)
 - [Requesting a file](#requesting-a-file)
@@ -52,7 +55,8 @@ files/
 
 - Each folder inside `files/` is a **subject**. It appears in the left sidebar of the website.
 - You can make sub-folders for a course or topic, e.g. `files/Quantum-Mechanics/PHYS301-Spring-2026/`. The sub-folder name is shown on the file's card.
-- The upload date and your name (from your GitHub account) are shown on each file, and you'll appear on the **Contributors** page.
+- The upload date and the uploader (from the GitHub account that uploaded the file) are shown on each file, and you'll appear on the **Uploaders** page.
+- If the file name starts with an [ID](#file-ids-recommended), the file also appears under its **course** and **material type** in the sidebar.
 - In folder and file names, `-` and `_` are shown as spaces, so `Hydrogen_Atom-Notes.pdf` is displayed as "Hydrogen Atom Notes".
 - When a change reaches the `main` branch, GitHub rebuilds the site. The new file usually shows up within 1–5 minutes.
 
@@ -79,7 +83,7 @@ You only need a free [GitHub account](https://github.com/signup).
 
 ## Add files with Git (for many files)
 
-Use this if you're comfortable with the command line or want to upload many files at once.
+Use this if you're comfortable with the command line or want to upload many files at once. Your commits are credited to the GitHub account linked to your commit email.
 
 ```bash
 # 1. Fork the repo on GitHub (button in the top-right corner), then clone your fork
@@ -90,11 +94,11 @@ cd physics_file_sharing
 git checkout -b add-em-notes
 
 # 3. Copy your files into the right subject folder
-cp ~/Downloads/Maxwell-Equations-Summary_AliceW.pdf files/Electromagnetism/
+cp "01140086_HWS_2627W_01_AW1 Waves Homework 1 Solution.pdf" files/Waves-and-Optics/
 
 # 4. Commit and push
 git add files/
-git commit -m "Add Maxwell equations summary"
+git commit -m "Add Waves HW1 solution"
 git push -u origin add-em-notes
 ```
 
@@ -110,25 +114,53 @@ python3 -m http.server 8000
 
 ---
 
-## Naming your files
+## File IDs (recommended)
 
-A good name helps other people find your file with the search box. Suggested pattern:
+A file's **ID** is the start of its name. IDs are **recommended, not required**: a file without one is still published and shown normally. With an ID, the site can sort your file into the right course and material type, link question, solution and answer files together, and credit you.
 
 ```
-<Topic>-<What-it-is>_<YourName-or-Initials>.<ext>
+<course>_<TYPE>_<term>_<item>_<TAG>_<uploader> <title>.ext
+
+01140086_HWS_2627W_01_AW1 Waves Homework 1 Solution.pdf
+└──┬───┘ └┬┘ └─┬─┘ └┤ └┬┘ └──────────┬───────────────┘
+ course  type term item uploader     title (after one space)
 ```
 
-| ✅ Good | ❌ Avoid |
-| --- | --- |
-| `Griffiths-QM-Ch2-Solutions_AliceW.pdf` | `scan001.pdf` |
-| `Rigid-Body-Rotation-Lecture-Notes.pdf` | `notes final FINAL (2).pdf` |
-| `Pendulum-Lab-Report_Group3.pdf` | `lab.docx` |
-| `Fourier-Series-Cheat-Sheet.tex` | `asdf.tex` |
+| Field | Rule | Examples |
+| --- | --- | --- |
+| **course** | 8 digits, zero-padded. 6-digit shorthand pads each half: `104131` → `01040131` | `01140086` |
+| **TYPE** | What it is, and who wrote it (School = official, Student = your own work) | `HWQ` homework question · `HWS` homework solution · `HWA` homework answer · `LP` lecture paper · `LN` lecture note · `TP`/`TN`/`TS` tutorial · `PEQ`/`PES`/`PEA` past exam · `LBR` lab report · `SY` syllabus · `XT` textbook |
+| **term** | `<start yy><end yy><letter>`, academic year. `W` Winter, `S` Spring, `A` Summer, `F` Fall. Or `LEGACY` / `Undated`. Left out for `XT` | `2627W` = Winter 2026–27 · `2526S` = Spring 2026 |
+| **item** | Serial (at least 2 digits) or a pattern. Optional for handouts and readings | `01` · `01b` supplement · `A` exam paper · `Q01` quiz · `PS01` problem set · `C01` chapter · `FULL` |
+| **version** | Optional | `V01`, `V02` |
+| **TAG** | Optional | `AN` annotated · `DR` draft · `GR` graded |
+| **uploader** | Your registered uploader code. Recommended for your own work | `AW1` |
+| **title** | Short English title after **one space**. Use `_` between ID fields, never `-` | `Waves Homework 1 Solution` |
+
+The **ID system** page on the website has the full reference (all type codes and patterns), a **lookup** that decodes any ID, a **name builder** that writes the file name for you, and a **check** that lists IDs with mistakes and identical files.
 
 Tips:
-- Use letters, numbers, `-` and `_`. Avoid spaces and special characters (`# ? % & '`).
-- Include the course code or textbook if it helps, e.g. `PHYS201` or `Griffiths`.
-- **PDF is the best format** because it opens in any browser. If you share LaTeX, Jupyter notebooks or code, consider adding a PDF version too.
+- Not sure whether something is yours or the school's? Ask: *who wrote the content?* Your tutorial work is `TN`; the official tutorial solution is `TS`.
+- A `.tex` and its `.pdf` of the same item share one base name.
+- Once a file is published, keep its ID: links and references depend on it.
+- **PDF is the best format** because it opens in any browser.
+
+---
+
+## Get an uploader code
+
+An uploader code is 2–3 capital letters (usually your initials) plus one digit, e.g. `AW1`. Each code is linked to one GitHub account in [`uploaders.json`](uploaders.json). When the account that uploads a file matches the code in its ID, the site shows it as **✔ verified**. If a friend uploads it for you, it shows **uploaded on behalf**, which is allowed.
+
+1. On the website, open **ID system → Uploader codes** and type your name. It suggests a free code.
+2. Register it, either way:
+   - open the **🆔 Register an uploader code** issue form, and a maintainer adds you, or
+   - edit [`uploaders.json`](uploaders.json) on GitHub, add your line, and propose the change:
+     ```json
+     { "code": "AW1", "github": "your-github-username", "name": "Alice Wang" }
+     ```
+3. Put the code at the end of your IDs.
+
+Codes are permanent: once used, a code isn't given to anyone else.
 
 ---
 
@@ -192,13 +224,27 @@ No. The browser upload method only takes clicking and dragging.
 3. Go to the **Actions** tab, open **Deploy website**, and click **Run workflow** (or just push any change to `main`).
 4. After about a minute the site is live at `https://<owner>.github.io/<repo>/`. Put that link in the repository's **About** box so students can find it.
 
-From then on, every push to `main` runs `.github/workflows/pages.yml`. It builds `files.json` (file sizes, upload dates and contributors from git history) and deploys the site.
+From then on, every push to `main` runs `.github/workflows/pages.yml`. It builds `files.json` (file sizes, upload dates, uploaders and content hashes from git history) and deploys the site.
 
-> If Pages is left on **Deploy from a branch**, the site still works. It lists files through the GitHub API instead, but upload dates, **Recently added** and the **Contributors** page are not available.
+> If Pages is left on **Deploy from a branch**, the site still works. It lists files through the GitHub API instead, and IDs still work, but upload dates, uploader verification, duplicate detection and **Recently added** are not available.
 
-### Set up file requests
+### Set up file requests and uploader codes
 
-Create a label named **`file-request`** (**Issues → Labels → New label**). The 📄 File request issue form adds it automatically, and the website lists open issues that have it (or whose title starts with `[Request]`).
+Create two labels (**Issues → Labels → New label**): **`file-request`** and **`uploader-code`**. The issue forms add them automatically. The website lists open issues labelled `file-request` (or whose title starts with `[Request]`).
+
+When someone asks for an uploader code, check the code isn't taken and matches the format (2–3 capital letters + one digit), then add `{ "code": "…", "github": "<the issue author's username>", "name": "…" }` to `uploaders.json`. Never reassign a code once files use it.
+
+### Course names
+
+Add course names to [`courses.json`](courses.json) so the sidebar shows `01140086 · Waves` instead of just the number:
+
+```json
+{ "courses": { "01140086": "Waves" } }
+```
+
+### How uploaders are identified
+
+The Actions build looks at the commit that **added** each file (renames are followed, copies are not). It records that commit's author and asks the GitHub API for their username. The website then compares that username with the uploader code in the file name. Email addresses are never published. If someone commits with an email that isn't linked to their GitHub account, the site shows their commit name instead.
 
 ### Let students upload directly (optional)
 
@@ -215,6 +261,9 @@ Create a new folder under `files/`. Git can't store empty folders, so put at lea
 | --- | --- |
 | Site title, description, repository, branch | `assets/js/config.js` |
 | Constants, units in the converter, resource links | `assets/js/data.js` |
+| ID rules: type codes, terms, tags, item patterns | `assets/naming.json` |
+| Uploader codes | `uploaders.json` |
+| Course names | `courses.json` |
 | Colours, layout, dark mode | `assets/css/style.css` |
 | Pages, sidebar, search, preview | `assets/js/app.js` |
 
@@ -223,11 +272,15 @@ Create a new folder under `files/`. Git can't store empty folders, so put at lea
 | Path | What it is |
 | --- | --- |
 | `index.html` | Page shell: sidebar, top bar and the main view |
-| `assets/js/app.js` | The app: routing, file library, preview, favorites and every page |
+| `assets/js/app.js` | The app: routing, file library, ID parsing, preview, favorites and every page |
+| `assets/naming.json` | The ID rules |
+| `uploaders.json` | Registered uploader codes → GitHub accounts |
+| `courses.json` | Optional course names |
 | `assets/js/data.js` | Physical constants, unit definitions and the resources list |
 | `assets/js/config.js` | Site settings |
 | `assets/css/style.css` | Styling (light and dark) |
-| `scripts/build_index.py` | Builds `files.json` from the `files/` folder and git history |
+| `scripts/build_index.py` | Builds `files.json` from the `files/` folder and git history: sizes, dates, uploaders, content hashes |
 | `.github/workflows/pages.yml` | Builds and deploys the site on every push to `main` |
 | `.github/ISSUE_TEMPLATE/file-request.yml` | The "File request" issue form |
+| `.github/ISSUE_TEMPLATE/uploader-code.yml` | The "Register an uploader code" issue form |
 | `files/` | All shared files, organised by subject |

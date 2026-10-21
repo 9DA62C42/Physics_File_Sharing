@@ -24,11 +24,13 @@ jobs:
 
       - name: Build file index
         run: python3 scripts/build_index.py
+        env:
+          GITHUB_TOKEN: ${{ github.token }} # to look up uploaders' GitHub usernames
 
       - name: Assemble site
         run: |
           mkdir _site
-          cp -r index.html assets files files.json _site/
+          cp -r index.html assets files files.json uploaders.json courses.json _site/
 
       - uses: actions/configure-pages@v5
 

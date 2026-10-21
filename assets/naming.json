@@ -1,0 +1,277 @@
+{
+  "_about": "ID naming system for shared files, based on the GTIIT course-file convention. Used by the website (assets/js/app.js). IDs are recommended, not required.",
+  "template": "<course code>_<TYPE>_<term>_<item>_<TAG>_<uploader code> <human-readable title>.ext",
+  "types": [
+    {
+      "code": "HWQ",
+      "name": "Homework question",
+      "by": "School",
+      "category": "Homework"
+    },
+    {
+      "code": "HWS",
+      "name": "Homework solution",
+      "by": "Student",
+      "category": "Homework"
+    },
+    {
+      "code": "HWA",
+      "name": "Homework answer",
+      "by": "School",
+      "category": "Homework"
+    },
+    {
+      "code": "PEQ",
+      "name": "Past exam question",
+      "by": "School",
+      "category": "Past Exams"
+    },
+    {
+      "code": "PES",
+      "name": "Past exam solution",
+      "by": "Student",
+      "category": "Past Exams"
+    },
+    {
+      "code": "PEA",
+      "name": "Past exam answer",
+      "by": "School",
+      "category": "Past Exams"
+    },
+    {
+      "code": "MEQ",
+      "name": "Mock exam question",
+      "by": "School",
+      "category": "Review Material"
+    },
+    {
+      "code": "MES",
+      "name": "Mock exam solution",
+      "by": "Student",
+      "category": "Review Material"
+    },
+    {
+      "code": "MEA",
+      "name": "Mock exam answer",
+      "by": "School",
+      "category": "Review Material"
+    },
+    {
+      "code": "SY",
+      "name": "Syllabus",
+      "by": "School",
+      "category": "Syllabus"
+    },
+    {
+      "code": "XT",
+      "name": "Textbook",
+      "by": "Published",
+      "category": "Textbook"
+    },
+    {
+      "code": "LP",
+      "name": "Lecture paper / handout",
+      "by": "School",
+      "category": "Lecture"
+    },
+    {
+      "code": "LN",
+      "name": "Lecture note",
+      "by": "Student",
+      "category": "Notes"
+    },
+    {
+      "code": "LS",
+      "name": "Lecture scan / board photo",
+      "by": "Scan",
+      "category": "Lecture"
+    },
+    {
+      "code": "TP",
+      "name": "Tutorial paper / sheet",
+      "by": "School",
+      "category": "Tutorial"
+    },
+    {
+      "code": "TN",
+      "name": "Tutorial note",
+      "by": "Student",
+      "category": "Tutorial"
+    },
+    {
+      "code": "TS",
+      "name": "Tutorial solution",
+      "by": "School",
+      "category": "Tutorial"
+    },
+    {
+      "code": "TSS",
+      "name": "Tutorial scan / board photo",
+      "by": "Scan",
+      "category": "Tutorial"
+    },
+    {
+      "code": "WSP",
+      "name": "Workshop paper",
+      "by": "School",
+      "category": "Workshop"
+    },
+    {
+      "code": "WSN",
+      "name": "Workshop note",
+      "by": "Student",
+      "category": "Workshop"
+    },
+    {
+      "code": "WSS",
+      "name": "Workshop scan",
+      "by": "Scan",
+      "category": "Workshop"
+    },
+    {
+      "code": "LBP",
+      "name": "Lab paper / guide",
+      "by": "School",
+      "category": "Lab"
+    },
+    {
+      "code": "LBD",
+      "name": "Lab data",
+      "by": "Student",
+      "category": "Lab"
+    },
+    {
+      "code": "LBR",
+      "name": "Lab report",
+      "by": "Student",
+      "category": "Lab"
+    }
+  ],
+  "seasons": [
+    {
+      "letter": "W",
+      "name": "Winter",
+      "note": "2627W = Winter of 2026–2027",
+      "year": "start"
+    },
+    {
+      "letter": "S",
+      "name": "Spring",
+      "note": "2526S = Spring 2026 (belongs to 2025–2026)",
+      "year": "end"
+    },
+    {
+      "letter": "A",
+      "name": "Summer (Addition)",
+      "note": "2526A = Summer 2026",
+      "year": "end"
+    },
+    {
+      "letter": "F",
+      "name": "Fall (external courses only)",
+      "note": "1617F = Fall 2016",
+      "year": "start"
+    }
+  ],
+  "termPlaceholders": [
+    {
+      "code": "LEGACY",
+      "name": "Legacy",
+      "note": "Old, mixed-year material of a past offering"
+    },
+    {
+      "code": "Undated",
+      "name": "Undated",
+      "note": "No real term can be assigned"
+    }
+  ],
+  "tags": [
+    {
+      "code": "AN",
+      "name": "Annotated",
+      "note": "A printout you wrote on, then scanned. Keeps the original type."
+    },
+    {
+      "code": "DR",
+      "name": "Draft",
+      "note": "Rough version of an item that later gets a clean copy. Keeps the final item's type and ID."
+    },
+    {
+      "code": "GR",
+      "name": "Graded",
+      "note": "Copy with grader marks or a score. Annotated and graded: _AN_GR."
+    }
+  ],
+  "serials": [
+    {
+      "pattern": "^\\d{2,}$",
+      "kind": "Serial",
+      "example": "01",
+      "note": "Normal serial, at least two digits."
+    },
+    {
+      "pattern": "^\\d{2,}b$",
+      "kind": "Supplement",
+      "example": "01b",
+      "note": "Supplement or complement to item 01."
+    },
+    {
+      "pattern": "^[A-Z]$",
+      "kind": "Exam paper",
+      "example": "A",
+      "note": "Exam paper A / B (PEQ_2526W_A)."
+    },
+    {
+      "pattern": "^Q\\d{2,}b?$",
+      "kind": "Quiz",
+      "example": "Q01",
+      "note": "Quiz (PEA_2526A_Q01)."
+    },
+    {
+      "pattern": "^CA\\d{2,}b?$",
+      "kind": "Class assignment",
+      "example": "CA01",
+      "note": "Class assignment."
+    },
+    {
+      "pattern": "^PS\\d{2,}b?$",
+      "kind": "Problem set",
+      "example": "PS01",
+      "note": "Problem set."
+    },
+    {
+      "pattern": "^P\\d{2,}b?$",
+      "kind": "Project",
+      "example": "P02",
+      "note": "Project."
+    },
+    {
+      "pattern": "^C\\d{2,}b?$",
+      "kind": "Chapter",
+      "example": "C01",
+      "note": "Chapter."
+    },
+    {
+      "pattern": "^FULL$",
+      "kind": "Full notes",
+      "example": "FULL",
+      "note": "A complete notes project for the course (LN_2526A_FULL)."
+    }
+  ],
+  "version": {
+    "pattern": "^V\\d{2,}$",
+    "example": "V02",
+    "note": "Versions of the same item (LBP_2627W_01_V01 old, _V02 new)."
+  },
+  "uploader": {
+    "pattern": "^[A-Z]{2,3}[1-9]$",
+    "example": "AW1",
+    "note": "2–3 capital letters (usually your initials) and one digit 1–9. Register it once in uploaders.json."
+  },
+  "byNotes": {
+    "School": "Official course material. The uploader only shares it.",
+    "Student": "Written by a student. The uploader code says whose work it is.",
+    "Published": "A published book or paper.",
+    "Scan": "A photo or scan taken by the uploader."
+  }
+}

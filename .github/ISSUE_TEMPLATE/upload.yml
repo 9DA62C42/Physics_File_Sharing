@@ -27,71 +27,28 @@ body:
       placeholder: Waves Homework 1 Solution
     validations:
       required: true
-  - type: dropdown
+  - type: input
     id: subject
     attributes:
       label: Subject
-      description: Not listed? Choose "New subject" and write its name in the next box.
-      options:
-        - Waves
-        - New subject (write it below)
+      description: The subject on the website, e.g. Waves. A name that doesn't exist yet creates a new subject.
+      placeholder: Waves
     validations:
       required: true
   - type: input
-    id: new_subject
-    attributes:
-      label: New subject
-      description: Only if you chose "New subject". The bot adds it to the website.
-      placeholder: Quantum Mechanics
-  - type: dropdown
     id: type
     attributes:
       label: Kind of material
-      options:
-        - "HWQ · Homework question"
-        - "HWS · Homework solution"
-        - "HWA · Homework answer"
-        - "PEQ · Past exam question"
-        - "PES · Past exam solution"
-        - "PEA · Past exam answer"
-        - "MEQ · Mock exam question"
-        - "MES · Mock exam solution"
-        - "MEA · Mock exam answer"
-        - "SY · Syllabus"
-        - "XT · Textbook"
-        - "LP · Lecture paper / handout"
-        - "LN · Lecture note"
-        - "LS · Lecture scan / board photo"
-        - "TP · Tutorial paper / sheet"
-        - "TN · Tutorial note"
-        - "TS · Tutorial solution"
-        - "TSS · Tutorial scan / board photo"
-        - "WSP · Workshop paper"
-        - "WSN · Workshop note"
-        - "WSS · Workshop scan"
-        - "LBP · Lab paper / guide"
-        - "LBD · Lab data"
-        - "LBR · Lab report"
+      description: "The type code, e.g. LN (lecture note), HWS (homework solution), PES (past exam solution), TN (tutorial note). All codes: https://9da62c42.github.io/Physics_File_Sharing/#/ids?tab=rules"
+      placeholder: LN
     validations:
       required: true
-  - type: dropdown
+  - type: input
     id: license
     attributes:
       label: Licence
-      description: How others may use the file. Only the author can choose an open licence. Not sure? Choose "All rights reserved". The Help page explains every code.
-      options:
-        - "ARR · All rights reserved"
-        - "CC0 · CC0 1.0 (public domain dedication)"
-        - "PD · Public domain"
-        - "CCBY · Creative Commons Attribution 4.0"
-        - "CCBYSA · Creative Commons Attribution-ShareAlike 4.0"
-        - "CCBYNC · Creative Commons Attribution-NonCommercial 4.0"
-        - "CCBYNCSA · Creative Commons Attribution-NonCommercial-ShareAlike 4.0"
-        - "CCBYND · Creative Commons Attribution-NoDerivatives 4.0"
-        - "CCBYNCND · Creative Commons Attribution-NonCommercial-NoDerivatives 4.0"
-        - "MIT · MIT License (software)"
-        - "GPL3 · GNU General Public License 3.0 (software)"
-        - "STUDY · Shared with permission, for study only"
+      description: "How others may use the file, as a code: ARR (all rights reserved; choose this if unsure), STUDY, CCBY, CCBYNC, CCBYSA, CCBYNCSA, CCBYND, CCBYNCND, CC0, PD, MIT, GPL3. Only the author can choose an open licence. What they mean: https://9da62c42.github.io/Physics_File_Sharing/#/help"
+      placeholder: ARR
     validations:
       required: true
   - type: markdown

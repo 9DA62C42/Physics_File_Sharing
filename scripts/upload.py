@@ -24,7 +24,6 @@ FILES = os.path.join(ROOT, "files")
 LICENSES = os.path.join(ROOT, "licenses.json")
 COURSES = os.path.join(ROOT, "courses.json")
 FORMS = os.path.join(ROOT, ".github", "ISSUE_TEMPLATE")
-NEW_SUBJECT = "New subject (write it below)"
 NAMING = json.load(open(os.path.join(ROOT, "assets", "naming.json"), encoding="utf-8"))
 
 MAX_BYTES = 25 * 1024 * 1024
@@ -57,8 +56,8 @@ def form_fields(body):
 
 
 def code_of(answer):
-    """The code before " · " in a dropdown answer ("LN · Lecture note" -> "LN")."""
-    return answer.split("·")[0].strip()
+    """The code in an answer, in capitals ("LN", "ln" or "LN · Lecture note" -> "LN"; "CC BY" -> "CCBY")."""
+    return re.sub(r"[\s-]+", "", answer.split("·")[0]).upper()
 
 
 def build_id(course, type_code, term, item, student):
@@ -148,25 +147,17 @@ def subjects():
     return sorted(d for d in os.listdir(FILES) if os.path.isdir(os.path.join(FILES, d)) and not d.startswith((".", "_")))
 
 
-def choose_subject(answer, new_name):
-    """(folder name, is new) for the Subject answers. Raises ValueError when the choice is unusable."""
-    existing = subjects()
-    if answer != NEW_SUBJECT:
-        # The lists show folder names with spaces ("Quantum Mechanics" is files/Quantum-Mechanics).
-        match = [d for d in existing if d.replace("-", " ") == answer]
-        if not match:
-            raise ValueError("Choose a **Subject** from the list.")
-        return match[0], False
-    name = clean_words(new_name)
+def choose_subject(answer):
+    """(folder name, is new) for the Subject answer: an existing subject (any case, spaces or hyphens), or a new one."""
+    name = clean_words(answer)
     if not name or not SUBJECT_OK.match(name):
-        raise ValueError("Write the **New subject** name (letters, numbers, spaces and & , - ( ) only, up to 50 characters).")
-    folder = name.replace(" ", "-")
-    same = [d for d in existing if d.replace("-", " ").lower() == name.lower()]
-    return (same[0], False) if same else (folder, True)
+        raise ValueError("Write the **Subject** (letters, numbers, spaces and & , - ( ) only, up to 50 characters), e.g. Waves.")
+    same = [d for d in subjects() if d.replace("-", " ").lower() == name.replace("-", " ").lower()]
+    return (same[0], False) if same else (name.replace(" ", "-"), True)
 
 
 def add_subject_to_forms(folder):
-    """Add a new subject to the Subject dropdown of each issue form that has one, before its last ("other") option."""
+    """Add a new subject to the Subject dropdown of each issue form that has one (the file-request form), before its last ("other") option."""
     label = folder.replace("-", " ")
     for name in sorted(os.listdir(FORMS)):
         path = os.path.join(FORMS, name)
@@ -177,7 +168,11 @@ def add_subject_to_forms(folder):
             start = lines.index("    id: subject")
         except ValueError:
             continue
-        opts = [i for i in range(start, len(lines)) if lines[i].startswith("        - ")]
+        # Only the subject field itself: it ends where the next field ("  - type: ...") starts.
+        stop = next((i for i in range(start, len(lines)) if lines[i].startswith("  - type:")), len(lines))
+        if "    type: dropdown" not in lines[start - 2:start + 1] and lines[start - 1] != "  - type: dropdown":
+            continue
+        opts = [i for i in range(start, stop) if lines[i].startswith("        - ")]
         block = []
         for i in opts:
             if block and i != block[-1] + 1:
@@ -237,18 +232,20 @@ def run(body):
         problems.append("Add a **Title** (letters, numbers, spaces and . , - ( ) & only).")
     subject, new_subject = None, False
     try:
-        subject, new_subject = choose_subject(f.get("Subject", ""), f.get("New subject", ""))
+        subject, new_subject = choose_subject(f.get("Subject", ""))
     except ValueError as e:
         problems.append(str(e))
     course_name = clean_words(f.get("Course name", ""))[:60]
     types = {t["code"]: t for t in NAMING["types"]}
     type_code = code_of(f.get("Kind of material", ""))
     if type_code not in types:
-        problems.append("Choose the **Kind of material**.")
+        problems.append("Write the **Kind of material** as a type code, e.g. LN, HWS or PES. "
+                        f"Codes: {', '.join(sorted(types))}.")
     licences = {l["code"] for l in NAMING["licenses"]}
     lic = code_of(f.get("Licence", ""))
     if lic not in licences:
-        problems.append("Choose a **Licence**.")
+        problems.append("Write the **Licence** as a code, e.g. ARR (all rights reserved), STUDY or CCBY. "
+                        f"Codes: {', '.join(sorted(licences))}.")
     file_id = None
     try:
         if type_code in types:

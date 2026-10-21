@@ -65,13 +65,13 @@ You only need a free [GitHub account](https://github.com/signup). No Git, and yo
 
 1. **Get your IDs ready.** Click **Upload** on the website. The **How to contribute** page opens:
    - **Step 1, uploader ID:** enter your 9-digit student number.
-   - **Step 2, file ID:** fill in the course code, kind of material, term, item, title and licence. The page shows the file's ID, e.g. `01140086_HWS_2627W_01_800015240`.
+   - **Step 2, file ID:** fill in the course code, subject, kind of material, term, item, title and licence. For a known course code the course name appears by itself and the subject is picked for you; a new course or subject asks for its name. The page shows the file's ID, e.g. `01140086_HWS_2627W_01_800015240`.
    - **Step 3:** when everything is ticked, click **Open the upload form**. It opens on GitHub with your answers filled in. (No ID possible, e.g. for outside material? Use the page's *Upload without an ID* link, or [open the blank form](https://github.com/9DA62C42/Physics_File_Sharing/issues/new?template=upload.yml).)
 2. **Attach your file.** Drag it into the **Files** box and wait until it shows as a link.
    - PDF is best. Put LaTeX or other source files in **one `.zip`**: GitHub doesn't accept `.tex` attachments.
    - Up to 25 MB per file and 10 files per upload. Accepted: pdf, zip, txt, md, csv, png, jpg, docx, pptx, xlsx, ipynb.
 3. **Check the answers.** Choose the subject and check the answers filled in from the website. (Filling in the form by hand works too: leave all four ID boxes empty to upload without an ID.)
-   - **Subject not listed?** Choose **New subject** and write its name. **Course not on the site yet?** Also fill in the course name.
+   - In the form, **Subject**, **Kind of material** (a type code such as `LN`) and **Licence** (a code such as `ARR`) are text boxes, so the website can fill them in. A subject name that doesn't exist yet creates a new subject; **Course name** adds a new course.
 4. **Submit.** Within a minute the **Prepare upload** bot replies on the issue:
    - **Something wrong?** It lists what to fix. Edit the issue (**···** → **Edit**) and it checks again.
    - **All good?** It saves the file under the right name in `files/<Subject>/<Material>/`, adds its licence to `licenses.json`, and opens a **pull request** committed under your GitHub account. A new subject is added to the forms' subject lists, and a new course name to `courses.json`, in the same pull request.

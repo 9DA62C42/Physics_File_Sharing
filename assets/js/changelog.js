@@ -3,6 +3,14 @@
 // **bold** and `code` work as in the Help guide.
 window.CHANGELOG = [
   {
+    version: "1.2", date: "2026-10-21", title: "Smarter upload page",
+    changes: [
+      { type: "new", text: "Typing a known course code shows the **course name** and picks the **subject**. A new course or subject asks for its name." },
+      { type: "improved", text: "The upload form arrives completely filled in, including subject, kind of material and licence: only the file is left to attach." },
+      { type: "improved", text: "Text pages (How to contribute, Help, Changelog) use the full page width." }
+    ]
+  },
+  {
     version: "1.1", date: "2026-10-21", title: "Guided upload",
     changes: [
       { type: "improved", text: "**Upload** now opens the **How to contribute** page: enter your student number, build the file's ID, then open the upload form, which arrives filled in." },

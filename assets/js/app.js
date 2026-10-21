@@ -433,8 +433,8 @@
     let url = `${REPO}/issues/new?template=upload.yml`;
     if (!v) return url;
     const type = N.types[v.type], lic = N.licenses[v.license];
-    const fields = { title: "[Upload] " + v.title, file_title: v.title, course: v.course, term: v.term, item: v.item, student: v.uploader,
-      type: type ? `${type.code} · ${type.name}` : "", license: lic ? `${lic.code} · ${lic.name}` : "" };
+    const fields = { title: "[Upload] " + v.title, file_title: v.title, subject: v.subject, type: type ? type.code : "", license: lic ? lic.code : "",
+      course: v.course, course_name: v.courseName, term: v.term, item: v.item, student: v.uploader };
     for (const [k, val] of Object.entries(fields)) if (val) url += `&${k}=${enc(val)}`;
     return url;
   };
@@ -1296,11 +1296,31 @@
     const uploader = opts.uploader || h("input", { class: "input mono", value: saved.uploader || "", placeholder: "123456789", maxlength: "9", inputmode: "numeric" });
     const title = h("input", { class: "input", value: saved.title || "", placeholder: "Waves Homework 1 Solution" });
     const ext = h("input", { class: "input mono", value: saved.ext || "pdf", placeholder: "pdf" });
+    // The course name appears as soon as a known course code is typed; a new course asks for its name.
+    const courseHint = h("span", { class: "field-h" });
+    const courseNameIn = h("input", { class: "input", value: saved.courseName || "", placeholder: "Linear Algebra 1" });
+    const courseNameField = lab("Course name (new course)", courseNameIn, "Shown next to the code on the website");
+    // Contribute page only: the subject, picked from the course when files of that course already exist.
+    const subjects = Object.keys(subjectCounts()).sort();
+    const NEW = "__new__";
+    const subjectSel = h("select", { class: "input" }, h("option", { value: "" }, "— choose —"), subjects.map((x) => h("option", { value: x, selected: x === saved.subject }, pretty(x))),
+      h("option", { value: NEW, selected: saved.subject === NEW }, "New subject…"));
+    const newSubject = h("input", { class: "input", value: saved.newSubject || "", placeholder: "Linear Algebra" });
+    const newSubjectField = lab("New subject", newSubject, "Becomes a new subject on the website");
+    const courseSubject = (code) => { const f = state.items.find((x) => x.idInfo && x.idInfo.course === code); return f ? f.subject : null; };
+    let lastCourse = null;
     const result = h("div", { class: "build-out" });
     const licOut = h("div", { class: "stack" });
 
     function update() {
       const c = padCourse(course.value.trim());
+      const known = c ? courseName(c) : "";
+      fill(courseHint, known ? [h("strong", null, known), ` (${c})`] : c ? "New course: not on the website yet" : "8 digits, or 6-digit shorthand");
+      courseNameField.hidden = !opts.onChange || !c || !!known;
+      if (opts.onChange && c && c !== lastCourse && courseSubject(c)) subjectSel.value = courseSubject(c);
+      lastCourse = c;
+      newSubjectField.hidden = subjectSel.value !== NEW;
+      const subject = subjectSel.value === NEW ? newSubject.value.trim() : subjectSel.value ? pretty(subjectSel.value) : "";
       const isXT = type.value === "XT";
       year.disabled = season.disabled = isXT;
       season.disabled = isXT || N.placeholders[year.value] != null;
@@ -1309,12 +1329,13 @@
       const fields = [c || "00000000", type.value, term, item.value.trim(), version.value.trim().toUpperCase(), ...tags, uploader.value.trim()].filter(Boolean);
       const idPart = fields.join("_");
       const name = idPart + (title.value.trim() ? " " + title.value.trim() : "") + (!opts.onChange && ext.value.trim() ? "." + ext.value.trim().replace(/^\./, "") : "");
-      store.set("builder", { course: course.value, type: type.value, year: year.value, season: season.value, item: item.value, version: version.value, tags, license: licSel.value, uploader: uploader.value, title: title.value, ext: ext.value });
+      store.set("builder", { course: course.value, type: type.value, year: year.value, season: season.value, item: item.value, version: version.value, tags, license: licSel.value, uploader: uploader.value, title: title.value, ext: ext.value,
+        courseName: courseNameIn.value, subject: subjectSel.value, newSubject: newSubject.value });
       const info = parseId(name.replace(/\.[^.]*$/, ""));
       const cat = N.types[type.value].category;
       const lic = N.licenses[licSel.value];
       const rule = lic ? `{ "id": "${idPart}", "license": "${lic.code}" }` : null;
-      if (opts.onChange) opts.onChange({ name, idPart, info, course: c, type: type.value, term, title: title.value.trim(), license: lic ? lic.code : "",
+      if (opts.onChange) opts.onChange({ name, idPart, info, course: c, courseName: known ? "" : courseNameIn.value.trim(), subject, type: type.value, term, title: title.value.trim(), license: lic ? lic.code : "",
         item: [item.value.trim(), version.value.trim().toUpperCase(), ...tags].filter(Boolean).join("_"), uploader: uploader.value.trim() });
       fill(licOut, opts.onChange ? h("p", { class: "muted small" }, lic ? lic.note + " The upload form records the licence for you." : "Choose a licence. Not sure? Pick ARR (all rights reserved).") :
         lic ? [h("p", { class: "muted small" }, lic.note),
@@ -1332,11 +1353,14 @@
           info.problems.filter((p) => c || !/Course/.test(p)).map((p) => h("li", { class: "bad" }, p)), info.hints.map((p) => h("li", null, p))) : null,
         opts.onChange ? null : h("p", { class: "muted small" }, "Suggested folder: ", h("code", null, `files/<subject>/${cat === "Syllabus" ? "" : cat + "/"}`), " (for collaborators adding files directly). The ", h("a", { href: "#/contribute" }, "upload form"), " names and files uploads for you."));
     }
-    [course, type, year, season, item, version, licSel, uploader, title, ext, ...tagBoxes.map((l) => l.firstChild)].forEach((el) => el.addEventListener("input", update));
+    [course, type, year, season, item, version, licSel, uploader, title, ext, courseNameIn, subjectSel, newSubject, ...tagBoxes.map((l) => l.firstChild)].forEach((el) => el.addEventListener("input", update));
     update();
     return h("div", { class: "builder" },
       h("div", { class: "build-grid" },
-        lab("Course code", course, "8 digits, or 6-digit shorthand"),
+        h("label", { class: "field" }, h("span", { class: "field-l" }, "Course code"), course, courseHint),
+        opts.onChange ? courseNameField : null,
+        opts.onChange ? lab("Subject", subjectSel, "Picked from the course when it already has files") : null,
+        opts.onChange ? newSubjectField : null,
         lab("Type", type),
         lab("Academic year", year),
         lab("Term", season),
@@ -1636,7 +1660,7 @@
         : ["Not registered yet. Your number works anyway; ", h("a", { href: "#/ids?tab=codes" }, "register your name"), " (optional) to have it shown."]);
       if (!last) return;
       const idOk = last.info && last.info.status === "full" && !last.info.problems.length && last.course;
-      const items = [[ok, "Uploader ID (student number)"], [idOk, "File ID: course, type, term and item"], [!!last.title, "Title"], [!!last.license, "Licence"]];
+      const items = [[ok, "Uploader ID (student number)"], [idOk, "File ID: course, type, term and item"], [!!last.subject, "Subject"], [!!last.title, "Title"], [!!last.license, "Licence"]];
       fill(checks, items.map(([done, label]) => h("li", { class: done ? "ok" : "no" }, h("span", { class: "mark", "aria-hidden": "true" }, done ? "✓" : "✕"), label)));
       const ready = items.every(([done]) => done);
       open.classList.toggle("disabled", !ready);
@@ -1655,12 +1679,12 @@
       h("ol", { class: "steps" },
         step(1, "Your uploader ID", h("p", null, "Your uploader ID is your ", h("strong", null, "9-digit student number"), ". Enter it here; the next step uses it."),
           h("label", { class: "field uploader-field" }, h("span", { class: "field-l" }, "Student number"), number, numberNote)),
-        step(2, "Build the file's ID", h("p", null, "Fill in the course code, kind of material, term, item, a short title and the licence. The builder shows the file's ID; ",
+        step(2, "Build the file's ID", h("p", null, "Fill in the course code (its name appears by itself), subject, kind of material, term, item, a short title and the licence. The builder shows the file's ID; ",
           h("a", { href: "#/ids" }, "the ID system"), " explains each part. You don't need to rename your file: the upload form does it."), builder),
         step(3, "Upload", h("p", null, "When everything below is ticked, open the upload form. It opens on GitHub with your answers filled in."),
           checks, h("div", { class: "row" }, open),
-          h("p", null, "In the form: drag your file into ", h("strong", null, "Files"), " and wait until it shows as a link (PDF is best; put LaTeX or other sources in one ", h("code", null, ".zip"),
-            "; up to 25 MB), choose the ", h("strong", null, "Subject"), " (or ", h("strong", null, "New subject"), "), check the other answers, and submit."),
+          h("p", null, "In the form, only one thing is left: drag your file into ", h("strong", null, "Files"), " and wait until it shows as a link (PDF is best; put LaTeX or other sources in one ", h("code", null, ".zip"),
+            "; up to 25 MB). Check the other answers, which are already filled in, and submit."),
           h("p", { class: "muted small" }, "No file ID possible, for example for material from outside the university? ", h("a", { href: uploadUrl(), target: "_blank", rel: "noopener" }, "Upload without an ID"), ".")),
         step(4, "Review", h("p", null, "A bot checks the form within a minute and replies on the issue. If something is wrong, it says what; edit the issue to fix it. Otherwise it opens a pull request, and a maintainer reviews it.")),
         step(5, "It appears on the site", h("p", null, "Once the pull request is merged, your file shows up within a few minutes, credited to your student number and GitHub account."))),

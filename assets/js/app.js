@@ -1624,6 +1624,16 @@
     if (b.ol) return h("ol", null, b.ol.map((x) => h("li", null, rich(x))));
     if (b.tip) return h("p", { class: "help-tip" }, icon("star"), h("span", null, rich(b.tip)));
     if (b.code) return h("pre", { class: "help-code", dir: "ltr" }, b.code);
+    if (b.licences) {
+      const L = b.licences, mark = (ok) => h("td", { class: "mark " + (ok ? "yes" : "no") }, ok ? "✓" : "✕");
+      return h("div", { class: "table-wrap help-table" }, h("table", { class: "table ref" },
+        h("thead", null, h("tr", null, L.head.map((x) => h("th", null, x)))),
+        h("tbody", null, ((N.raw && N.raw.licenses) || []).map((l) => h("tr", null,
+          h("td", null, h("code", { class: "f-lic", dir: "ltr" }, l.code)),
+          h("td", { dir: "ltr" }, l.url ? h("a", { href: l.url, target: "_blank", rel: "noopener" }, l.short) : l.short),
+          h("td", null, L.meaning[l.code] || l.note),
+          mark(l.share), mark(l.adapt), mark(l.commercial))))));
+    }
     return null;
   }
 

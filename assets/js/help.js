@@ -88,9 +88,19 @@ window.HELP = (function () {
         { ul: [
           "Set it in `licenses.json` (the name builder writes the line for you), or put `SPDX-License-Identifier: CC-BY-4.0` at the top of a text file.",
           "No licence stated means the author keeps all rights: read it here, but ask before copying or reusing it.",
-          "Common codes: `CCBY` (reuse with credit), `CCBYNC` (not commercially), `CC0` (no conditions), `STUDY` (course material shared with permission), `ARR` (all rights reserved).",
           "Only license your own work. Course material keeps its owner's terms."
-        ] }
+        ] },
+        { p: "The Creative Commons codes are built from these parts:" },
+        { ul: [
+          "`CC` = Creative Commons",
+          "`BY` = attribution: credit the author",
+          "`SA` = share alike: adaptations must use the same licence",
+          "`NC` = non-commercial: no commercial use",
+          "`ND` = no derivatives: share only unchanged copies",
+          "the `0` in `CC0` = no rights reserved"
+        ] },
+        { p: "All licence codes:" },
+        { licences: { head: ["Code", "Licence", "Meaning", "Share", "Adapt", "Commercial"], meaning: {"CC0": "No conditions: use it for anything.", "PD": "Public domain: no longer under copyright.", "CCBY": "Share and adapt, even commercially, with credit.", "CCBYSA": "As CC BY; adaptations must use the same licence.", "CCBYNC": "Share and adapt with credit, but not commercially.", "CCBYNCSA": "Non-commercial, with credit; adaptations use the same licence.", "CCBYND": "Share unchanged copies with credit; no adaptations.", "CCBYNCND": "Share unchanged copies with credit, non-commercially.", "MIT": "Software licence: reuse freely, keep the copyright notice.", "GPL3": "Software licence: changed versions must also be GPL.", "STUDY": "Course material shared with permission: read it here for study only.", "ARR": "All rights reserved: read it here; ask the author for anything else."} } }
       ] },
       { id: "verify", icon: "shield", title: "Verification (owner and collaborators)", blocks: [
         { ol: [
@@ -210,9 +220,19 @@ window.HELP = (function () {
         { ul: [
           "קובעים אותו ב-`licenses.json` (בונה השמות כותב את השורה בשבילכם), או כותבים `SPDX-License-Identifier: CC-BY-4.0` בראש קובץ טקסט.",
           "אם לא צוין רישיון, כל הזכויות שמורות למחבר: אפשר לקרוא כאן, אבל צריך לבקש רשות לפני העתקה או שימוש חוזר.",
-          "קודים נפוצים: `CCBY` (שימוש חוזר עם ייחוס), `CCBYNC` (לא לשימוש מסחרי), `CC0` (ללא תנאים), `STUDY` (חומר קורס ששותף ברשות), `ARR` (כל הזכויות שמורות).",
           "תנו רישיון רק לעבודה שלכם. חומרי קורס נשארים בתנאים של בעליהם."
-        ] }
+        ] },
+        { p: "קודי Creative Commons בנויים מהחלקים האלה:" },
+        { ul: [
+          "`CC` = Creative Commons",
+          "`BY` = ייחוס: יש לציין את שם המחבר",
+          "`SA` = שיתוף זהה: עיבודים חייבים להיות תחת אותו רישיון",
+          "`NC` = לא מסחרי: אסור שימוש מסחרי",
+          "`ND` = ללא יצירות נגזרות: מותר לשתף רק עותקים ללא שינוי",
+          "ה-`0` ב-`CC0` = ללא שמירת זכויות"
+        ] },
+        { p: "כל קודי הרישיונות:" },
+        { licences: { head: ["קוד", "רישיון", "משמעות", "שיתוף", "עיבוד", "מסחרי"], meaning: {"CC0": "ללא תנאים: מותר כל שימוש.", "PD": "נחלת הכלל: כבר לא מוגן בזכויות יוצרים.", "CCBY": "מותר לשתף ולעבד, גם מסחרית, עם ייחוס.", "CCBYSA": "כמו CC BY; עיבודים חייבים להיות תחת אותו רישיון.", "CCBYNC": "מותר לשתף ולעבד עם ייחוס, אבל לא מסחרית.", "CCBYNCSA": "לא מסחרי, עם ייחוס; עיבודים תחת אותו רישיון.", "CCBYND": "מותר לשתף עותקים ללא שינוי, עם ייחוס; בלי עיבודים.", "CCBYNCND": "מותר לשתף עותקים ללא שינוי, עם ייחוס, לא מסחרית.", "MIT": "רישיון תוכנה: שימוש חופשי, יש לשמור את הודעת זכויות היוצרים.", "GPL3": "רישיון תוכנה: גרסאות משונות חייבות להיות גם הן GPL.", "STUDY": "חומר קורס ששותף ברשות: לקריאה כאן לצורכי לימוד בלבד.", "ARR": "כל הזכויות שמורות: אפשר לקרוא כאן; לכל דבר אחר יש לבקש מהמחבר."} } }
       ] },
       { id: "verify", icon: "shield", title: "אימות (בעלים ומשתפי פעולה)", blocks: [
         { ol: [
@@ -332,9 +352,19 @@ window.HELP = (function () {
         { ul: [
           "在 `licenses.json` 中设置（命名工具会帮你生成这一行），或在文本文件开头写上 `SPDX-License-Identifier: CC-BY-4.0`。",
           "未注明许可证，表示作者保留所有权利：可以在这里阅读，但复制或再使用前需征得同意。",
-          "常用代码：`CCBY`（署名即可再使用）、`CCBYNC`（不得商用）、`CC0`（无任何条件）、`STUDY`（经许可分享的课程资料）、`ARR`（保留所有权利）。",
           "只能为你自己的作品选择许可证。课程资料沿用其所有者的条款。"
-        ] }
+        ] },
+        { p: "Creative Commons 代码由以下部分组成：" },
+        { ul: [
+          "`CC` = 知识共享（Creative Commons）",
+          "`BY` = 署名：须注明作者",
+          "`SA` = 相同方式共享：改编作品须使用相同许可证",
+          "`NC` = 非商业性使用：不得商用",
+          "`ND` = 禁止演绎：只能分享未经修改的副本",
+          "`CC0` 中的 `0` = 不保留任何权利"
+        ] },
+        { p: "全部许可证代码：" },
+        { licences: { head: ["代码", "许可证", "含义", "分享", "改编", "商用"], meaning: {"CC0": "无任何条件：可用于任何用途。", "PD": "公有领域：已不受版权保护。", "CCBY": "可分享和改编，包括商用，但须署名。", "CCBYSA": "同 CC BY；改编作品须使用相同许可证。", "CCBYNC": "可分享和改编，须署名，但不得商用。", "CCBYNCSA": "非商业、须署名；改编作品使用相同许可证。", "CCBYND": "可分享未经修改的副本，须署名；不得改编。", "CCBYNCND": "可分享未经修改的副本，须署名，不得商用。", "MIT": "软件许可证：可自由使用，须保留版权声明。", "GPL3": "软件许可证：修改后的版本也必须使用 GPL。", "STUDY": "经许可分享的课程资料：仅限在此阅读学习。", "ARR": "保留所有权利：可在此阅读；其他用途须征得作者同意。"} } }
       ] },
       { id: "verify", icon: "shield", title: "审核（所有者和协作者）", blocks: [
         { ol: [
@@ -454,9 +484,19 @@ window.HELP = (function () {
         { ul: [
           "Se define en `licenses.json` (el generador de nombres te escribe la línea), o con `SPDX-License-Identifier: CC-BY-4.0` al principio de un archivo de texto.",
           "Si no se indica licencia, el autor conserva todos los derechos: puedes leerlo aquí, pero debes pedir permiso antes de copiarlo o reutilizarlo.",
-          "Códigos habituales: `CCBY` (reutilizar citando al autor), `CCBYNC` (sin uso comercial), `CC0` (sin condiciones), `STUDY` (material del curso compartido con permiso), `ARR` (todos los derechos reservados).",
           "Pon licencia solo a tu propio trabajo. El material del curso mantiene las condiciones de su propietario."
-        ] }
+        ] },
+        { p: "Los códigos de Creative Commons se forman con estas partes:" },
+        { ul: [
+          "`CC` = Creative Commons",
+          "`BY` = reconocimiento: hay que citar al autor",
+          "`SA` = compartir igual: las adaptaciones deben usar la misma licencia",
+          "`NC` = no comercial: sin uso comercial",
+          "`ND` = sin obras derivadas: solo se comparten copias sin cambios",
+          "el `0` de `CC0` = ningún derecho reservado"
+        ] },
+        { p: "Todos los códigos de licencia:" },
+        { licences: { head: ["Código", "Licencia", "Significado", "Compartir", "Adaptar", "Uso comercial"], meaning: {"CC0": "Sin condiciones: se puede usar para cualquier fin.", "PD": "Dominio público: ya no tiene derechos de autor.", "CCBY": "Compartir y adaptar, incluso comercialmente, citando al autor.", "CCBYSA": "Como CC BY; las adaptaciones deben usar la misma licencia.", "CCBYNC": "Compartir y adaptar citando al autor, pero sin uso comercial.", "CCBYNCSA": "Sin uso comercial y citando al autor; las adaptaciones usan la misma licencia.", "CCBYND": "Compartir copias sin cambios citando al autor; sin adaptaciones.", "CCBYNCND": "Compartir copias sin cambios citando al autor, sin uso comercial.", "MIT": "Licencia de software: uso libre manteniendo el aviso de copyright.", "GPL3": "Licencia de software: las versiones modificadas también deben ser GPL.", "STUDY": "Material del curso compartido con permiso: solo para leer y estudiar aquí.", "ARR": "Todos los derechos reservados: se puede leer aquí; para lo demás, pide permiso al autor."} } }
       ] },
       { id: "verify", icon: "shield", title: "Verificación (propietario y colaboradores)", blocks: [
         { ol: [
@@ -576,9 +616,19 @@ window.HELP = (function () {
         { ul: [
           "Elle se définit dans `licenses.json` (le générateur de noms écrit la ligne pour vous), ou avec `SPDX-License-Identifier: CC-BY-4.0` en tête d’un fichier texte.",
           "Sans licence indiquée, l’auteur conserve tous ses droits : vous pouvez le lire ici, mais il faut demander avant de le copier ou de le réutiliser.",
-          "Codes courants : `CCBY` (réutilisation en citant l’auteur), `CCBYNC` (pas d’usage commercial), `CC0` (aucune condition), `STUDY` (document de cours partagé avec autorisation), `ARR` (tous droits réservés).",
           "Ne mettez une licence que sur votre propre travail. Les documents de cours restent soumis aux conditions de leur propriétaire."
-        ] }
+        ] },
+        { p: "Les codes Creative Commons sont formés de ces éléments :" },
+        { ul: [
+          "`CC` = Creative Commons",
+          "`BY` = attribution : citer l’auteur",
+          "`SA` = partage dans les mêmes conditions : les adaptations doivent utiliser la même licence",
+          "`NC` = pas d’utilisation commerciale",
+          "`ND` = pas de modification : seules des copies inchangées peuvent être partagées",
+          "le `0` de `CC0` = aucun droit réservé"
+        ] },
+        { p: "Tous les codes de licence :" },
+        { licences: { head: ["Code", "Licence", "Signification", "Partager", "Adapter", "Usage commercial"], meaning: {"CC0": "Aucune condition : utilisable pour tout.", "PD": "Domaine public : n’est plus protégé par le droit d’auteur.", "CCBY": "Partager et adapter, même commercialement, en citant l’auteur.", "CCBYSA": "Comme CC BY ; les adaptations doivent utiliser la même licence.", "CCBYNC": "Partager et adapter en citant l’auteur, mais pas commercialement.", "CCBYNCSA": "Non commercial, en citant l’auteur ; les adaptations utilisent la même licence.", "CCBYND": "Partager des copies inchangées en citant l’auteur ; pas d’adaptation.", "CCBYNCND": "Partager des copies inchangées en citant l’auteur, sans usage commercial.", "MIT": "Licence logicielle : réutilisation libre en conservant la mention de copyright.", "GPL3": "Licence logicielle : les versions modifiées doivent aussi être sous GPL.", "STUDY": "Document de cours partagé avec autorisation : à lire ici, pour étudier uniquement.", "ARR": "Tous droits réservés : lecture ici ; pour le reste, demandez à l’auteur."} } }
       ] },
       { id: "verify", icon: "shield", title: "Vérification (propriétaire et collaborateurs)", blocks: [
         { ol: [
@@ -698,9 +748,19 @@ window.HELP = (function () {
         { ul: [
           "Sie wird in `licenses.json` festgelegt (der Namensgenerator schreibt die Zeile für dich) oder mit `SPDX-License-Identifier: CC-BY-4.0` am Anfang einer Textdatei.",
           "Ohne angegebene Lizenz behält der Autor alle Rechte: Du darfst sie hier lesen, musst aber vor dem Kopieren oder Weiterverwenden fragen.",
-          "Häufige Codes: `CCBY` (Weiterverwendung mit Namensnennung), `CCBYNC` (nicht kommerziell), `CC0` (keine Bedingungen), `STUDY` (Kursmaterial, mit Erlaubnis geteilt), `ARR` (alle Rechte vorbehalten).",
           "Vergib Lizenzen nur für deine eigene Arbeit. Kursmaterial unterliegt weiter den Bedingungen seines Eigentümers."
-        ] }
+        ] },
+        { p: "Die Creative-Commons-Codes setzen sich aus diesen Teilen zusammen:" },
+        { ul: [
+          "`CC` = Creative Commons",
+          "`BY` = Namensnennung: den Autor nennen",
+          "`SA` = Weitergabe unter gleichen Bedingungen: Bearbeitungen müssen dieselbe Lizenz verwenden",
+          "`NC` = nicht kommerziell: keine kommerzielle Nutzung",
+          "`ND` = keine Bearbeitungen: nur unveränderte Kopien weitergeben",
+          "die `0` in `CC0` = keine Rechte vorbehalten"
+        ] },
+        { p: "Alle Lizenzcodes:" },
+        { licences: { head: ["Code", "Lizenz", "Bedeutung", "Teilen", "Bearbeiten", "Kommerziell"], meaning: {"CC0": "Keine Bedingungen: für alles nutzbar.", "PD": "Gemeinfrei: nicht mehr urheberrechtlich geschützt.", "CCBY": "Teilen und bearbeiten, auch kommerziell, mit Namensnennung.", "CCBYSA": "Wie CC BY; Bearbeitungen müssen dieselbe Lizenz verwenden.", "CCBYNC": "Teilen und bearbeiten mit Namensnennung, aber nicht kommerziell.", "CCBYNCSA": "Nicht kommerziell, mit Namensnennung; Bearbeitungen unter derselben Lizenz.", "CCBYND": "Unveränderte Kopien mit Namensnennung teilen; keine Bearbeitungen.", "CCBYNCND": "Unveränderte Kopien mit Namensnennung teilen, nicht kommerziell.", "MIT": "Softwarelizenz: freie Nutzung, Copyright-Hinweis behalten.", "GPL3": "Softwarelizenz: geänderte Versionen müssen ebenfalls GPL sein.", "STUDY": "Kursmaterial, mit Erlaubnis geteilt: nur hier lesen und damit lernen.", "ARR": "Alle Rechte vorbehalten: hier lesen; für alles andere den Autor fragen."} } }
       ] },
       { id: "verify", icon: "shield", title: "Prüfung (Eigentümer und Mitwirkende)", blocks: [
         { ol: [

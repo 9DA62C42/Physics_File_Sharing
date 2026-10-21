@@ -750,3 +750,10 @@ code.ex { display: block; width: fit-content; margin: var(--s1) 0; }
 .help-tip { display: flex; gap: var(--s2); align-items: flex-start; padding: var(--s3) var(--s4); background: var(--accent-soft); border-radius: 10px; }
 .help-tip .icon { width: 16px; height: 16px; margin-top: 3px; color: var(--accent); }
 .help-code { margin: 0 0 var(--s3); padding: var(--s3) var(--s4); overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 9px; font: .9rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-align: left; }
+
+.help-table { margin: 0 0 var(--s3); }
+.help-table td.mark { text-align: center; font-weight: 700; }
+.help-table td.mark.yes { color: var(--b-latex); }
+.help-table td.mark.no { color: var(--b-pdf); }
+.help[dir="rtl"] .table th, .help[dir="rtl"] .table td { text-align: right; }
+.help[dir="rtl"] .help-table td.mark { text-align: center; }

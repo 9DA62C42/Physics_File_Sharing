@@ -433,7 +433,8 @@
     let url = `${REPO}/issues/new?template=upload.yml`;
     if (!v) return url;
     const type = N.types[v.type], lic = N.licenses[v.license];
-    const fields = { title: "[Upload] " + v.title, file_title: v.title, subject: v.subject, type: type ? type.code : "", license: lic ? lic.code : "",
+    // Keys are the form's field ids. ("type" would clash with GitHub's own issue-type parameter, so that field is "kind".)
+    const fields = { title: "[Upload] " + v.title, file_title: v.title, subject: v.subject, kind: type ? type.code : "", license: lic ? lic.code : "",
       course: v.course, course_name: v.courseName, term: v.term, item: v.item, student: v.uploader };
     for (const [k, val] of Object.entries(fields)) if (val) url += `&${k}=${enc(val)}`;
     return url;

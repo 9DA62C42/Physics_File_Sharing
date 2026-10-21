@@ -328,7 +328,7 @@ kbd {
 .hero .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
 .hero .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
 
-.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s4); margin-top: var(--s4); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: var(--s4); margin-top: var(--s4); }
 .stat {
   display: flex; flex-direction: column; gap: 2px;
   padding: var(--s4) var(--s5);
@@ -483,7 +483,7 @@ a.stat:hover { border-color: var(--accent); color: inherit; }
 
 /* ---------- tables ---------- */
 
-.table-wrap { position: relative; overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.table-wrap { position: relative; overflow-x: auto; container-type: inline-size; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
 .table { width: 100%; border-collapse: collapse; font-size: .9rem; }
 .table th, .table td { padding: var(--s3) var(--s4); text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
 .table tr:last-child td { border-bottom: 0; }
@@ -491,8 +491,13 @@ a.stat:hover { border-color: var(--accent); color: inherit; }
 .table tbody tr:hover td { background: color-mix(in srgb, var(--surface-2) 50%, transparent); }
 .table .num { text-align: right; font-variant-numeric: tabular-nums; }
 .table .value { font-variant-numeric: tabular-nums; white-space: nowrap; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .86rem; }
-.table td:last-child { width: 1%; }
-.table.ref td:last-child { width: auto; }
+/* Shrink only columns that hold a single icon button (copy, etc.); keep short text on one line. */
+.table td:has(> .icon-btn:only-child), .table th:empty { width: 1%; }
+.table th { white-space: nowrap; }
+.table td.num, .table td.nowrap, .table td.value, .table code, .nowrap { white-space: nowrap; }
+/* Drop secondary columns when the table is narrow instead of scrolling or wrapping. */
+@container (max-width: 680px) { .table .opt-md { display: none; } }
+@container (max-width: 440px) { .table .opt-sm { display: none; } }
 .sym var { font-family: "Times New Roman", Times, serif; font-size: 1.1rem; }
 .tag { margin-left: var(--s2); font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--b-latex); background: var(--b-latex-bg); padding: 1px 6px; border-radius: 5px; }
 
@@ -660,7 +665,6 @@ code.ex { display: block; width: fit-content; margin: var(--s1) 0; }
   .files.grid, .subjects, .tiles { gap: var(--s3); }
   .section { margin-top: var(--s5); }
   .table th, .table td { padding: 10px var(--s3); }
-  .table .value { white-space: normal; }
   .converter { grid-template-columns: minmax(0, 1fr); }
   .converter .icon-btn { justify-self: center; transform: rotate(90deg); }
   .files.list .card { flex-wrap: wrap; gap: var(--s2); }

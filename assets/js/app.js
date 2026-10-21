@@ -1147,14 +1147,14 @@
     if (!people.length) return h("div", null, head, emptyState("No uploaders yet", "Upload a file to appear here."));
     return h("div", null, head,
       h("div", { class: "table-wrap" }, h("table", { class: "table" },
-        h("thead", null, h("tr", null, h("th", null, "Student no."), h("th", null, "Name"), h("th", null, "GitHub"), h("th", { class: "num" }, "Uploaded"), h("th", { class: "num" }, "Credited"), h("th", null, "Last upload"))),
+        h("thead", null, h("tr", null, h("th", null, "Student no."), h("th", null, "Name"), h("th", { class: "opt-md" }, "GitHub"), h("th", { class: "num opt-sm" }, "Uploaded"), h("th", { class: "num" }, "Credited"), h("th", { class: "opt-sm" }, "Last upload"))),
         h("tbody", null, people.map((p) => h("tr", null,
           h("td", null, p.isNumber ? h("code", { class: "f-up" }, p.key) : h("span", { class: "muted" }, "—")),
-          h("td", null, h("a", { href: personHref(p.key) }, p.name)),
-          h("td", null, p.login ? h("a", { href: "https://github.com/" + enc(p.login), target: "_blank", rel: "noopener" }, "@" + p.login) : ""),
-          h("td", { class: "num" }, String(p.uploads)),
+          h("td", { class: "nowrap" }, h("a", { href: personHref(p.key) }, p.name)),
+          h("td", { class: "nowrap opt-md" }, p.login ? h("a", { href: "https://github.com/" + enc(p.login), target: "_blank", rel: "noopener" }, "@" + p.login) : ""),
+          h("td", { class: "num opt-sm" }, String(p.uploads)),
           h("td", { class: "num", title: "Files whose ID carries this student number" }, p.isNumber ? String(p.authored) : ""),
-          h("td", null, p.last ? timeAgo(p.last) : "")))))));
+          h("td", { class: "nowrap opt-sm" }, p.last ? timeAgo(p.last) : "")))))));
   };
 
   VIEWS.u = (r) => {
@@ -1359,8 +1359,8 @@
       h("h2", { class: "small-head section" }, `Registered students (${regs.length})`),
       regs.length ? h("div", { class: "table-wrap" }, h("table", { class: "table" },
         h("thead", null, h("tr", null, h("th", null, "Student no."), h("th", null, "Name"), h("th", null, "GitHub"))),
-        h("tbody", null, regs.map((u) => h("tr", null, h("td", null, h("a", { href: personHref(u.code) }, h("code", { class: "f-up" }, u.code))), h("td", null, u.name),
-          h("td", null, u.github ? h("a", { href: "https://github.com/" + enc(u.github), target: "_blank", rel: "noopener" }, "@" + u.github) : h("span", { class: "muted" }, "—")))))))
+        h("tbody", null, regs.map((u) => h("tr", null, h("td", null, h("a", { href: personHref(u.code) }, h("code", { class: "f-up" }, u.code))), h("td", { class: "nowrap" }, u.name),
+          h("td", { class: "nowrap" }, u.github ? h("a", { href: "https://github.com/" + enc(u.github), target: "_blank", rel: "noopener" }, "@" + u.github) : h("span", { class: "muted" }, "—")))))))
         : h("p", { class: "muted" }, "Nobody has registered yet."));
   };
 
@@ -1398,7 +1398,7 @@
       tbl(["Code", "Name", "Use"], N.raw.tags.map((t) => tr(h("code", { class: "f-tag" }, t.code), t.name, t.note))),
 
       h("h2", null, "5  Item patterns"),
-      tbl(["Pattern", "Kind", "Meaning"], [...N.raw.serials.map((s) => tr(h("code", { class: "f-item" }, s.example), s.kind, s.note)),
+      tbl(["Pattern", "Kind", "Meaning"], [...N.raw.serials.map((s) => tr(h("code", { class: "f-item" }, s.example), h("span", { class: "nowrap" }, s.kind), s.note)),
         tr(h("code", { class: "f-ver" }, "V01, V02"), "Version", N.raw.version.note),
         tr("Ranges", "", "Use the first number; the range goes in the title: LP_2526A_08 Lectures 8-10. No hyphens inside an ID.")]),
 
@@ -1445,7 +1445,7 @@
     return h("div", null,
       h("div", { class: "stats" },
         h("div", { class: "stat" }, h("span", { class: "stat-n" }, `${pct}%`), h("span", { class: "stat-l" }, "files with a full ID")),
-        h("div", { class: "stat" }, h("span", { class: "stat-n" }, String(state.items.filter((f) => itemVerification(f).state === "verified").length)), h("span", { class: "stat-l" }, "verified by maintainers")),
+        h("div", { class: "stat" }, h("span", { class: "stat-n" }, String(state.items.filter((f) => itemVerification(f).state === "verified").length)), h("span", { class: "stat-l" }, "verified")),
         h("div", { class: "stat" }, h("span", { class: "stat-n" }, String(partial.length)), h("span", { class: "stat-l" }, "IDs with problems")),
         h("div", { class: "stat" }, h("span", { class: "stat-n" }, String(dups.length)), h("span", { class: "stat-l" }, "duplicate groups"))),
       h("div", { class: "section stack" },
@@ -1498,7 +1498,7 @@
         h("td", { class: "sym" }, h("var", null, sym, sub ? h("sub", null, sub) : null)),
         h("td", null, name, exact ? h("span", { class: "tag" }, "exact") : null),
         h("td", { class: "value" }, sciNode(v, value.replace(/^-|\.|e.*$/g, "").replace(/^0+/, "").length || 1)),
-        h("td", null, unit),
+        h("td", { class: "nowrap" }, unit),
         h("td", null, h("button", { class: "icon-btn", type: "button", title: `Copy ${value}`, "aria-label": `Copy value of ${name}`,
           onclick: (e) => copyText(value, e.currentTarget) }, icon("copy"))));
     });
@@ -1630,7 +1630,7 @@
         h("thead", null, h("tr", null, L.head.map((x) => h("th", null, x)))),
         h("tbody", null, ((N.raw && N.raw.licenses) || []).map((l) => h("tr", null,
           h("td", null, h("code", { class: "f-lic", dir: "ltr" }, l.code)),
-          h("td", { dir: "ltr" }, l.url ? h("a", { href: l.url, target: "_blank", rel: "noopener" }, l.short) : l.short),
+          h("td", { dir: "ltr", class: "nowrap" }, l.url ? h("a", { href: l.url, target: "_blank", rel: "noopener" }, l.short) : l.short),
           h("td", null, L.meaning[l.code] || l.note),
           mark(l.share), mark(l.adapt), mark(l.commercial))))));
     }

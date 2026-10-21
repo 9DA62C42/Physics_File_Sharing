@@ -1,0 +1,18 @@
+{
+  "records": [
+    {
+      "path": "files/Waves/Notes/01140086_LN_2627W_FULL_800012999 Waves Complete Learning Notes V4.1 Shang Wu LaTeX Source.zip",
+      "sha256": "5add8a650e0c615b6ed2747cc9a64a531affeeba0d28f885e562a03b531219aa",
+      "by": "9DA62C42",
+      "date": "2026-10-21T07:59:29+00:00",
+      "issue": 1
+    },
+    {
+      "path": "files/Waves/Notes/01140086_LN_2627W_FULL_800012999 Waves Complete Learning Notes V4.1 Shang Wu.pdf",
+      "sha256": "68c5c3624e0e689fc606015e5c4894d4ac9cee9359ab30b619ff3999fccb6ad6",
+      "by": "9DA62C42",
+      "date": "2026-10-21T07:59:29+00:00",
+      "issue": 1
+    }
+  ]
+}

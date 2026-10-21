@@ -550,7 +550,9 @@ a.stat:hover { border-color: var(--accent); color: inherit; }
 .f-bad { color: var(--b-pdf); text-decoration: underline wavy; text-underline-offset: 3px; }
 code.f-course, code.f-type, code.f-term, code.f-item, code.f-tag, code.f-up, code.f-ver, code.f-lic { font-weight: 700; }
 
-.id-code { font-size: .76rem; font-weight: 600; overflow-wrap: anywhere; }
+.id-code { font-size: .76rem; font-weight: 600; overflow-wrap: normal; }
+/* Break long IDs only after an underscore, never inside a field such as the student number. */
+.id-code > span { white-space: nowrap; }
 .id-code.big { font-size: 1.05rem; }
 .id-sep { color: var(--muted); opacity: .7; }
 .id-flag { display: inline-flex; color: var(--b-code); }

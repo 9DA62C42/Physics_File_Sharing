@@ -142,6 +142,7 @@ def run(title, body, user, number, repo, token, unverify, perm=None):
         records.sort(key=lambda r: r["path"])
         changed = True
         reply = (f"✔ Verified by @{user} ({perm}):\n" + "\n".join(lines)
+                 + "\n\nThis confirms the course code, uploader and file name only; it does not check or guarantee the content."
                  + "\n\nThe website shows the badge after the next deploy (about a minute). "
                    "If a file's content changes later, the site flags it for re-checking.")
     if bad:

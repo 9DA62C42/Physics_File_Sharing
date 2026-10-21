@@ -46,7 +46,7 @@ window.HELP = (function () {
         { ul: [
           "**Download**, **New tab**, **Link** (copies a link to this file), **GitHub** and **History** (every change to the file).",
           "**Files in this item**: formats that belong together, such as a PDF and its LaTeX source.",
-          "**Verification**: whether the owner or a collaborator has checked the file.",
+          "**Verification**: whether the owner or a collaborator has checked the file's course code, uploader and name (not its content).",
           "**ID**: the file's ID, explained field by field.",
           "**Uploader**: who shared the file, for example “Uploaded by A on behalf of B”.",
           "**Licence**: what you may do with the file (share, adapt, commercial use)."
@@ -103,6 +103,7 @@ window.HELP = (function () {
         { licences: { head: ["Code", "Licence", "Meaning", "Share", "Adapt", "Commercial"], meaning: {"CC0": "No conditions: use it for anything.", "PD": "Public domain: no longer under copyright.", "CCBY": "Share and adapt, even commercially, with credit.", "CCBYSA": "As CC BY; adaptations must use the same licence.", "CCBYNC": "Share and adapt with credit, but not commercially.", "CCBYNCSA": "Non-commercial, with credit; adaptations use the same licence.", "CCBYND": "Share unchanged copies with credit; no adaptations.", "CCBYNCND": "Share unchanged copies with credit, non-commercially.", "MIT": "Software licence: reuse freely, keep the copyright notice.", "GPL3": "Software licence: changed versions must also be GPL.", "STUDY": "Course material shared with permission: read it here for study only.", "ARR": "All rights reserved: read it here; ask the author for anything else."} } }
       ] },
       { id: "verify", icon: "shield", title: "Verification (owner and collaborators)", blocks: [
+        { tip: "**What it means:** a maintainer checked that the course code, the uploader (student number) and the file name are correct. It does **not** check or guarantee the content: notes may still contain mistakes, and verification is not a promise or endorsement." },
         { ol: [
           "Open a file and click **Verify this item**. GitHub opens a pre-filled issue; submit it.",
           "A workflow checks that you're the owner or a collaborator, records the verification and closes the issue. Requests from anyone else are refused.",
@@ -178,7 +179,7 @@ window.HELP = (function () {
         { ul: [
           "**Download**, ‏**New tab**, ‏**Link** (מעתיק קישור לקובץ), ‏**GitHub** ו-**History** (כל השינויים בקובץ).",
           "**Files in this item**: פורמטים ששייכים יחד, למשל PDF וקוד המקור שלו ב-LaTeX.",
-          "**Verification**: האם הבעלים או משתף פעולה בדקו את הקובץ.",
+          "**Verification**: האם הבעלים או משתף פעולה בדקו את קוד הקורס, המעלה ושם הקובץ (לא את התוכן).",
           "**ID**: מזהה הקובץ, מוסבר שדה אחר שדה.",
           "**Uploader**: מי שיתף את הקובץ, למשל “Uploaded by A on behalf of B” (הועלה על ידי A בשם B).",
           "**Licence**: מה מותר לעשות בקובץ (לשתף, לעבד, שימוש מסחרי)."
@@ -235,6 +236,7 @@ window.HELP = (function () {
         { licences: { head: ["קוד", "רישיון", "משמעות", "שיתוף", "עיבוד", "מסחרי"], meaning: {"CC0": "ללא תנאים: מותר כל שימוש.", "PD": "נחלת הכלל: כבר לא מוגן בזכויות יוצרים.", "CCBY": "מותר לשתף ולעבד, גם מסחרית, עם ייחוס.", "CCBYSA": "כמו CC BY; עיבודים חייבים להיות תחת אותו רישיון.", "CCBYNC": "מותר לשתף ולעבד עם ייחוס, אבל לא מסחרית.", "CCBYNCSA": "לא מסחרי, עם ייחוס; עיבודים תחת אותו רישיון.", "CCBYND": "מותר לשתף עותקים ללא שינוי, עם ייחוס; בלי עיבודים.", "CCBYNCND": "מותר לשתף עותקים ללא שינוי, עם ייחוס, לא מסחרית.", "MIT": "רישיון תוכנה: שימוש חופשי, יש לשמור את הודעת זכויות היוצרים.", "GPL3": "רישיון תוכנה: גרסאות משונות חייבות להיות גם הן GPL.", "STUDY": "חומר קורס ששותף ברשות: לקריאה כאן לצורכי לימוד בלבד.", "ARR": "כל הזכויות שמורות: אפשר לקרוא כאן; לכל דבר אחר יש לבקש מהמחבר."} } }
       ] },
       { id: "verify", icon: "shield", title: "אימות (בעלים ומשתפי פעולה)", blocks: [
+        { tip: "**מה זה אומר:** מתחזק בדק שקוד הקורס, המעלה (מספר הסטודנט) ושם הקובץ נכונים. האימות **אינו** בודק את התוכן ואינו מבטיח אותו: ייתכנו טעויות בחומר, והאימות אינו התחייבות או המלצה." },
         { ol: [
           "פתחו קובץ ולחצו על **Verify this item**. ‏GitHub פותח issue ממולא מראש; שלחו אותו.",
           "תהליך אוטומטי בודק שאתם הבעלים או משתפי פעולה, רושם את האימות וסוגר את ה-issue. בקשות של אחרים נדחות.",
@@ -310,7 +312,7 @@ window.HELP = (function () {
         { ul: [
           "**Download**、**New tab**、**Link**（复制此文件的链接）、**GitHub** 和 **History**（文件的全部修改记录）。",
           "**Files in this item**：属于同一份资料的不同格式，例如 PDF 及其 LaTeX 源文件。",
-          "**Verification**：仓库所有者或协作者是否已审核此文件。",
+          "**Verification**：仓库所有者或协作者是否已核对此文件的课程代码、上传者和文件名（不含内容）。",
           "**ID**：文件编号，逐项解释。",
           "**Uploader**：谁分享了这个文件，例如 “Uploaded by A on behalf of B”（由 A 代 B 上传）。",
           "**Licence**：你可以如何使用此文件（分享、修改、商用）。"
@@ -367,6 +369,7 @@ window.HELP = (function () {
         { licences: { head: ["代码", "许可证", "含义", "分享", "改编", "商用"], meaning: {"CC0": "无任何条件：可用于任何用途。", "PD": "公有领域：已不受版权保护。", "CCBY": "可分享和改编，包括商用，但须署名。", "CCBYSA": "同 CC BY；改编作品须使用相同许可证。", "CCBYNC": "可分享和改编，须署名，但不得商用。", "CCBYNCSA": "非商业、须署名；改编作品使用相同许可证。", "CCBYND": "可分享未经修改的副本，须署名；不得改编。", "CCBYNCND": "可分享未经修改的副本，须署名，不得商用。", "MIT": "软件许可证：可自由使用，须保留版权声明。", "GPL3": "软件许可证：修改后的版本也必须使用 GPL。", "STUDY": "经许可分享的课程资料：仅限在此阅读学习。", "ARR": "保留所有权利：可在此阅读；其他用途须征得作者同意。"} } }
       ] },
       { id: "verify", icon: "shield", title: "审核（所有者和协作者）", blocks: [
+        { tip: "**含义：**维护者核对了课程代码、上传者（学号）和文件名是否正确。审核**不**检查也不保证内容：资料中仍可能有错误，审核不代表任何承诺或认可。" },
         { ol: [
           "打开文件，点击 **Verify this item**。GitHub 会打开一个已填好的 issue，提交即可。",
           "自动流程会检查你是否为所有者或协作者，记录审核结果并关闭该 issue。其他人的请求会被拒绝。",
@@ -442,7 +445,7 @@ window.HELP = (function () {
         { ul: [
           "**Download**, **New tab**, **Link** (copia un enlace a este archivo), **GitHub** y **History** (todos los cambios del archivo).",
           "**Files in this item**: formatos que van juntos, como un PDF y su código fuente LaTeX.",
-          "**Verification**: si el propietario o un colaborador ha revisado el archivo.",
+          "**Verification**: si el propietario o un colaborador ha comprobado el código del curso, quién lo subió y el nombre del archivo (no su contenido).",
           "**ID**: el ID del archivo, explicado campo por campo.",
           "**Uploader**: quién compartió el archivo, por ejemplo “Uploaded by A on behalf of B” (subido por A en nombre de B).",
           "**Licence**: lo que puedes hacer con el archivo (compartir, adaptar, uso comercial)."
@@ -499,6 +502,7 @@ window.HELP = (function () {
         { licences: { head: ["Código", "Licencia", "Significado", "Compartir", "Adaptar", "Uso comercial"], meaning: {"CC0": "Sin condiciones: se puede usar para cualquier fin.", "PD": "Dominio público: ya no tiene derechos de autor.", "CCBY": "Compartir y adaptar, incluso comercialmente, citando al autor.", "CCBYSA": "Como CC BY; las adaptaciones deben usar la misma licencia.", "CCBYNC": "Compartir y adaptar citando al autor, pero sin uso comercial.", "CCBYNCSA": "Sin uso comercial y citando al autor; las adaptaciones usan la misma licencia.", "CCBYND": "Compartir copias sin cambios citando al autor; sin adaptaciones.", "CCBYNCND": "Compartir copias sin cambios citando al autor, sin uso comercial.", "MIT": "Licencia de software: uso libre manteniendo el aviso de copyright.", "GPL3": "Licencia de software: las versiones modificadas también deben ser GPL.", "STUDY": "Material del curso compartido con permiso: solo para leer y estudiar aquí.", "ARR": "Todos los derechos reservados: se puede leer aquí; para lo demás, pide permiso al autor."} } }
       ] },
       { id: "verify", icon: "shield", title: "Verificación (propietario y colaboradores)", blocks: [
+        { tip: "**Qué significa:** un responsable comprobó que el código del curso, quien lo subió (número de estudiante) y el nombre del archivo son correctos. **No** revisa ni garantiza el contenido: puede haber errores, y la verificación no es una promesa ni un aval." },
         { ol: [
           "Abre un archivo y haz clic en **Verify this item**. GitHub abre una incidencia (issue) ya rellenada; envíala.",
           "Un proceso automático comprueba que eres el propietario o un colaborador, registra la verificación y cierra la incidencia. Las solicitudes de cualquier otra persona se rechazan.",
@@ -574,7 +578,7 @@ window.HELP = (function () {
         { ul: [
           "**Download**, **New tab**, **Link** (copie un lien vers ce fichier), **GitHub** et **History** (toutes les modifications du fichier).",
           "**Files in this item** : les formats qui vont ensemble, par exemple un PDF et sa source LaTeX.",
-          "**Verification** : si le propriétaire ou un collaborateur a vérifié le fichier.",
+          "**Verification** : si le propriétaire ou un collaborateur a vérifié le code du cours, l’auteur de l’envoi et le nom du fichier (pas son contenu).",
           "**ID** : l’identifiant du fichier, expliqué champ par champ.",
           "**Uploader** : qui a partagé le fichier, par exemple « Uploaded by A on behalf of B » (envoyé par A pour le compte de B).",
           "**Licence** : ce que vous pouvez faire du fichier (partager, adapter, usage commercial)."
@@ -631,6 +635,7 @@ window.HELP = (function () {
         { licences: { head: ["Code", "Licence", "Signification", "Partager", "Adapter", "Usage commercial"], meaning: {"CC0": "Aucune condition : utilisable pour tout.", "PD": "Domaine public : n’est plus protégé par le droit d’auteur.", "CCBY": "Partager et adapter, même commercialement, en citant l’auteur.", "CCBYSA": "Comme CC BY ; les adaptations doivent utiliser la même licence.", "CCBYNC": "Partager et adapter en citant l’auteur, mais pas commercialement.", "CCBYNCSA": "Non commercial, en citant l’auteur ; les adaptations utilisent la même licence.", "CCBYND": "Partager des copies inchangées en citant l’auteur ; pas d’adaptation.", "CCBYNCND": "Partager des copies inchangées en citant l’auteur, sans usage commercial.", "MIT": "Licence logicielle : réutilisation libre en conservant la mention de copyright.", "GPL3": "Licence logicielle : les versions modifiées doivent aussi être sous GPL.", "STUDY": "Document de cours partagé avec autorisation : à lire ici, pour étudier uniquement.", "ARR": "Tous droits réservés : lecture ici ; pour le reste, demandez à l’auteur."} } }
       ] },
       { id: "verify", icon: "shield", title: "Vérification (propriétaire et collaborateurs)", blocks: [
+        { tip: "**Ce que cela signifie :** un responsable a vérifié que le code du cours, l’auteur de l’envoi (numéro d’étudiant) et le nom du fichier sont corrects. Cela ne vérifie **pas** et ne garantit pas le contenu : il peut contenir des erreurs, et la vérification n’est ni une promesse ni une approbation." },
         { ol: [
           "Ouvrez un fichier et cliquez sur **Verify this item**. GitHub ouvre un ticket (issue) prérempli ; envoyez-le.",
           "Un processus automatique vérifie que vous êtes le propriétaire ou un collaborateur, enregistre la vérification et ferme le ticket. Les demandes de toute autre personne sont refusées.",
@@ -706,7 +711,7 @@ window.HELP = (function () {
         { ul: [
           "**Download**, **New tab**, **Link** (kopiert einen Link zu dieser Datei), **GitHub** und **History** (alle Änderungen an der Datei).",
           "**Files in this item**: Formate, die zusammengehören, z. B. ein PDF und sein LaTeX-Quelltext.",
-          "**Verification**: ob der Eigentümer oder ein Mitwirkender die Datei geprüft hat.",
+          "**Verification**: ob der Eigentümer oder ein Mitwirkender Kurscode, Hochladende(n) und Dateinamen geprüft hat (nicht den Inhalt).",
           "**ID**: die ID der Datei, Feld für Feld erklärt.",
           "**Uploader**: wer die Datei geteilt hat, z. B. „Uploaded by A on behalf of B“ (hochgeladen von A im Namen von B).",
           "**Licence**: was du mit der Datei tun darfst (teilen, bearbeiten, kommerziell nutzen)."
@@ -763,6 +768,7 @@ window.HELP = (function () {
         { licences: { head: ["Code", "Lizenz", "Bedeutung", "Teilen", "Bearbeiten", "Kommerziell"], meaning: {"CC0": "Keine Bedingungen: für alles nutzbar.", "PD": "Gemeinfrei: nicht mehr urheberrechtlich geschützt.", "CCBY": "Teilen und bearbeiten, auch kommerziell, mit Namensnennung.", "CCBYSA": "Wie CC BY; Bearbeitungen müssen dieselbe Lizenz verwenden.", "CCBYNC": "Teilen und bearbeiten mit Namensnennung, aber nicht kommerziell.", "CCBYNCSA": "Nicht kommerziell, mit Namensnennung; Bearbeitungen unter derselben Lizenz.", "CCBYND": "Unveränderte Kopien mit Namensnennung teilen; keine Bearbeitungen.", "CCBYNCND": "Unveränderte Kopien mit Namensnennung teilen, nicht kommerziell.", "MIT": "Softwarelizenz: freie Nutzung, Copyright-Hinweis behalten.", "GPL3": "Softwarelizenz: geänderte Versionen müssen ebenfalls GPL sein.", "STUDY": "Kursmaterial, mit Erlaubnis geteilt: nur hier lesen und damit lernen.", "ARR": "Alle Rechte vorbehalten: hier lesen; für alles andere den Autor fragen."} } }
       ] },
       { id: "verify", icon: "shield", title: "Prüfung (Eigentümer und Mitwirkende)", blocks: [
+        { tip: "**Was das bedeutet:** Ein Betreuer hat geprüft, dass Kurscode, Hochladende(r) (Matrikelnummer) und Dateiname stimmen. Der **Inhalt** wird dabei **nicht** geprüft oder garantiert: Er kann Fehler enthalten, und die Prüfung ist kein Versprechen und keine Empfehlung." },
         { ol: [
           "Öffne eine Datei und klicke auf **Verify this item**. GitHub öffnet ein vorausgefülltes Issue; sende es ab.",
           "Ein automatischer Ablauf prüft, ob du Eigentümer oder Mitwirkender bist, speichert die Prüfung und schließt das Issue. Anfragen anderer Personen werden abgelehnt.",

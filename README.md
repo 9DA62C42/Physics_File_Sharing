@@ -288,7 +288,7 @@ Add course names to [`courses.json`](courses.json) so the sidebar shows `0114008
 
 Two people can be involved in a file: the **student it belongs to** (the student number in its ID) and the **person who uploaded it**.
 
-- **Normally** the uploader is the GitHub account that added the file. If that account is registered with the student number in the ID, the file shows the uploader as **✔ confirmed** (this is separate from maintainer verification below). **✔ verified**.
+- **Normally** the uploader is the GitHub account that added the file. If that account is registered with the student number in the ID, the file shows the uploader as **✔ confirmed** (this is separate from maintainer verification below).
 - **Uploading for someone else?** Record it in [`uploads.json`](uploads.json), keyed by file ID (or path / folder), with the uploader's student number. The site then shows "Uploaded by Xiangjun Liu on behalf of Shang Wu":
   ```json
   { "rules": [ { "id": "01140086_LN_2627W_FULL_800012999", "uploadedBy": "800015240" } ] }
@@ -299,6 +299,8 @@ Two people can be involved in a file: the **student it belongs to** (the student
 ### Verify files (owner and collaborators)
 
 Maintainers can mark files as checked. Verified items get a **🛡 Verified** badge, and the preview shows who verified them and when.
+
+> **What verification means:** the maintainer checked that the **course code, the uploader (student number) and the file name** are correct. It does **not** check or guarantee the content, which may still contain mistakes, and it is not a promise or endorsement.
 
 1. On the website, open a file and click **Verify this item** in the *Verification* section. GitHub opens a new issue titled `[Verify] …`, already listing the item's files. Add an optional note, then submit it.
 2. The **Verify files** workflow (`.github/workflows/verify.yml`) checks that you're the **owner or a collaborator with write access**. It then records the files' paths and SHA-256 hashes in [`verifications.json`](verifications.json), redeploys the site and closes the issue with a reply. Anyone else's request is refused, and nothing changes.

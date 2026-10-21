@@ -236,7 +236,7 @@
     if (!info) return null;
     const parts = [];
     info.idPart.split("_").forEach((tok, i) => {
-      if (i) parts.push(h("span", { class: "id-sep" }, "_"));
+      if (i) parts.push(h("span", { class: "id-sep" }, "_"), h("wbr"));
       const f = info.fields.find((x) => x.part === tok);
       parts.push(h("span", { class: f ? f.cls : "f-bad", title: f ? `${f.label}: ${f.value}` : "Not recognised" }, tok));
     });
@@ -844,13 +844,15 @@
     const body = (undo
       ? "Maintainers: submit this issue to remove the verification of the files below."
       : "Maintainers: submit this issue to verify the files below.")
+      + " Verify only after checking that the course code, uploader (student number) and file name are correct; verification says nothing about the content."
       + " A workflow checks that you're the owner or a collaborator, updates verifications.json and closes the issue.\n\n"
       + paths.join("\n") + "\n\n" + (undo ? "" : "Note (optional): \n");
     return `${REPO}/issues/new?title=${enc(title)}&body=${enc(body)}`;
   }
+  const VER_SCOPE = "Verification only confirms the course code, uploader and file name. It does not check or guarantee the content, and it is not a promise.";
   function verBadge(f) {
     const v = itemVerification(f);
-    if (v.state === "verified") return h("span", { class: "badge ver", title: `Verified by @${v.rec.by} on ${fmtDate(v.rec.date)}` }, icon("shield"), "Verified");
+    if (v.state === "verified") return h("span", { class: "badge ver", title: `Course code, uploader and name checked by @${v.rec.by} on ${fmtDate(v.rec.date)}. The content is not checked or guaranteed.` }, icon("shield"), "Verified");
     if (v.state === "changed") return h("span", { class: "badge ver-warn", title: "Changed since it was verified" }, "Changed");
     return null;
   }
@@ -863,11 +865,12 @@
       verified: [h("span", { class: "up up-ok" }, icon("shield"), "Verified"), " by ", by, ` on ${fmtDate(v.rec && v.rec.date)}`, issue ? [" (", issue, ")"] : null, "."],
       changed: [h("span", { class: "up up-warn" }, "Changed since verification"), " Verified by ", by, ` on ${fmtDate(v.rec && v.rec.date)}, but the file has changed since. A maintainer should check it again.`],
       partial: [h("span", { class: "up up-warn" }, "Partly verified"), " Some files in this item are verified, others aren't."],
-      none: [h("span", { class: "up" }, "Not verified yet"), " A maintainer hasn't checked this item."]
+      none: [h("span", { class: "up" }, "Not verified yet"), " A maintainer hasn't checked this item yet."]
     }[v.state];
     return h("div", { class: "side-block" },
       h("p", { class: "side-title" }, "Verification"),
       h("p", { class: "side-note" }, text),
+      h("p", { class: "side-note muted small" }, VER_SCOPE),
       v.rec && v.rec.note && v.state !== "none" ? h("p", { class: "side-note muted small" }, "Note: " + v.rec.note) : null,
       h("div", { class: "row tight" },
         v.state !== "verified" ? h("a", { class: "btn small", href: verifyIssueUrl(main, false), target: "_blank", rel: "noopener" }, icon("shield"), v.state === "none" ? "Verify this item" : "Verify again") : null,

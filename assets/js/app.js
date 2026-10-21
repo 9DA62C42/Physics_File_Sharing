@@ -12,6 +12,9 @@
   const REPO = `https://github.com/${C.owner}/${C.repo}`;
   const API = `https://api.github.com/repos/${C.owner}/${C.repo}`;
   const SITE_BASE = location.href.split("#")[0].replace(/[^/]*$/, "");
+  // Shared files are served straight from the repository, not copied into the site, so the
+  // site isn't held to GitHub Pages' 1 GB limit.
+  const RAW = `https://raw.githubusercontent.com/${C.owner}/${C.repo}/${C.branch}`;
 
   // ---------- small helpers ----------
 
@@ -322,6 +325,7 @@
     const f = {
       path: parts.join("/"),
       href: parts.map(enc).join("/"),
+      raw: RAW + "/" + parts.map(enc).join("/"),
       name, ext, type, preview, idInfo,
       title: idInfo && idInfo.title ? idInfo.title : pretty(base),
       subject: parts.length > 2 ? parts[1] : "Other",
@@ -644,11 +648,11 @@
         info ? h("p", { class: "card-id" }, idNode(info), info.status === "partial" ? h("span", { class: "id-flag", title: info.problems.join(" ") }, icon("alert")) : null) : null,
         h("p", { class: "card-meta" }, uploaderLine(f), fileMeta(f) ? h("span", null, fileMeta(f)) : null),
         f.alts.length ? h("p", { class: "card-alts" }, h("span", { class: "muted" }, "Also:"),
-          f.alts.map((a) => h("a", { class: "alt-link", href: a.href, download: a.name, title: `Download ${a.name}` },
+          f.alts.map((a) => h("a", { class: "alt-link", href: a.raw, download: a.name, title: `Download ${a.name}` },
             icon("download"), altLabel(a, f), h("span", { class: "muted" }, ` · ${a.ext.toUpperCase()}${a.size != null ? " " + fmtSize(a.size) : ""}`)))) : null),
       h("div", { class: "card-actions" },
         h("button", { class: "btn small", type: "button", onclick: () => openPreview(f) }, icon("eye"), "Preview"),
-        h("a", { class: "btn small", href: f.href, download: f.name }, icon("download"), "Download"),
+        h("a", { class: "btn small", href: f.raw, download: f.name }, icon("download"), "Download"),
         h("button", { class: "icon-btn", type: "button", title: "Copy link to this file",
           onclick: (e) => copyText(SITE_BASE + "#/file/" + f.href, e.currentTarget) }, icon("link"))));
   }
@@ -912,7 +916,7 @@
       h("ul", { class: "item-files" }, [main, ...main.alts].map((g) => h("li", { class: g === current ? "current" : null },
         h("span", { class: "badge t-" + slug(g.type) }, g.ext.toUpperCase() || g.type),
         h("span", { class: "item-file-name" }, g === main ? "Main file" : altLabel(g, main), g.size != null ? h("span", { class: "muted small" }, " · " + fmtSize(g.size)) : null),
-        h("a", { class: "icon-btn tiny", href: g.href, download: g.name, title: `Download ${g.name}` }, icon("download"))))));
+        h("a", { class: "icon-btn tiny", href: g.raw, download: g.name, title: `Download ${g.name}` }, icon("download"))))));
   }
 
   function idPanel(f) {
@@ -927,21 +931,37 @@
         i.problems.map((p) => h("li", { class: "bad" }, p)), i.hints.map((p) => h("li", null, p))) : null);
   }
 
+  // The repository sends every file as a plain download, so previews and "New tab" load the
+  // file into a blob with the right type; Download links go straight to the repository.
+  const MIME = { pdf: "application/pdf", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", gif: "image/gif", webp: "image/webp", svg: "image/svg+xml",
+    mp4: "video/mp4", webm: "video/webm", mov: "video/quicktime", mp3: "audio/mpeg" };
+  const blobs = new Map();
+  function fileBlobUrl(f) {
+    if (!blobs.has(f.raw)) blobs.set(f.raw, fetch(f.raw).then((r) => { if (!r.ok) throw new Error(r.status); return r.blob(); })
+      .then((b) => URL.createObjectURL(new Blob([b], { type: MIME[f.ext] || b.type }))));
+    return blobs.get(f.raw);
+  }
+  function openInTab(f) {
+    const w = window.open("", "_blank");   // opened right away so pop-up blockers allow it
+    fileBlobUrl(f).then((u) => { if (w) w.location.href = u; }).catch(() => { if (w) w.location.href = f.raw; });
+  }
+
   function openPreview(f) {
     const body = h("div", { class: "preview-body" });
-    const fullUrl = SITE_BASE + f.href;
     const blobUrl = `${REPO}/blob/${C.branch}/${f.href}`;
+    const loading = (el) => { body.append(el); fileBlobUrl(f).then((u) => { el.src = u; })
+      .catch(() => fill(body, noPreview("Couldn't load the file. Download it instead."))); };
 
     const noPreview = (msg) => emptyState("No preview available", msg || "Download the file to open it on your computer.",
-      h("a", { class: "btn primary", href: f.href, download: f.name }, icon("download"), "Download"));
+      h("a", { class: "btn primary", href: f.raw, download: f.name }, icon("download"), "Download"));
 
     switch (f.preview) {
-      case "pdf": body.append(h("iframe", { src: f.href, title: f.title })); break;
-      case "image": body.append(h("img", { src: f.href, alt: f.title })); break;
-      case "video": body.append(h("video", { src: f.href, controls: true })); break;
+      case "pdf": loading(h("iframe", { title: f.title })); break;
+      case "image": loading(h("img", { alt: f.title })); break;
+      case "video": loading(h("video", { controls: true })); break;
       case "office":
         if (/^https:/.test(location.protocol) && !/localhost|127\.0\.0\.1/.test(location.hostname)) {
-          body.append(h("iframe", { src: "https://view.officeapps.live.com/op/embed.aspx?src=" + enc(fullUrl), title: f.title }));
+          body.append(h("iframe", { src: "https://view.officeapps.live.com/op/embed.aspx?src=" + enc(f.raw), title: f.title }));
         } else body.append(noPreview("Office previews work on the published site only."));
         break;
       case "notebook":
@@ -953,7 +973,7 @@
       case "text": {
         const pre = h("pre", { class: "text-preview" }, "Loading…");
         body.append(pre);
-        fetch(f.href).then((r) => { if (!r.ok) throw new Error(r.status); return r.text(); })
+        fetch(f.raw).then((r) => { if (!r.ok) throw new Error(r.status); return r.text(); })
           .then((t) => { pre.textContent = t.length > 200000 ? t.slice(0, 200000) + "\n\n… (truncated, download to see the rest)" : t; })
           .catch(() => { pre.textContent = "Could not load this file."; });
         break;
@@ -992,9 +1012,9 @@
           body,
           h("aside", { class: "modal-side" },
             h("div", { class: "stack" },
-              h("a", { class: "btn primary", href: f.href, download: f.name }, icon("download"), "Download"),
+              h("a", { class: "btn primary", href: f.raw, download: f.name }, icon("download"), "Download"),
               h("div", { class: "row tight" },
-                h("a", { class: "btn small", href: f.href, target: "_blank", rel: "noopener" }, icon("external"), "New tab"),
+                h("button", { class: "btn small", type: "button", onclick: () => openInTab(f) }, icon("external"), "New tab"),
                 h("button", { class: "btn small", type: "button", onclick: (e) => copyText(SITE_BASE + "#/file/" + f.href, e.currentTarget) }, icon("link"), "Link"),
                 h("a", { class: "btn small", href: blobUrl, target: "_blank", rel: "noopener" }, icon("github"), "GitHub"),
                 h("a", { class: "btn small", href: `${REPO}/commits/${C.branch}/${f.href}`, target: "_blank", rel: "noopener" }, icon("clock"), "History"))),

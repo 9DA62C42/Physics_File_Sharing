@@ -294,6 +294,8 @@ No. The upload form only takes filling in a few boxes and dragging your file in.
 
 From then on, every push to `main` runs `.github/workflows/pages.yml`. It builds `files.json` (file sizes, upload dates, uploaders and content hashes from git history) and deploys the site.
 
+The shared files are **not copied into the published site**: the website loads them straight from the repository (`raw.githubusercontent.com`). Downloads go there directly; previews and *New tab* fetch the file and show it with the right type. So GitHub Pages' 1 GB site limit doesn't apply to them; only the repository's limits do (about 1 GB recommended, 5 GB strongly recommended, 100 MB per file). When testing locally, previews show files that are already on `main` on GitHub.
+
 > If Pages is left on **Deploy from a branch**, the site still works. It lists files through the GitHub API instead, and IDs still work, but upload dates, uploader verification, duplicate detection and **Recently added** are not available.
 
 ### Set up file requests and student registrations

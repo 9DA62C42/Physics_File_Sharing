@@ -39,7 +39,9 @@ jobs:
       - name: Assemble site
         run: |
           mkdir _site
-          cp -r index.html assets files files.json uploaders.json courses.json licenses.json uploads.json verifications.json _site/
+          # The shared files themselves are not copied: the website loads them straight from the
+          # repository (raw.githubusercontent.com), so the site stays far below Pages' 1 GB limit.
+          cp -r index.html assets files.json uploaders.json courses.json licenses.json uploads.json verifications.json _site/
           # Give the CSS and JS a new address on every deploy, so browsers don't keep using old copies.
           sed -i -E "s#(assets/(css|js)/[a-z]+\.(css|js))\"#\1?v=${GITHUB_SHA::7}\"#g" _site/index.html
 

@@ -47,9 +47,11 @@ jobs:
           branch="upload/issue-${ISSUE_NUMBER}"
           git switch -c "$branch"
           git add files licenses.json courses.json .github/ISSUE_TEMPLATE
-          # Committed as the student, so the website credits them as the uploader.
-          git -c user.name="$ISSUE_USER" -c user.email="${ISSUE_USER_ID}+${ISSUE_USER}@users.noreply.github.com" \
-            commit -m "$PR_TITLE" -m "Uploaded with the upload form (issue #${ISSUE_NUMBER})."
+          # The student is the author (so the website credits them as the uploader);
+          # the bot is the committer, so history shows it was added by the upload form.
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit --author="$ISSUE_USER <${ISSUE_USER_ID}+${ISSUE_USER}@users.noreply.github.com>" \
+            -m "$PR_TITLE" -m "Uploaded with the upload form (issue #${ISSUE_NUMBER})."
           git push --force origin "$branch"
 
           pr=$(gh pr list --head "$branch" --state open --json url --jq '.[0].url')

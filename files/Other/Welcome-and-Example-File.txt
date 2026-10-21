@@ -1,7 +1,0 @@
-Welcome to Physics File Sharing!
-
-This is an example file so the website has something to show.
-Upload your own notes, problem sets, formula sheets or lab reports into
-the matching folder under files/ and they will appear on the site.
-
-(Maintainers: feel free to delete this file once real files are added.)

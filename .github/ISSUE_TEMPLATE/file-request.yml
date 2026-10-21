@@ -13,14 +13,8 @@ body:
     attributes:
       label: Subject
       options:
-        - Classical Mechanics
-        - Electromagnetism
-        - Quantum Mechanics
-        - Thermodynamics and Statistical Physics
         - Waves
-        - Mathematical Methods
-        - Lab Reports
-        - Other
+        - Something else (say which below)
     validations:
       required: true
   - type: textarea

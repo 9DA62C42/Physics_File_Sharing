@@ -2,7 +2,7 @@
   "_about": "Licence of each shared file (licences are never part of file names). Each rule gives a licence code from assets/naming.json (CCBY, CCBYNC, CC0, MIT, STUDY, ARR, ...) and either a 'path' (one file, or a folder ending in /) or an 'id' (a file ID, or the start of one). The most specific match wins. Files with no matching rule and no licence notice inside them are shown as 'no licence stated'.",
   "rules": [
     {
-      "id": "01140086_LN_2627W_FULL_800012999",
+      "id": "01140086_LN_2627W_FULL_800015240",
       "license": "ARR"
     }
   ]

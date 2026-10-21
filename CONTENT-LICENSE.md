@@ -10,8 +10,8 @@ A licence is **never part of the file name**. The website checks these in order 
    ```json
    { "rules": [
      { "id": "01140086_HWS_2627W_01_231000001", "license": "CCBY" },
-     { "path": "files/Electromagnetism/Maxwell Summary.pdf", "license": "CCBYNC" },
-     { "path": "files/Lab-Reports/", "license": "CCBY" },
+     { "path": "files/Waves/Notes/Formula Sheet.pdf", "license": "CCBYNC" },
+     { "path": "files/Waves/Homework/", "license": "CCBY" },
      { "id": "01140086_LP_2627W", "license": "STUDY" }
    ] }
    ```

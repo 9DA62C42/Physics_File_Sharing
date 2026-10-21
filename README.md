@@ -44,18 +44,12 @@ A simple website where physics students share notes, problem-set solutions, form
 
 ```
 files/
-├── Classical-Mechanics/
-├── Electromagnetism/
-├── Quantum-Mechanics/
-├── Thermodynamics-and-Statistical-Physics/
-├── Waves/
-├── Mathematical-Methods/
-├── Lab-Reports/
-└── Other/
+└── Waves/
+    └── Notes/
 ```
 
 - Each folder inside `files/` is a **subject**. It appears in the left sidebar of the website.
-- You can make sub-folders for a course or topic, e.g. `files/Quantum-Mechanics/PHYS301-Spring-2026/`. The sub-folder name is shown on the file's card.
+- You can make sub-folders for a course or topic, e.g. `files/Waves/Notes/`. The sub-folder name is shown on the file's card.
 - The upload date and the uploader (from the GitHub account that uploaded the file) are shown on each file, and you'll appear on the **Uploaders** page.
 - If the file name starts with an [ID](#file-ids-recommended), the file also appears under its **course** and **material type** in the sidebar.
 - In folder and file names, `-` and `_` are shown as spaces, so `Hydrogen_Atom-Notes.pdf` is displayed as "Hydrogen Atom Notes".
@@ -67,7 +61,7 @@ files/
 
 You only need a free [GitHub account](https://github.com/signup).
 
-1. **Open the subject folder.** Go to the repository, click `files/`, then open your subject (e.g. `Electromagnetism`).
+1. **Open the subject folder.** Go to the repository, click `files/`, then open your subject (e.g. `Waves`).
    Or use the **Upload** button on the website. The **How to contribute** page has a subject picker that takes you straight to the right folder.
 2. **Upload.** Click **Add file → Upload files**, then drag your file(s) into the page.
    - **New subject?** Upload from inside `files/` and drag in a whole folder (e.g. `Astrophysics/` containing your files). The folder becomes a new subject.
@@ -150,7 +144,7 @@ Tips:
 
 ## Your student number as uploader ID
 
-The last part of an ID is your **9-digit student number**. It tells everyone whose work the file is. You don't need to give any GitHub details, and you don't need to register first: the number works as soon as you put it in the ID.
+The last part of an ID is your **9-digit student number**. It tells everyone who shared the file. (If someone else wrote it, credit them in the title.) You don't need to give any GitHub details, and you don't need to register first: the number works as soon as you put it in the ID.
 
 > ⚠️ **Your student number will be public.** Anyone can see it in file names and on the website, and Git keeps it even after a file is deleted. If you'd rather not share it, leave it out; the ID still works without it.
 
@@ -191,7 +185,7 @@ To register, open **ID system → Uploader IDs** on the website, fill in your nu
    ```json
    { "rules": [
      { "id": "01140086_HWS_2627W_01_123456789", "license": "CCBY" },
-     { "path": "files/Lab-Reports/", "license": "CCBYNC" }
+     { "path": "files/Waves/Notes/", "license": "CCBYNC" }
    ] }
    ```
    The **ID system → Build a name** page writes this line for you. You can also just name the licence in your pull request, and a maintainer adds it.

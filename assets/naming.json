@@ -270,7 +270,7 @@
   },
   "byNotes": {
     "School": "Official course material. The uploader only shares it.",
-    "Student": "Written by a student. The student number in the ID says whose work it is.",
+    "Student": "Written by a student. The student number in the ID says who shared it; credit the author named in the file.",
     "Published": "A published book or paper.",
     "Scan": "A photo or scan taken by the uploader."
   },

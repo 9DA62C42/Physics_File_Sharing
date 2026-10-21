@@ -671,3 +671,13 @@ code.ex { display: block; width: fit-content; margin: var(--s1) 0; }
 .perm .no .mark { background: var(--b-pdf-bg); color: var(--b-pdf); }
 .perm .no { color: var(--muted); }
 .perm .need .mark { background: var(--b-code-bg); color: var(--b-code); }
+
+.card-alts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1) var(--s3); margin: calc(var(--s2) * -1) 0 var(--s4); font-size: .8rem; }
+.alt-link { display: inline-flex; align-items: center; gap: var(--s1); font-weight: 600; text-decoration: none; }
+.alt-link .icon { width: 14px; height: 14px; }
+.alt-link:hover { text-decoration: underline; }
+.files.list .card-alts { grid-column: 1 / -1; margin: 0; }
+.item-files { list-style: none; margin: 0; padding: 0; font-size: .85rem; }
+.item-files li { display: flex; align-items: center; gap: var(--s2); padding: var(--s1) 0; }
+.item-files li.current .item-file-name { font-weight: 600; }
+.item-file-name { flex: 1; min-width: 0; overflow-wrap: anywhere; }

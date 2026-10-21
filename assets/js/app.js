@@ -132,7 +132,7 @@
   // ---------- state ----------
 
   const state = {
-    files: [], subjects: [], source: "", generated: null, hasDates: false,
+    files: [], items: [], subjects: [], source: "", generated: null, hasDates: false, // items: files grouped (PDF + its source)
     q: "", type: "All", material: "All", term: "All", lic: "All",
     sort: store.get("sort", "name"), layout: store.get("layout", "grid"),
     favs: new Set(store.get("favs", [])),
@@ -224,7 +224,7 @@
 
     if (/-/.test(idPart)) r.problems.push("Use _ between ID fields, never -.");
     if (!title) r.hints.push("Add a short English title after one space.");
-    if (r.type && r.type.by === "Student" && !r.uploader) r.hints.push("Student work: add your 9-digit student number at the end of the ID so people know whose work it is.");
+    if (r.type && r.type.by === "Student" && !r.uploader) r.hints.push("Student work: add your 9-digit student number at the end of the ID so people know who shared it.");
     r.status = r.problems.length ? "partial" : "full";
     return r;
   }
@@ -324,7 +324,8 @@
       added: e.added || null,
       updated: e.updated || null,
       contributors: e.contributors || [],
-      uploadedBy: e.uploader || null
+      uploadedBy: e.uploader || null,
+      alts: [], altOf: null // other formats of the same item, e.g. the LaTeX source of a PDF
     };
     f.course = idInfo && idInfo.course;
     f.material = idInfo && idInfo.type ? idInfo.type.code : null;
@@ -335,6 +336,34 @@
     return f;
   }
   const isHidden = (path) => path.split("/").some((p) => p.startsWith(".") || p.startsWith("_"));
+
+  // Files in the same folder with the same ID (or the same name apart from the
+  // extension) are one item: shown as one card, led by the PDF, with the rest attached.
+  function groupItems(files) {
+    const groups = new Map();
+    for (const f of files) {
+      const dir = f.path.slice(0, f.path.lastIndexOf("/"));
+      const key = dir + "/" + (f.idInfo && f.idInfo.status === "full" ? f.idInfo.idPart : f.name.replace(/\.[^.]*$/, ""));
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(f);
+    }
+    const rank = (f) => f.ext === "pdf" ? 0 : f.preview ? 1 : 2;
+    for (const g of groups.values()) {
+      g.sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
+      const [main, ...rest] = g;
+      main.alts = rest;
+      for (const r of rest) r.altOf = main;
+    }
+    return files.filter((f) => !f.altOf);
+  }
+
+  // How an attached file differs from its item's main file, e.g. "LaTeX Source".
+  function altLabel(a, main) {
+    let i = 0;
+    while (i < a.title.length && a.title[i] === main.title[i]) i++;
+    const rest = a.title.slice(i).trim();
+    return rest || a.type;
+  }
 
   async function loadFiles() {
     const d = await getJson("files.json");
@@ -357,13 +386,13 @@
 
   function countBy(key) {
     const counts = {};
-    for (const f of state.files) if (f[key]) counts[f[key]] = (counts[f[key]] || 0) + 1;
+    for (const f of state.items) if (f[key]) counts[f[key]] = (counts[f[key]] || 0) + 1;
     return counts;
   }
   function subjectCounts() {
     const counts = {};
     for (const s of state.subjects) counts[s] = 0;
-    for (const f of state.files) counts[f.subject] = (counts[f.subject] || 0) + 1;
+    for (const f of state.items) counts[f.subject] = (counts[f.subject] || 0) + 1;
     return counts;
   }
 
@@ -379,7 +408,7 @@
       return map.get(key);
     };
     for (const code of state.uploaders.keys()) get(code);
-    for (const f of state.files) {
+    for (const f of state.items) {
       const a = accountKey(f);
       if (a) { const p = get(a); p.uploads++; p.subjects.add(f.subject); if (f.added && (!p.last || f.added > p.last)) p.last = f.added; }
       if (f.up.code) get(f.up.code).authored++;
@@ -435,7 +464,7 @@
       h("div", { class: "nav-section" },
         h("p", { class: "nav-heading" }, "Library"),
         navLink("#/", "home", "Home"),
-        navLink("#/browse", "files", "All files", state.files.length),
+        navLink("#/browse", "files", "All files", state.items.length),
         navLink("#/recent", "clock", "Recently added"),
         navLink("#/favorites", "star", "Favorites", state.favs.size, "fav-count"),
         navLink("#/ids", "id", "ID system")),
@@ -523,7 +552,7 @@
     if (!state.q) return true;
     const q = state.q.replace(/^(\d{6})(?=_|$)/, (m) => padCourse(m));
     const u = f.up;
-    const hay = [f.name, f.title, pretty(f.subject), f.topic, f.type, ...f.contributors,
+    const hay = [f.name, f.title, pretty(f.subject), f.topic, f.type, ...f.contributors, ...f.alts.map((a) => a.name + " " + a.type),
       f.idInfo ? f.idInfo.idPart : "", f.course ? courseName(f.course) : "", f.idInfo && f.idInfo.type ? f.idInfo.type.name : "",
       f.idInfo && f.idInfo.term ? f.idInfo.term.label : "", u.code || "", u.login || "", u.reg ? u.reg.name : "", u.name || "", f.lic.lic ? f.lic.lic.short + " " + f.lic.lic.code : ""].join(" ").toLowerCase();
     return q.split(/\s+/).every((w) => hay.includes(w));
@@ -575,7 +604,10 @@
         h("h3", null, h("button", { class: "title-link", type: "button", onclick: () => openPreview(f) }, f.title)),
         h("p", { class: "card-sub" }, sub),
         info ? h("p", { class: "card-id" }, idNode(info), info.status === "partial" ? h("span", { class: "id-flag", title: info.problems.join(" ") }, icon("alert")) : null) : null,
-        h("p", { class: "card-meta" }, uploaderLine(f), fileMeta(f) ? h("span", null, fileMeta(f)) : null)),
+        h("p", { class: "card-meta" }, uploaderLine(f), fileMeta(f) ? h("span", null, fileMeta(f)) : null),
+        f.alts.length ? h("p", { class: "card-alts" }, h("span", { class: "muted" }, "Also:"),
+          f.alts.map((a) => h("a", { class: "alt-link", href: a.href, download: a.name, title: `Download ${a.name}` },
+            icon("download"), altLabel(a, f), h("span", { class: "muted" }, ` · ${a.ext.toUpperCase()}${a.size != null ? " " + fmtSize(a.size) : ""}`)))) : null),
       h("div", { class: "card-actions" },
         h("button", { class: "btn small", type: "button", onclick: () => openPreview(f) }, icon("eye"), "Preview"),
         h("a", { class: "btn small", href: f.href, download: f.name }, icon("download"), "Download"),
@@ -589,7 +621,7 @@
 
   // A filterable, sortable list used by every file page.
   function fileListView({ title, desc, filter, sort, empty, extra }) {
-    const base = state.files.filter(filter);
+    const base = state.items.filter(filter);
     const uniq = (fn) => [...new Set(base.map(fn).filter(Boolean))];
     const types = uniq((f) => f.type).sort();
     const mats = uniq((f) => f.material).sort((a, b) => CATEGORY_ORDER.indexOf(N.types[a].category) - CATEGORY_ORDER.indexOf(N.types[b].category) || a.localeCompare(b));
@@ -724,7 +756,7 @@
   function relatedFiles(f) {
     const i = f.idInfo;
     if (!i || !i.course || !i.type || !i.item) return [];
-    return state.files.filter((g) => g !== f && g.idInfo && g.idInfo.course === i.course && g.idInfo.type && g.idInfo.type.category === i.type.category
+    return state.items.filter((g) => g !== f && g.idInfo && g.idInfo.course === i.course && g.idInfo.type && g.idInfo.type.category === i.type.category
       && g.idInfo.item && g.idInfo.item.code.replace(/b$/, "") === i.item.code.replace(/b$/, "")
       && (g.idInfo.term && g.idInfo.term.code) === (i.term && i.term.code)).sort(SORTS.id[1]);
   }
@@ -749,6 +781,15 @@
       h("p", { class: "side-title" }, "Uploader"),
       h("p", { class: "side-note" }, msg),
       rows.length ? h("dl", { class: "info" }, rows.map(([k, v]) => [h("dt", null, k), h("dd", null, v)])) : null);
+  }
+
+  function itemFilesPanel(main, current) {
+    return h("div", { class: "side-block" },
+      h("p", { class: "side-title" }, "Files in this item"),
+      h("ul", { class: "item-files" }, [main, ...main.alts].map((g) => h("li", { class: g === current ? "current" : null },
+        h("span", { class: "badge t-" + slug(g.type) }, g.ext.toUpperCase() || g.type),
+        h("span", { class: "item-file-name" }, g === main ? "Main file" : altLabel(g, main), g.size != null ? h("span", { class: "muted small" }, " · " + fmtSize(g.size)) : null),
+        h("a", { class: "icon-btn tiny", href: g.href, download: g.name, title: `Download ${g.name}` }, icon("download"))))));
   }
 
   function idPanel(f) {
@@ -834,6 +875,7 @@
                 h("button", { class: "btn small", type: "button", onclick: (e) => copyText(SITE_BASE + "#/file/" + f.href, e.currentTarget) }, icon("link"), "Link"),
                 h("a", { class: "btn small", href: blobUrl, target: "_blank", rel: "noopener" }, icon("github"), "GitHub"),
                 h("a", { class: "btn small", href: `${REPO}/commits/${C.branch}/${f.href}`, target: "_blank", rel: "noopener" }, icon("clock"), "History"))),
+            f.alts.length || f.altOf ? itemFilesPanel(f.altOf || f, f) : null,
             idPanel(f),
             uploaderPanel(f),
             licensePanel(f),
@@ -854,8 +896,8 @@
   VIEWS.home = () => {
     const counts = subjectCounts();
     const people = peopleStats().filter((p) => p.uploads || p.authored);
-    const withId = state.files.filter((f) => f.idInfo && f.idInfo.status === "full").length;
-    const recent = state.hasDates ? [...state.files].sort(SORTS.newest[1]).slice(0, 6) : [];
+    const withId = state.items.filter((f) => f.idInfo && f.idInfo.status === "full").length;
+    const recent = state.hasDates ? [...state.items].sort(SORTS.newest[1]).slice(0, 6) : [];
     const heroSearch = h("input", { type: "search", placeholder: "Search notes, courses or IDs, e.g. 01140086_HWS", "aria-label": "Search files",
       onkeydown: (e) => { if (e.key === "Enter") { state.q = e.target.value.trim().toLowerCase(); document.getElementById("search").value = e.target.value; location.hash = "#/browse"; } } });
 
@@ -874,7 +916,7 @@
           h("a", { class: "btn", href: "#/requests" }, icon("inbox"), "Request a file"))),
 
       h("section", { class: "stats" },
-        stat(state.files.length, state.files.length === 1 ? "file" : "files", "#/browse"),
+        stat(state.items.length, state.items.length === 1 ? "item" : "items", "#/browse"),
         stat(withId, "with an ID", "#/ids"),
         stat(people.length || "—", "uploaders", "#/uploaders"),
         stat(Object.keys(countBy("course")).length || Object.keys(counts).length, Object.keys(countBy("course")).length ? "courses" : "subjects")),
@@ -1009,8 +1051,8 @@
     function update() {
       let q = input.value.trim();
       if (!q) {
-        const withId = state.files.filter((f) => f.idInfo);
-        fill(out, h("p", { class: "muted" }, `${withId.length} of ${state.files.length} files have an ID. Start typing to search them, or paste a full name to decode it.`));
+        const withId = state.items.filter((f) => f.idInfo);
+        fill(out, h("p", { class: "muted" }, `${withId.length} of ${state.items.length} items have an ID. Start typing to search them, or paste a full name to decode it.`));
         return;
       }
       const shorthand = /^\d{6}(?=_|$)/.test(q);
@@ -1018,7 +1060,7 @@
       const info = parseId(q);
       const qU = q.toUpperCase().split(" ")[0];
       const toks = qU.split(/[_\s]+/).filter(Boolean);
-      const hits = state.files.filter((f) => {
+      const hits = state.items.filter((f) => {
         if (!f.idInfo) return false;
         const id = f.idInfo.idPart.toUpperCase();
         if (id.startsWith(qU)) return true;
@@ -1466,6 +1508,7 @@
     state.subjects = data.subjects;
     state.source = data.source;
     state.generated = data.generated;
+    state.items = groupItems(state.files);
     state.hasDates = state.files.some((f) => f.added);
 
     buildNav();

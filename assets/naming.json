@@ -1,6 +1,6 @@
 {
   "_about": "ID naming system for shared files, based on the GTIIT course-file convention. Used by the website (assets/js/app.js). IDs are recommended, not required.",
-  "template": "<course code>_<TYPE>_<term>_<item>_<TAG>_<LICENCE>_<student number> <human-readable title>.ext",
+  "template": "<course code>_<TYPE>_<term>_<item>_<TAG>_<student number> <human-readable title>.ext",
   "types": [
     {
       "code": "HWQ",

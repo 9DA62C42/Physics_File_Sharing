@@ -181,7 +181,7 @@
     const idPart = sp < 0 ? base : base.slice(0, sp);
     const title = sp < 0 ? "" : base.slice(sp + 1).trim();
     const tokens = idPart.split("_");
-    const r = { idPart, title, course: null, type: null, term: null, item: null, version: null, tags: [], license: null, uploader: null, fields: [], problems: [], hints: [] };
+    const r = { idPart, title, course: null, type: null, term: null, item: null, version: null, tags: [], uploader: null, fields: [], problems: [], hints: [] };
     const field = (part, label, value, note, cls) => r.fields.push({ part, label, value, note, cls });
 
     if (!/^\d{8}$/.test(tokens[0])) {
@@ -213,17 +213,14 @@
       const x = tokens[i];
       if (N.version.test(x)) { r.version = x; field(x, "Version", "Version " + Number(x.slice(1)), "", "f-ver"); }
       else if (N.tags[x]) { r.tags.push(N.tags[x]); field(x, "Tag", N.tags[x].name, N.tags[x].note, "f-tag"); }
-      else if (N.licenses[x]) {
-        if (r.license) r.problems.push(`Two licence codes (${r.license} and ${x}); keep one.`);
-        r.license = x; field(x, "Licence", N.licenses[x].name, N.licenses[x].note, "f-lic");
-      }
+      else if (N.licenses[x]) r.problems.push(`"${x}" looks like a licence code. Licences don't go in file names; set it in licenses.json instead.`);
       else if (N.uploader.test(x)) {
         r.uploader = x;
         const reg = state.uploaders.get(x);
         field(x, "Uploader", reg ? reg.name : "Student number", reg ? (reg.github ? "Registered · @" + reg.github : "Registered") : "Not registered, so no name is shown", "f-up");
       }
       else if (x === "") r.problems.push("Remove the empty field (double underscore).");
-      else r.problems.push(`"${x}" isn't a known item number, version, tag, licence code or student number.`);
+      else r.problems.push(`"${x}" isn't a known item number, version, tag or student number.`);
     }
 
     if (/-/.test(idPart)) r.problems.push("Use _ between ID fields, never -.");
@@ -661,10 +658,9 @@
     h("a", { class: "btn primary", href: uploadUrl(subject), target: "_blank", rel: "noopener" }, icon("upload"), "Upload a file"));
 
   // ---------- licences ----------
-  // Every shared file can have its own licence. Where it comes from, in order:
-  //   1. a licence code in the file name's ID (…_CCBYNC_…)
-  //   2. a rule in licenses.json (by file, folder or ID)
-  //   3. a "SPDX-License-Identifier:" line inside the file (found by the indexer)
+  // Every shared file can have its own licence, kept out of the file name. Where it comes from, in order:
+  //   1. a rule in licenses.json (by file, folder or ID)
+  //   2. a "SPDX-License-Identifier:" line inside the file (found by the indexer)
   // Otherwise it's "not stated": the author keeps all rights. The website code is MIT.
 
   const licensesUrl = () => `${REPO}/blob/${C.branch}/licenses.json`;
@@ -689,7 +685,6 @@
   }
 
   function licenseOf(f) {
-    if (f.idInfo && f.idInfo.license) return { lic: N.licenses[f.idInfo.license], source: "file name" };
     const rule = ruleFor(f);
     if (rule) return { lic: N.licenses[rule.license], source: "licenses.json" };
     if (f.spdx) {
@@ -710,8 +705,8 @@
     if (!lic) return h("div", { class: "side-block" },
       h("p", { class: "side-title" }, "Licence"),
       h("p", { class: "side-note" }, h("strong", null, "No licence stated. "), "The author keeps all rights: read and study it here, but ask the author before copying, adapting or resharing."),
-      h("p", { class: "side-note muted small" }, "Uploader: add a licence code to the ID (e.g. ", h("code", null, "_CCBY_"), "), a rule in ",
-        h("a", { href: licensesUrl(), target: "_blank", rel: "noopener" }, "licenses.json"), ", or a notice in the file."));
+      h("p", { class: "side-note muted small" }, "Uploader: add a rule to ",
+        h("a", { href: licensesUrl(), target: "_blank", rel: "noopener" }, "licenses.json"), " (the ", h("a", { href: "#/ids?tab=build" }, "name builder"), " writes it for you), or a licence notice inside the file."));
     const known = lic.share != null;
     return h("div", { class: "side-block" },
       h("p", { class: "side-title" }, "Licence"),
@@ -999,7 +994,7 @@
           h("strong", null, "recommended, not required"), ": files without one are welcome too."))),
       h("div", { class: "id-hero" },
         h("p", { class: "id-anatomy" },
-          ...[["01140086", "f-course", "course"], ["HWS", "f-type", "type"], ["2627W", "f-term", "term"], ["01", "f-item", "item"], ["CCBY", "f-lic", "licence"], ["123456789", "f-up", "student no."]]
+          ...[["01140086", "f-course", "course"], ["HWS", "f-type", "type"], ["2627W", "f-term", "term"], ["01", "f-item", "item"], ["AN", "f-tag", "tag"], ["123456789", "f-up", "student no."]]
             .flatMap(([t, cls, label], i) => [i ? h("span", { class: "id-sep" }, "_") : null, h("span", { class: "anat " + cls }, h("span", { class: "anat-t" }, t), h("span", { class: "anat-l" }, label))]),
           h("span", { class: "anat title" }, h("span", { class: "anat-t" }, "Waves Homework 1 Solution.pdf"), h("span", { class: "anat-l" }, "title")))),
       tabBar, panel);
@@ -1069,6 +1064,7 @@
     const title = h("input", { class: "input", value: saved.title || "", placeholder: "Waves Homework 1 Solution" });
     const ext = h("input", { class: "input mono", value: saved.ext || "pdf", placeholder: "pdf" });
     const result = h("div", { class: "build-out" });
+    const licOut = h("div", { class: "stack" });
 
     function update() {
       const c = padCourse(course.value.trim());
@@ -1077,12 +1073,21 @@
       season.disabled = isXT || N.placeholders[year.value] != null;
       const term = isXT ? null : N.placeholders[year.value] ? year.value : year.value + season.value;
       const tags = tagBoxes.map((l) => l.firstChild).filter((b) => b.checked).map((b) => b.value);
-      const fields = [c || "00000000", type.value, term, item.value.trim(), version.value.trim().toUpperCase(), ...tags, licSel.value, uploader.value.trim()].filter(Boolean);
+      const fields = [c || "00000000", type.value, term, item.value.trim(), version.value.trim().toUpperCase(), ...tags, uploader.value.trim()].filter(Boolean);
       const idPart = fields.join("_");
       const name = idPart + (title.value.trim() ? " " + title.value.trim() : "") + (ext.value.trim() ? "." + ext.value.trim().replace(/^\./, "") : "");
       store.set("builder", { course: course.value, type: type.value, year: year.value, season: season.value, item: item.value, version: version.value, tags, license: licSel.value, uploader: uploader.value, title: title.value, ext: ext.value });
       const info = parseId(name.replace(/\.[^.]*$/, ""));
       const cat = N.types[type.value].category;
+      const lic = N.licenses[licSel.value];
+      const rule = lic ? `{ "id": "${idPart}", "license": "${lic.code}" }` : null;
+      fill(licOut,
+        lic ? [h("p", { class: "muted small" }, lic.note),
+          h("p", { class: "field-l" }, "Add this rule to licenses.json"),
+          h("div", { class: "build-name" }, h("code", null, rule), h("button", { class: "btn small", type: "button", onclick: (e) => copyText(rule, e.currentTarget) }, icon("copy"), "Copy")),
+          h("p", { class: "muted small" }, h("a", { href: `${REPO}/edit/${C.branch}/licenses.json`, target: "_blank", rel: "noopener" }, "Edit licenses.json"),
+            " and put the line inside ", h("code", null, "\"rules\": [ … ]"), " (comma between entries), or just name the licence in your pull request and a maintainer adds it.")]
+          : h("p", { class: "muted small" }, "No licence chosen: others may only read the file here. The licence is never part of the file name."));
       fill(result, 
         h("p", { class: "field-l" }, "Your file name"),
         h("div", { class: "build-name" }, h("code", null, name), h("button", { class: "btn primary small", type: "button", onclick: (e) => copyText(name, e.currentTarget) }, icon("copy"), "Copy")),
@@ -1102,12 +1107,16 @@
         lab("Term", season),
         lab("Item", item, "01, 01b, A, Q01, CA01, PS01, P02, C01, FULL or empty"),
         lab("Version", version),
-        lab("Licence", licSel, h("span", null, "How others may reuse it. ", h("a", { href: "#/ids?tab=rules" }, "Compare"))),
         lab("Student number", uploader, h("span", null, "9 digits, will be public. ", h("a", { href: "#/ids?tab=codes" }, "More"))),
         lab("Title", title, "Short English title"),
         lab("Extension", ext)),
       h("div", { class: "field" }, h("span", { class: "field-l" }, "Tags"), h("div", { class: "row" }, tagBoxes)),
-      result);
+      result,
+      h("div", { class: "id-format" },
+        h("h3", null, "Licence (optional, not part of the name)"),
+        h("label", { class: "field" }, h("span", { class: "field-l" }, "How may others reuse this file?"), licSel,
+          h("span", { class: "field-h" }, h("a", { href: "#/ids?tab=rules" }, "Compare licences"))),
+        licOut));
   };
 
   ID_TABS.codes = () => {
@@ -1169,7 +1178,6 @@
         tr(h("code", { class: "f-term" }, "term"), "Academic-year term code (section 2). Past exams keep the term printed on them. Left out for XT."),
         tr(h("code", { class: "f-item" }, "item"), "Serial number, at least two digits, or another pattern from section 5. Optional when the item has no natural number (handouts, syllabus, readings)."),
         tr(h("code", { class: "f-tag" }, "TAG"), "Optional, from section 4."),
-        tr(h("code", { class: "f-lic" }, "LICENCE"), "Optional licence code from section 6, e.g. CCBY. Says how others may reuse the file."),
         tr(h("code", { class: "f-up" }, "uploader"), "Your 9-digit student number (section 7). Recommended for your own work. It will be public."),
         tr("title", "Short English title after one space. Fields before it are joined with _, never -.")]),
       h("p", { class: "muted" }, "A .tex and its .pdf (or a .pdf and .pptx of the same item) share one base name."),
@@ -1194,9 +1202,9 @@
         tr(h("code", { class: "f-ver" }, "V01, V02"), "Version", N.raw.version.note),
         tr("Ranges", "", "Use the first number; the range goes in the title: LP_2526A_08 Lectures 8-10. No hyphens inside an ID.")]),
 
-      h("h2", null, "6  Licence codes"),
-      h("p", null, "Each file can have its own licence. Put a code in the ID, add a rule to ", h("a", { href: licensesUrl(), target: "_blank", rel: "noopener" }, "licenses.json"),
-        ", or write ", h("code", null, "SPDX-License-Identifier: CC-BY-4.0"), " near the top of a text file. With none of these, the licence is “not stated” and the author keeps all rights."),
+      h("h2", null, "6  Licences"),
+      h("p", null, "Each file can have its own licence. It is ", h("strong", null, "not part of the file name"), ": add a rule to ", h("a", { href: licensesUrl(), target: "_blank", rel: "noopener" }, "licenses.json"),
+        " (for one file, a folder or an ID), or write ", h("code", null, "SPDX-License-Identifier: CC-BY-4.0"), " near the top of a text file. With neither, the licence is “not stated” and the author keeps all rights."),
       tbl(["Code", "Licence", "Share", "Adapt", "Commercial", "Use"], N.raw.licenses.map((l) => tr(h("code", { class: "f-lic" }, l.code),
         l.url ? h("a", { href: l.url, target: "_blank", rel: "noopener" }, l.name) : l.name,
         l.share ? "✓" : "✕", l.adapt ? "✓" : "✕", l.commercial ? "✓" : "✕", l.note))),
@@ -1247,7 +1255,7 @@
         block("Same ID used more than once", sameId, (g) => h("li", null, h("code", null, g[0].idInfo.idPart), h("span", { class: "muted small" }, ` · ${g.length} files: ${g.map((f) => f.subject).join(", ")}`)),
           "Two different files with exactly the same ID. Add a student number, version or tag to tell them apart."),
         block("Files without a stated licence", state.files.filter((f) => !f.lic.lic), (f) => fileRow(f, pretty(f.subject)),
-          "Nobody may reuse these beyond reading them here. Add a licence code to the name, or a rule in licenses.json."),
+          "Nobody may reuse these beyond reading them here. Add a rule for them in licenses.json."),
         block("Files without an ID", none, (f) => fileRow(f, pretty(f.subject)), "Perfectly fine. Add an ID next time you update one of these.")));
   };
 
@@ -1390,8 +1398,8 @@
         h("li", null, "Follow your university's academic-integrity rules. No solutions to open assignments or private exams."),
         h("li", null, "Remove other personal information (phone numbers, grades). Your student number appears only if you put it in the ID."),
         h("li", null, "Everything here is public, and Git keeps old versions."),
-        h("li", null, "Choose a licence for each file you share, e.g. ", h("code", null, "CCBY"), " or ", h("code", null, "CCBYNC"),
-          " in its ID (", h("a", { href: "#/ids?tab=rules" }, "all codes"), "). Without one, nobody may reuse it beyond reading it here. Only license what you wrote; course material keeps its owner's terms. ",
+        h("li", null, "Choose a licence for each file you share in ", h("a", { href: licensesUrl(), target: "_blank", rel: "noopener" }, "licenses.json"),
+          " (not in the file name). The ", h("a", { href: "#/ids?tab=build" }, "name builder"), " writes the line for you. Without one, nobody may reuse it beyond reading it here. Only license what you wrote; course material keeps its owner's terms. ",
           h("a", { href: contentLicenseUrl(), target: "_blank", rel: "noopener" }, "Details →"))),
       h("p", null, h("a", { href: `${REPO}#readme`, target: "_blank", rel: "noopener" }, "Read the full guide in the README →")));
   };

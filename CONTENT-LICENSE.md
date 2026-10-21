@@ -4,20 +4,19 @@ The files in [`files/`](files/) **don't share one licence. Each document has its
 
 ## How a file's licence is set
 
-The website checks these in order and uses the first one it finds:
+A licence is **never part of the file name**. The website checks these in order and uses the first one it finds:
 
-1. **A licence code in the file name.** Put it in the [ID](README.md#file-ids-recommended) after any tags:
-   `01140086_HWS_2627W_01_CCBY_231000001 Waves Homework 1 Solution.pdf`
-2. **A rule in [`licenses.json`](licenses.json).** This sets a licence for one file, a whole folder, or every file whose ID starts a certain way, without renaming anything:
+1. **A rule in [`licenses.json`](licenses.json).** This sets a licence for one file, a whole folder, or every file whose [ID](README.md#file-ids-recommended) starts a certain way:
    ```json
    { "rules": [
-     { "path": "files/Lab-Reports/", "license": "CCBY" },
+     { "id": "01140086_HWS_2627W_01_231000001", "license": "CCBY" },
      { "path": "files/Electromagnetism/Maxwell Summary.pdf", "license": "CCBYNC" },
+     { "path": "files/Lab-Reports/", "license": "CCBY" },
      { "id": "01140086_LP_2627W", "license": "STUDY" }
    ] }
    ```
-   The most specific rule wins: an exact file beats an ID, and an ID beats a folder.
-3. **A notice inside the file.** In a text file (`.tex`, `.md`, `.py`, `.ipynb` …), put an [SPDX](https://spdx.org/licenses/) line near the top, e.g. `% SPDX-License-Identifier: CC-BY-4.0`.
+   The most specific rule wins: an exact ID or file beats an ID prefix, and an ID prefix beats a folder. The website's **ID system → Build a name** page writes the rule for you. You can also name the licence in your pull request and a maintainer adds it.
+2. **A notice inside the file.** In a text file (`.tex`, `.md`, `.py`, `.ipynb` …), put an [SPDX](https://spdx.org/licenses/) line near the top, e.g. `% SPDX-License-Identifier: CC-BY-4.0`.
 
 With none of these, the file has **no licence stated**. Copyright law then gives the author all rights: others can read it on this site but must ask before copying, adapting or resharing. The site says so on the file's page.
 
@@ -50,7 +49,7 @@ All Creative Commons licences require crediting the author. The list lives in [`
   - the licence it was **published under**, e.g. `CCBY` for an OpenStax textbook.
 - **Mixed work**, such as an annotated printout (`_AN`): your notes are yours, but the page underneath still belongs to its owner. Use the more restrictive of the two, usually `STUDY`.
 
-Paid textbooks, solution manuals and exams that aren't meant to be public must not be uploaded, whatever licence code they carry.
+Paid textbooks, solution manuals and exams that aren't meant to be public must not be uploaded, whatever licence is stated for them.
 
 Once you've shared something under an open licence (CC, MIT, GPL), copies people already made stay usable under that licence, even if you later change or remove it.
 

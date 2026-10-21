@@ -6,7 +6,7 @@
 
 <!-- Each file has its own licence. Say which one applies, e.g. "CCBY for my solution, STUDY for the question sheet".
      Codes: CC0 PD CCBY CCBYSA CCBYNC CCBYNCSA CCBYND CCBYNCND MIT GPL3 STUDY ARR
-     Put the code in the file's ID (…_CCBY_…), or a maintainer can add it to licenses.json for you.
+     Don't put it in the file name: add a rule to licenses.json (the site's name builder writes it), or just say it here and a maintainer adds it.
      Leave it out and the file is "no licence stated": readable here, but not reusable. -->
 
 ## Checklist

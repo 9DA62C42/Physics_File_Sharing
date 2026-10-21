@@ -120,11 +120,11 @@ python3 -m http.server 8000
 A file's **ID** is the start of its name. IDs are **recommended, not required**: a file without one is still published and shown normally. With an ID, the site can sort your file into the right course and material type, link question, solution and answer files together, and credit you.
 
 ```
-<course>_<TYPE>_<term>_<item>_<TAG>_<LICENCE>_<student number> <title>.ext
+<course>_<TYPE>_<term>_<item>_<TAG>_<student number> <title>.ext
 
-01140086_HWS_2627W_01_CCBY_123456789 Waves Homework 1 Solution.pdf
-└──┬───┘ └┬┘ └─┬─┘ └┤ └┬─┘ └───┬───┘ └──────────┬───────────────┘
- course  type term item licence student no.  title (after one space)
+01140086_HWS_2627W_01_123456789 Waves Homework 1 Solution.pdf
+└──┬───┘ └┬┘ └─┬─┘ └┤ └───┬───┘ └──────────┬───────────────┘
+ course  type term item student no.    title (after one space)
 ```
 
 | Field | Rule | Examples |
@@ -135,7 +135,6 @@ A file's **ID** is the start of its name. IDs are **recommended, not required**:
 | **item** | Serial (at least 2 digits) or a pattern. Optional for handouts and readings | `01` · `01b` supplement · `A` exam paper · `Q01` quiz · `PS01` problem set · `C01` chapter · `FULL` |
 | **version** | Optional | `V01`, `V02` |
 | **TAG** | Optional | `AN` annotated · `DR` draft · `GR` graded |
-| **LICENCE** | Optional. How others may reuse this file ([all codes](#licence)) | `CCBY` · `CCBYNC` · `CC0` · `MIT` · `STUDY` · `ARR` |
 | **student number** | Your 9-digit student number. Recommended for your own work. **It will be public** | `123456789` |
 | **title** | Short English title after **one space**. Use `_` between ID fields, never `-` | `Waves Homework 1 Solution` |
 
@@ -186,14 +185,17 @@ To register, open **ID system → Uploader IDs** on the website, fill in your nu
 
 **The website code** (`index.html`, `assets/`, `scripts/`, `.github/`, config files) is under the [MIT licence](LICENSE). Reuse it freely, for example to run the same site for another class.
 
-**Shared files don't share one licence. Each document has its own**, chosen by whoever wrote it. Set it in any one of three ways; the first one found wins:
+**Shared files don't share one licence. Each document has its own**, chosen by whoever wrote it. The licence is **never part of the file name**. Set it in one of two ways:
 
-1. **In the file name**, as part of the ID: `01140086_HWS_2627W_01_CCBY_123456789 Waves Homework 1 Solution.pdf`
-2. **In [`licenses.json`](licenses.json)**, for one file, a folder or an ID prefix, without renaming anything:
+1. **In [`licenses.json`](licenses.json)**, for one file, a folder, or a file ID:
    ```json
-   { "rules": [ { "path": "files/Lab-Reports/", "license": "CCBY" } ] }
+   { "rules": [
+     { "id": "01140086_HWS_2627W_01_123456789", "license": "CCBY" },
+     { "path": "files/Lab-Reports/", "license": "CCBYNC" }
+   ] }
    ```
-3. **Inside a text file**, with a line like `% SPDX-License-Identifier: CC-BY-4.0` near the top.
+   The **ID system → Build a name** page writes this line for you. You can also just name the licence in your pull request, and a maintainer adds it.
+2. **Inside a text file**, with a line like `% SPDX-License-Identifier: CC-BY-4.0` near the top. A matching rule in `licenses.json` takes priority over this.
 
 If none of these is set, the file has **no licence stated**: the author keeps all rights, and others may only read it here.
 
@@ -305,7 +307,7 @@ Create a new folder under `files/`. Git can't store empty folders, so put at lea
 | Site title, description, repository, branch | `assets/js/config.js` |
 | Constants, units in the converter, resource links | `assets/js/data.js` |
 | ID rules: type codes, terms, tags, item patterns, licence codes | `assets/naming.json` |
-| Licences for files without a licence code | `licenses.json` |
+| Licence of each shared file | `licenses.json` |
 | Registered students (number, name, optional GitHub) | `uploaders.json` |
 | Course names | `courses.json` |
 | Colours, layout, dark mode | `assets/css/style.css` |
@@ -330,5 +332,5 @@ Create a new folder under `files/`. Git can't store empty folders, so put at lea
 | `files/` | All shared files, organised by subject |
 | `LICENSE` | MIT licence for the website code |
 | `CONTENT-LICENSE.md` | How each shared file's licence is set, and what each licence code means |
-| `licenses.json` | Licences for files (or folders, or ID prefixes) that don't carry a licence code in their name |
+| `licenses.json` | The licence of each shared file (by file, folder or ID) |
 | `.github/pull_request_template.md` | Checklist contributors confirm when proposing files |

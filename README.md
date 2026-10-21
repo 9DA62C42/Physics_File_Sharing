@@ -2,7 +2,7 @@
 
 A simple website where physics students share notes, problem-set solutions, formula sheets, lab reports and code. It runs for free on **GitHub Pages**: every file you put in the `files/` folder shows up on the website automatically. You don't need to edit any HTML.
 
-**Website:** `https://9da62c42.github.io/physics_file_sharing/` (live once GitHub Pages is turned on, see [For maintainers](#for-maintainers))
+**Website:** `https://9da62c42.github.io/Physics_File_Sharing/` (live once GitHub Pages is turned on, see [For maintainers](#for-maintainers))
 
 ### What's on the site
 

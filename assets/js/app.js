@@ -871,7 +871,8 @@
       + " Verify only after checking that the course code, uploader (student number) and file name are correct; verification says nothing about the content."
       + " A workflow checks that you're the owner or a collaborator, records it and closes the issue.\n\n"
       + paths.join("\n") + "\n\n" + (undo ? "" : "Note (optional): \n");
-    return `${REPO}/issues/new?title=${enc(title)}&body=${enc(body)}`;
+    // The label starts the Verify files workflow (only maintainers can set labels on a new issue).
+    return `${REPO}/issues/new?title=${enc(title)}&labels=${undo ? "unverify" : "verify"}&body=${enc(body)}`;
   }
   const VER_SCOPE = "Verification only confirms the course code, uploader and file name. It does not check or guarantee the content, and it is not a promise.";
   function verBadge(f) {

@@ -170,7 +170,7 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "Repository setup (owner)", blocks: [
         { ol: [
           "**Pages**: **Settings → Pages → Source** must be **GitHub Actions**. Otherwise the site shows no upload dates, uploaders or verification.",
-          "**Labels**: create `file-request`, `uploader-code`, `upload` and `report` under **Issues → Labels**. The request, registration, upload and report forms add them automatically. Handle reports quickly: remove the file first, then reply.",
+          "**Labels**: create `file-request`, `uploader-code`, `upload`, `report`, `verify` and `unverify` under **Issues → Labels**. The forms and the Verify buttons add them automatically, and the bots start from the labels, not the titles. Handle reports quickly: remove the file first, then reply.",
           "**Upload form**: under **Settings → Actions → General → Workflow permissions**, tick **Allow GitHub Actions to create and approve pull requests**. Merge uploads with **Create a merge commit** or **Rebase and merge**, not squash, so the student stays credited. New subjects and course names from the form arrive in the same pull request; check their spelling before merging.",
           "**Rules** (**Settings → Rules → Rulesets**): target **Include default branch** only, not **All branches**. Turn on **Restrict deletions**, **Block force pushes** and **Require a pull request before merging** (0 or 1 approvals). Keep **Repository admin** in the bypass list, and do not add **Write**, so collaborators also send pull requests.",
           "**Verification and rules**: the Verify button saves its records on a separate `verifications` branch, so rules on `main` don't block it. Don't target **All branches** or that branch, and don't delete it.",
@@ -342,7 +342,7 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "הגדרת המאגר (בעלים)", blocks: [
         { ol: [
           "**Pages**: ב-**Settings → Pages → Source** יש לבחור **GitHub Actions**. אחרת האתר לא יציג תאריכי העלאה, מעלים ואימות.",
-          "**תוויות**: צרו `file-request`, `uploader-code`, `upload` ו-`report` תחת **Issues → Labels**. טופסי הבקשה, ההרשמה, ההעלאה והדיווח מוסיפים אותן אוטומטית. טפלו בדיווחים מהר: קודם הסירו את הקובץ, אחר כך ענו.",
+          "**תוויות**: צרו `file-request`, `uploader-code`, `upload`, `report`, `verify` ו-`unverify` תחת **Issues → Labels**. הטפסים וכפתורי האימות מוסיפים אותן אוטומטית, והבוטים מופעלים לפי התוויות ולא לפי הכותרות. טפלו בדיווחים מהר: קודם הסירו את הקובץ, אחר כך ענו.",
           "**טופס ההעלאה**: ב-**Settings → Actions → General → Workflow permissions** סמנו **Allow GitHub Actions to create and approve pull requests**. מזגו העלאות עם **Create a merge commit** או **Rebase and merge**, לא squash, כדי שהסטודנט יישאר מקבל הקרדיט. מקצועות ושמות קורסים חדשים מהטופס מגיעים באותו pull request; בדקו את האיות לפני המיזוג.",
           "**כללים** (**Settings → Rules → Rulesets**): בחרו יעד **Include default branch** בלבד, לא **All branches**. הפעילו **Restrict deletions**, **Block force pushes** ו-**Require a pull request before merging** (0 או 1 אישורים). השאירו **Repository admin** ברשימת העקיפה, ואל תוסיפו **Write**, כדי שגם משתפי פעולה ישלחו pull request.",
           "**אימות וכללים**: כפתור האימות שומר את הרשומות בענף נפרד בשם `verifications`, כך שכללים על `main` לא חוסמים אותו. אל תכוונו כללים ל-**All branches** או לענף הזה, ואל תמחקו אותו.",
@@ -514,7 +514,7 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "仓库设置（所有者）", blocks: [
         { ol: [
           "**Pages**：**Settings → Pages → Source** 必须设为 **GitHub Actions**，否则网站不会显示上传日期、上传者和审核信息。",
-          "**标签**：在 **Issues → Labels** 中创建 `file-request`、`uploader-code`、`upload` 和 `report`。请求、注册、上传和举报表单会自动添加这些标签。请尽快处理举报：先删除文件，再回复。",
+          "**标签**：在 **Issues → Labels** 中创建 `file-request`、`uploader-code`、`upload`、`report`、`verify` 和 `unverify`。表单和审核按钮会自动添加这些标签，机器人根据标签而不是标题运行。请尽快处理举报：先删除文件，再回复。",
           "**上传表单**：在 **Settings → Actions → General → Workflow permissions** 中勾选 **Allow GitHub Actions to create and approve pull requests**。合并上传时用 **Create a merge commit** 或 **Rebase and merge**，不要用 squash，这样上传者的署名才会保留。表单中新增的学科和课程名称会包含在同一个拉取请求里；合并前请检查拼写。",
           "**规则**（**Settings → Rules → Rulesets**）：目标只选 **Include default branch**，不要选 **All branches**。开启 **Restrict deletions**、**Block force pushes** 和 **Require a pull request before merging**（0 或 1 个批准）。绕过列表保留 **Repository admin**，不要添加 **Write**，这样协作者也要通过 pull request 提交。",
           "**审核与规则**：审核按钮把记录保存在单独的 `verifications` 分支上，因此 `main` 上的规则不会阻止它。规则不要以 **All branches** 或该分支为目标，也不要删除该分支。",
@@ -686,7 +686,7 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "Configuración del repositorio (propietario)", blocks: [
         { ol: [
           "**Pages**: en **Settings → Pages → Source** elige **GitHub Actions**. Si no, el sitio no muestra fechas de subida, quién subió los archivos ni la verificación.",
-          "**Etiquetas**: crea `file-request`, `uploader-code`, `upload` y `report` en **Issues → Labels**. Los formularios de solicitud, registro, subida y denuncia las añaden automáticamente. Atiende las denuncias rápido: primero retira el archivo y luego responde.",
+          "**Etiquetas**: crea `file-request`, `uploader-code`, `upload`, `report`, `verify` y `unverify` en **Issues → Labels**. Los formularios y los botones de verificar las añaden automáticamente, y los bots se activan por las etiquetas, no por los títulos. Atiende las denuncias rápido: primero retira el archivo y luego responde.",
           "**Formulario de subida**: en **Settings → Actions → General → Workflow permissions**, marca **Allow GitHub Actions to create and approve pull requests**. Fusiona las subidas con **Create a merge commit** o **Rebase and merge**, no con squash, para que el estudiante siga figurando como autor de la subida. Las asignaturas y nombres de curso nuevos del formulario llegan en la misma solicitud; revisa la ortografía antes de fusionar.",
           "**Reglas** (**Settings → Rules → Rulesets**): como destino elige solo **Include default branch**, no **All branches**. Activa **Restrict deletions**, **Block force pushes** y **Require a pull request before merging** (0 o 1 aprobaciones). Deja **Repository admin** en la lista de excepciones y no añadas **Write**, para que los colaboradores también envíen pull requests.",
           "**Verificación y reglas**: el botón de verificar guarda los registros en una rama aparte, `verifications`, así que las reglas de `main` no lo bloquean. No apliques reglas a **All branches** ni a esa rama, y no la borres.",
@@ -858,7 +858,7 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "Configuration du dépôt (propriétaire)", blocks: [
         { ol: [
           "**Pages** : dans **Settings → Pages → Source**, choisissez **GitHub Actions**. Sinon, le site n’affiche ni les dates d’envoi, ni les auteurs des envois, ni la vérification.",
-          "**Étiquettes** : créez `file-request`, `uploader-code`, `upload` et `report` dans **Issues → Labels**. Les formulaires de demande, d’inscription, d’envoi et de signalement les ajoutent automatiquement. Traitez vite les signalements : retirez d’abord le fichier, puis répondez.",
+          "**Étiquettes** : créez `file-request`, `uploader-code`, `upload`, `report`, `verify` et `unverify` dans **Issues → Labels**. Les formulaires et les boutons de vérification les ajoutent automatiquement, et les bots se déclenchent sur les étiquettes, pas sur les titres. Traitez vite les signalements : retirez d’abord le fichier, puis répondez.",
           "**Formulaire d’envoi** : dans **Settings → Actions → General → Workflow permissions**, cochez **Allow GitHub Actions to create and approve pull requests**. Fusionnez les envois avec **Create a merge commit** ou **Rebase and merge**, pas squash, pour que l’étudiant reste crédité. Les nouvelles matières et les noms de cours du formulaire arrivent dans la même demande ; vérifiez l’orthographe avant de fusionner.",
           "**Règles** (**Settings → Rules → Rulesets**) : comme cible, choisissez seulement **Include default branch**, pas **All branches**. Activez **Restrict deletions**, **Block force pushes** et **Require a pull request before merging** (0 ou 1 approbation). Gardez **Repository admin** dans la liste de contournement et n’ajoutez pas **Write**, pour que les collaborateurs passent aussi par des pull requests.",
           "**Vérification et règles** : le bouton de vérification enregistre les données sur une branche à part, `verifications`, donc les règles de `main` ne le bloquent pas. Ne ciblez ni **All branches** ni cette branche, et ne la supprimez pas.",
@@ -1030,7 +1030,7 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "Repository einrichten (Eigentümer)", blocks: [
         { ol: [
           "**Pages**: Unter **Settings → Pages → Source** muss **GitHub Actions** stehen. Sonst zeigt die Seite keine Upload-Daten, Hochladenden und Prüfungen.",
-          "**Labels**: Lege unter **Issues → Labels** `file-request`, `uploader-code`, `upload` und `report` an. Die Anfrage-, Registrierungs-, Upload- und Meldeformulare setzen sie automatisch. Bearbeite Meldungen schnell: zuerst die Datei entfernen, dann antworten.",
+          "**Labels**: Lege unter **Issues → Labels** `file-request`, `uploader-code`, `upload`, `report`, `verify` und `unverify` an. Die Formulare und die Prüf-Buttons setzen sie automatisch, und die Bots starten anhand der Labels, nicht der Titel. Bearbeite Meldungen schnell: zuerst die Datei entfernen, dann antworten.",
           "**Upload-Formular**: Unter **Settings → Actions → General → Workflow permissions** **Allow GitHub Actions to create and approve pull requests** anhaken. Uploads mit **Create a merge commit** oder **Rebase and merge** zusammenführen, nicht mit Squash, damit die Studierenden als Hochladende genannt bleiben. Neue Fächer und Kursnamen aus dem Formular kommen im selben Pull Request; prüfe die Schreibweise vor dem Zusammenführen.",
           "**Regeln** (**Settings → Rules → Rulesets**): Als Ziel nur **Include default branch** wählen, nicht **All branches**. Aktiviere **Restrict deletions**, **Block force pushes** und **Require a pull request before merging** (0 oder 1 Freigaben). Behalte **Repository admin** in der Bypass-Liste und füge **Write** nicht hinzu, damit auch Mitwirkende Pull Requests stellen.",
           "**Prüfung und Regeln**: Der Prüfen-Button speichert die Einträge auf einem eigenen Branch `verifications`, daher blockieren Regeln für `main` ihn nicht. Ziele nicht auf **All branches** oder diesen Branch und lösche ihn nicht.",

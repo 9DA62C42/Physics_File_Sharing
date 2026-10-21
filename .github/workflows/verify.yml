@@ -1,7 +1,8 @@
 name: Verify files
 
-# Owner and collaborators verify files by opening an issue titled "[Verify] ..."
-# (the website's Verify button pre-fills it). This records the verification in
+# Owner and collaborators verify files by opening an issue labelled "verify" or
+# "unverify" (the website's Verify and Unverify buttons pre-fill it, label included).
+# Only people with triage access or more can set labels on a new issue. This records the verification in
 # verifications.json on the "verifications" branch, redeploys the site, and replies
 # on the issue. The records live on their own branch so that rules protecting main
 # (for example "require a pull request") don't block this workflow.
@@ -21,7 +22,7 @@ concurrency:
 
 jobs:
   verify:
-    if: startsWith(github.event.issue.title, '[Verify]') || startsWith(github.event.issue.title, '[Unverify]')
+    if: contains(github.event.issue.labels.*.name, 'verify') || contains(github.event.issue.labels.*.name, 'unverify')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,6 +38,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_LABELS: ${{ join(github.event.issue.labels.*.name, ',') }}
           ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_USER: ${{ github.event.issue.user.login }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}

@@ -8,7 +8,7 @@ window.CHANGELOG = [
       { type: "improved", text: "Version numbers in IDs can be anything after `V`: `V1`, `V02`, `V4.1`, `V2.0.3`." },
       { type: "fixed", text: "A version with a dot (such as `V4.1`) is no longer mistaken for a file extension." },
       { type: "improved", text: "The upload form and How to contribute say clearly: **only attach your file, don't change the title**." },
-      { type: "fixed", text: "The upload bot also runs when the issue's title was changed and no longer starts with `[Upload]`." }
+      { type: "improved", text: "The upload and verify bots start from the issue's **label** (`upload`, `verify`, `unverify`), not its title, so changing the title no longer matters." }
     ]
   },
   {

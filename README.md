@@ -298,7 +298,7 @@ From then on, every push to `main` runs `.github/workflows/pages.yml`. It builds
 
 ### Set up file requests and student registrations
 
-Create four labels (**Issues → Labels → New label**): **`file-request`**, **`uploader-code`**, **`upload`** and **`report`**. The issue forms add them automatically. The website lists open issues labelled `file-request` (or whose title starts with `[Request]`).
+Create six labels (**Issues → Labels → New label**): **`file-request`**, **`uploader-code`**, **`upload`**, **`report`**, **`verify`** and **`unverify`**. The bots start from the labels (`upload`, `verify`, `unverify`), not from the issue titles. The issue forms add them automatically. The website lists open issues labelled `file-request` (or whose title starts with `[Request]`).
 
 When a student registers with the issue form, check the number has 9 digits and isn't listed yet, then add `{ "id": "…", "name": "…" }` to `uploaders.json`. If they chose to link their GitHub account, add `"github": "<the issue author's username>"`. Only link the account that opened the issue, so nobody can claim someone else's number.
 
@@ -328,9 +328,9 @@ Maintainers can mark files as checked. Verified items get a **🛡 Verified** ba
 
 > **What verification means:** the maintainer checked that the **course code, the uploader (student number) and the file name** are correct. It does **not** check or guarantee the content, which may still contain mistakes, and it is not a promise or endorsement.
 
-1. On the website, open a file and click **Verify this item** in the *Verification* section. GitHub opens a new issue titled `[Verify] …`, already listing the item's files. Add an optional note, then submit it.
+1. On the website, open a file and click **Verify this item** in the *Verification* section. GitHub opens a new issue labelled `verify`, already listing the item's files. Add an optional note, then submit it.
 2. The **Verify files** workflow (`.github/workflows/verify.yml`) checks that you're the **owner or a collaborator with write access**. It then records the files' paths and SHA-256 hashes in `verifications.json` on the **`verifications` branch**, redeploys the site and closes the issue with a reply. Anyone else's request is refused, and nothing changes.
-3. **Unverify** works the same way (`[Unverify] …`).
+3. **Unverify** works the same way (label `unverify`). Only people with triage access or more can set labels on a new issue, so nobody else can even start it.
 
 If a verified file's content changes later, the site shows **Changed** instead of Verified, and lists it under *ID system → Check files* for re-checking. A verification stays valid if a file is only renamed or moved.
 
@@ -389,7 +389,7 @@ Students can add one with the upload form (**New subject**). To do it yourself, 
 | `uploaders.json` | Registered student numbers → names (and optional GitHub accounts) |
 | `uploads.json` | Who uploaded a file on another student's behalf |
 | `verifications.json` (on the `verifications` branch) | Files verified by the owner or collaborators (written by the Verify files workflow) |
-| `scripts/verify.py`, `.github/workflows/verify.yml` | Check a `[Verify]` issue's author permission and record the verification |
+| `scripts/verify.py`, `.github/workflows/verify.yml` | Check the author permission of an issue labelled `verify` or `unverify` and record the verification |
 | `scripts/upload.py`, `.github/workflows/upload.yml` | Turn an upload-form issue into a pull request with the file named and licensed |
 | `courses.json` | Optional course names |
 | `assets/js/data.js` | Physical constants, unit definitions and the resources list |

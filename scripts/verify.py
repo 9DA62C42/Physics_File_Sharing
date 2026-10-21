@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Record or remove a maintainer verification from a GitHub issue.
 
-Run by .github/workflows/verify.yml when an issue titled "[Verify] ..." or
-"[Unverify] ..." is opened (the website's Verify button pre-fills one).
+Run by .github/workflows/verify.yml when an issue labelled "verify" or
+"unverify" is opened (the website's Verify and Unverify buttons pre-fill one).
 Only the repository owner and collaborators with write access may verify;
 everyone else gets a polite refusal.
 
 Reads the issue from environment variables (never from the command line, so
 issue text can't inject shell commands):
-  ISSUE_TITLE, ISSUE_BODY, ISSUE_USER, ISSUE_NUMBER, GITHUB_REPOSITORY, GITHUB_TOKEN
+  ISSUE_TITLE, ISSUE_BODY, ISSUE_LABELS, ISSUE_USER, ISSUE_NUMBER, GITHUB_REPOSITORY, GITHUB_TOKEN
 Writes verifications.json (the workflow commits it to the "verifications" branch), and the reply text to the file in REPLY_FILE.
 Prints "changed=true|false" to GITHUB_OUTPUT.
 """
@@ -91,7 +91,8 @@ def main():
     number = int(os.environ.get("ISSUE_NUMBER", "0") or 0)
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     token = os.environ.get("GITHUB_TOKEN", "")
-    unverify = title.strip().lower().startswith("[unverify]")
+    labels = {l.strip().lower() for l in os.environ.get("ISSUE_LABELS", "").split(",")}
+    unverify = "unverify" in labels
 
     changed, reply = run(title, body, user, number, repo, token, unverify)
 

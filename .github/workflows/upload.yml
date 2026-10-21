@@ -1,7 +1,7 @@
 name: Prepare upload
 
 # Students upload with the "Upload a file" issue form (the website's Upload
-# button opens it). This checks the form, saves the attached files under a
+# button opens it), which labels the issue "upload". This checks the form, saves the attached files under a
 # proper name on an "upload/issue-<n>" branch, committed as the student, and
 # opens a pull request for a maintainer to review. Editing the issue runs it again.
 
@@ -20,8 +20,8 @@ concurrency:
 
 jobs:
   upload:
-    # Issues from the upload form carry the "upload" label even if the student changes the title.
-    if: (contains(github.event.issue.labels.*.name, 'upload') || startsWith(github.event.issue.title, '[Upload]')) && github.event.issue.state == 'open'
+    # Runs on the "upload" label, which the upload form adds; the title doesn't matter.
+    if: contains(github.event.issue.labels.*.name, 'upload') && github.event.issue.state == 'open'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

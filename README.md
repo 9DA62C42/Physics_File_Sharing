@@ -240,6 +240,9 @@ Looking for something that isn't here yet?
 - File names starting with `.` or `_` are hidden from the website. Rename the file.
 - Maintainers: check the **Actions** tab to see if the Pages build failed.
 
+**The website says "Couldn't load the file list" or shows 0 files.**
+The file list (`files.json`) is only built by the **Deploy website** workflow. In **Settings → Pages**, the **Source** must be **GitHub Actions**. If it's "Deploy from a branch", GitHub publishes the bare branch over the workflow's site after every push, without `files.json`. The site then tries GitHub's public API instead, which doesn't work for a **private** repository.
+
 **My file is larger than 25 MB.**
 Upload it with Git (see above). GitHub rejects single files over **100 MB**. For very large files, compress them, split them, or upload them to a cloud drive and share a `.txt` file containing the link.
 

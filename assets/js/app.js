@@ -460,19 +460,25 @@
       count != null ? h("span", { class: "nav-count", id }, String(count)) : null);
   }
 
-  // A sidebar section whose heading folds it away; folded sections are remembered per browser.
-  function navSection(key, title, ...links) {
+  // A sidebar section that folds away (remembered per browser). With an href, the heading
+  // itself opens that section's overview page and a separate arrow does the folding.
+  function navSection(key, title, href, ...links) {
     const folded = store.get("navFold", {});
     const body = h("div", { class: "nav-body", id: "nav-" + key }, links);
-    const btn = h("button", { class: "nav-heading nav-toggle", type: "button", "aria-expanded": String(!folded[key]), "aria-controls": "nav-" + key,
-      onclick: () => {
-        const now = store.get("navFold", {});
-        now[key] = !sec.classList.contains("folded");
-        sec.classList.toggle("folded", now[key]);
-        btn.setAttribute("aria-expanded", String(!now[key]));
-        store.set("navFold", now);
-      } }, h("span", null, title), icon("chevron"));
-    const sec = h("div", { class: "nav-section" + (folded[key] ? " folded" : "") }, btn, body);
+    const toggle = () => {
+      const now = store.get("navFold", {});
+      now[key] = !sec.classList.contains("folded");
+      sec.classList.toggle("folded", now[key]);
+      fold.setAttribute("aria-expanded", String(!now[key]));
+      store.set("navFold", now);
+    };
+    const fold = href
+      ? h("button", { class: "nav-fold", type: "button", "aria-expanded": String(!folded[key]), "aria-controls": "nav-" + key, "aria-label": `Fold ${title}`, title: "Fold / unfold", onclick: toggle }, icon("chevron"))
+      : h("button", { class: "nav-heading nav-toggle", type: "button", "aria-expanded": String(!folded[key]), "aria-controls": "nav-" + key, onclick: toggle }, h("span", null, title), icon("chevron"));
+    const head = href
+      ? h("div", { class: "nav-heading nav-toggle has-page" }, h("a", { class: "nav-heading-link", href, "data-href": href, title: `All ${title.toLowerCase()}` }, title), fold)
+      : fold;
+    const sec = h("div", { class: "nav-section" + (folded[key] ? " folded" : "") }, head, body);
     return sec;
   }
 
@@ -481,23 +487,23 @@
     const courses = countBy("course"), cats = countBy("category");
     const nav = document.getElementById("nav");
     fill(nav, 
-      navSection("library", "Library",
+      navSection("library", "Library", null,
         navLink("#/", "home", "Home"),
         navLink("#/browse", "files", "All files", state.items.length),
         navLink("#/recent", "clock", "Recently added"),
         navLink("#/favorites", "star", "Favorites", state.favs.size, "fav-count"),
         navLink("#/ids", "id", "ID system")),
-      navSection("subjects", "Subjects",
+      navSection("subjects", "Subjects", "#/subjects",
         Object.keys(counts).sort().map((s) => navLink("#/subject/" + enc(s), "folder", pretty(s), counts[s]))),
-      Object.keys(courses).length ? navSection("courses", "Courses",
+      Object.keys(courses).length ? navSection("courses", "Courses", "#/courses",
         Object.keys(courses).sort().map((c) => navLink("#/course/" + c, "course", courseLabel(c), courses[c]))) : null,
-      Object.keys(cats).length ? navSection("material", "Material",
+      Object.keys(cats).length ? navSection("material", "Material", "#/materials",
         CATEGORY_ORDER.filter((c) => cats[c]).map((c) => navLink("#/material/" + enc(c), "tag", c, cats[c]))) : null,
-      navSection("community", "Community",
+      navSection("community", "Community", null,
         navLink("#/uploaders", "users", "Uploaders"),
         navLink("#/requests", "inbox", "File requests"),
         navLink("#/contribute", "help", "How to contribute")),
-      navSection("tools", "Study tools",
+      navSection("tools", "Study tools", null,
         navLink("#/constants", "atom", "Physical constants"),
         navLink("#/converter", "swap", "Unit converter"),
         navLink("#/resources", "book", "Resources")),
@@ -521,7 +527,7 @@
       const f = state.files.find((x) => x.path === r.arg);
       current = f ? "#/subject/" + enc(f.subject) : "#/browse";
     }
-    document.querySelectorAll("#nav .nav-link").forEach((a) => {
+    document.querySelectorAll("#nav [data-href]").forEach((a) => {
       const on = a.dataset.href === current;
       a.classList.toggle("active", on);
       if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
@@ -676,7 +682,7 @@
         && (state.term === "All" || (f.idInfo && f.idInfo.term && f.idInfo.term.code === state.term))
         && (state.lic === "All" || (state.lic === "none" ? !f.lic.lic : f.lic.lic && f.lic.lic.code === state.lic))).sort(SORTS[sortKey][1]);
       count.textContent = `${list.length} ${list.length === 1 ? "file" : "files"}` + (list.length !== base.length ? ` of ${base.length}` : "");
-      if (!base.length) fill(results, empty);
+      if (!base.length) fill(results, state.source === "none" ? loadErrorNotice() : empty);
       else if (!list.length) fill(results, emptyState("Nothing matches", "Try a different search or filter.",
         h("button", { class: "btn", type: "button", onclick: clearFilters }, "Clear filters")));
       else fill(results, h("div", { class: "files " + state.layout }, list.map(card)));
@@ -698,6 +704,13 @@
         h("div", { class: "segmented", role: "group", "aria-label": "Layout" }, layoutBtn("grid", "grid", "Grid view"), layoutBtn("list", "list", "List view")))),
       results);
   }
+
+  // Shown when neither files.json nor the GitHub API could list the files.
+  const loadErrorNotice = () => h("div", { class: "notice" },
+    h("p", null, h("strong", null, "Couldn't load the file list. "), "Check your connection or try again later."),
+    h("p", { class: "small" }, "If you maintain this site: the file list (files.json) is built by the “Deploy website” workflow. Make sure ",
+      h("strong", null, "Settings → Pages → Source"), " is set to ", h("strong", null, "GitHub Actions"),
+      ". The backup listing can't read a private repository."));
 
   const uploadEmpty = (subject) => emptyState("No files here yet", "Be the first to share something!",
     h("a", { class: "btn primary", href: uploadUrl(subject), target: "_blank", rel: "noopener" }, icon("upload"), "Upload a file"));
@@ -957,7 +970,7 @@
           tool("#/converter", "swap", "Unit converter", "Energy, length, mass, temperature and more"),
           tool("#/resources", "book", "Resources", "HyperPhysics, PhET, MIT OCW, arXiv…"))),
 
-      state.source === "none" ? h("p", { class: "notice" }, "Couldn't load the file list. Check your connection or try again later.") : null
+      state.source === "none" ? loadErrorNotice() : null
     );
   };
 
@@ -980,6 +993,72 @@
     title: r.arg, desc: N.raw ? "Type codes: " + N.raw.types.filter((t) => t.category === r.arg).map((t) => `${t.code} (${t.name.toLowerCase()})`).join(", ") : null,
     filter: (f) => f.category === r.arg, sort: "id", empty: emptyState("Nothing here yet", null)
   });
+
+  // ---------- overview pages (Subjects, Courses, Material) ----------
+
+  const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+  function chips(items, key, labelFn) {
+    const c = {};
+    for (const f of items) if (f[key]) c[f[key]] = (c[f[key]] || 0) + 1;
+    const keys = Object.keys(c).sort((a, b) => c[b] - c[a] || a.localeCompare(b));
+    return keys.length ? h("div", { class: "chip-row" }, keys.map((k) => h("span", { class: "chip" }, (labelFn ? labelFn(k) : k), h("span", { class: "chip-n" }, String(c[k]))))) : null;
+  }
+  function latestLine(items) {
+    const latest = items.filter((f) => f.added).sort(SORTS.newest[1])[0];
+    return latest ? h("p", { class: "overview-latest" }, "Latest: ", h("strong", null, latest.title), ` · ${timeAgo(latest.added)}`) : null;
+  }
+  function overviewPage(title, desc, cards, empty) {
+    return h("div", null,
+      h("div", { class: "page-head" }, h("div", null, h("h1", null, title), h("p", { class: "muted" }, desc))),
+      state.source === "none" ? loadErrorNotice() : cards.length ? h("div", { class: "overview" }, cards) : empty);
+  }
+
+  VIEWS.subjects = () => {
+    const names = Object.keys(subjectCounts()).sort();
+    return overviewPage("Subjects", "Every subject on the site. Open one to see all of its files.",
+      names.map((s) => {
+        const items = state.items.filter((f) => f.subject === s);
+        return h("a", { class: "overview-card", href: "#/subject/" + enc(s) },
+          h("div", { class: "overview-top" }, icon("folder"), h("span", { class: "overview-count" }, plural(items.length, "item"))),
+          h("h2", null, pretty(s)),
+          chips(items, "course", (c) => courseLabel(c)),
+          chips(items, "category"),
+          latestLine(items));
+      }),
+      emptyState("No subjects yet", "Create a folder under files/ to start a subject."));
+  };
+
+  VIEWS.courses = () => {
+    const codes = [...new Set([...Object.keys(countBy("course")), ...Object.keys(state.courses)])].sort();
+    return overviewPage("Courses", "Every course that files carry in their ID. Open one to see all of its material, sorted by type and term.",
+      codes.map((c) => {
+        const items = state.items.filter((f) => f.course === c);
+        const terms = [...new Map(items.filter((f) => f.idInfo.term).map((f) => [f.idInfo.term.code, f.idInfo.term])).values()].sort((a, b) => (b.order || 0) - (a.order || 0));
+        return h("a", { class: "overview-card", href: "#/course/" + c },
+          h("div", { class: "overview-top" }, icon("course"), h("span", { class: "overview-count" }, plural(items.length, "item"))),
+          h("h2", null, courseName(c) || "Course " + c),
+          h("p", { class: "overview-code" }, h("code", { class: "f-course" }, c)),
+          terms.length ? h("p", { class: "muted small" }, "Terms: " + terms.map((t) => t.label).join(", ")) : null,
+          chips(items, "category"),
+          latestLine(items));
+      }),
+      emptyState("No courses yet", "Courses appear when files carry a course code in their ID.", h("a", { class: "btn", href: "#/ids?tab=build" }, "Build a file name")));
+  };
+
+  VIEWS.materials = () => {
+    const cats = countBy("category");
+    return overviewPage("Material", "Files grouped by what they are, from their ID's type code.",
+      CATEGORY_ORDER.filter((c) => cats[c]).map((c) => {
+        const items = state.items.filter((f) => f.category === c);
+        return h("a", { class: "overview-card", href: "#/material/" + enc(c) },
+          h("div", { class: "overview-top" }, icon("tag"), h("span", { class: "overview-count" }, plural(items.length, "item"))),
+          h("h2", null, c),
+          h("p", { class: "muted small" }, N.raw.types.filter((t) => t.category === c).map((t) => `${t.code} ${t.name.toLowerCase()}`).join(" · ")),
+          chips(items, "course", (k) => courseLabel(k)),
+          latestLine(items));
+      }),
+      emptyState("No material types yet", "Material types appear when files carry a type code in their ID."));
+  };
 
   VIEWS.file = (r) => {
     const f = state.files.find((x) => x.path === r.arg);

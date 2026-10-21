@@ -1,0 +1,66 @@
+---
+layout: null
+---
+{%- assign repo_url = site.github.repository_url | default: site.repository_url -%}
+{%- assign branch = site.branch | default: "main" -%}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ site.title }}</title>
+  <meta name="description" content="{{ site.description }}">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚛️</text></svg>">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Shared by students, for students</p>
+      <h1>{{ site.title }}</h1>
+      <p class="lead">{{ site.description }}</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="{{ repo_url }}/upload/{{ branch }}/files" target="_blank" rel="noopener">Upload a file</a>
+        <a class="btn" href="#contribute">How to contribute</a>
+        <a class="btn ghost" href="{{ repo_url }}" target="_blank" rel="noopener">View on GitHub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="controls" aria-label="Search and filter">
+      <input id="search" type="search" placeholder="Search files (e.g. oscillator, pdf, Griffiths)" autocomplete="off">
+      <div id="subjects" class="chips" role="group" aria-label="Filter by subject"></div>
+    </section>
+
+    <p id="summary" class="summary" aria-live="polite"></p>
+    <div id="results"></div>
+
+    <section id="contribute" class="contribute">
+      <h2>How to add your files</h2>
+      <ol>
+        <li>Open the <a href="{{ repo_url }}/tree/{{ branch }}/files" target="_blank" rel="noopener"><code>files/</code> folder</a> on GitHub and pick your subject folder (e.g. <code>Quantum-Mechanics</code>).</li>
+        <li>Click <strong>Add file → Upload files</strong> and drag your file in. Give it a clear name like <code>Griffiths-Ch2-Solutions_AliceW.pdf</code>.</li>
+        <li>Write a short message, choose <strong>Create a new branch and start a pull request</strong> (or commit directly if you have access), and submit.</li>
+        <li>Once it is merged, the site rebuilds automatically and your file appears here within a few minutes.</li>
+      </ol>
+      <p>Full guide, naming tips and rules: <a href="{{ repo_url }}#readme" target="_blank" rel="noopener">README</a>.</p>
+    </section>
+  </main>
+
+  <footer class="wrap footer">
+    <p>Built with GitHub Pages · Please share only your own work or freely licensed material.</p>
+  </footer>
+
+  {%- assign shared = site.static_files | where_exp: "f", "f.path contains '/files/'" %}
+  <script>
+    window.SHARED_FILES = [
+      {%- for f in shared %}
+      {{ f.path | jsonify }}{% unless forloop.last %},{% endunless %}
+      {%- endfor %}
+    ];
+    window.REPO = { url: {{ repo_url | jsonify }}, branch: {{ branch | jsonify }} };
+  </script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

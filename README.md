@@ -163,8 +163,8 @@ The last part of an ID is your **9-digit student number**. It tells everyone who
 | **Registered** (optional) | Add your number and name to [`uploaders.json`](uploaders.json) | Your name |
 | **Uploader confirmed** (optional) | Also add your GitHub username | Your name with ✔, on files you upload from that account |
 
-To register, open **ID system → Uploader IDs** on the website, fill in your number and name, then either:
-- use the **🆔 Register your student number** issue form, and a maintainer adds you, or
+To register, open **ID system → Uploader IDs** on the website and fill in your number and name. Then either:
+- click **Open the registration form**: it opens on GitHub with your answers filled in. **Just click Create; don't change the title or the answers.** The form links the GitHub account you submit it with (choose *No* if that isn't your own account). A maintainer adds you, or
 - edit [`uploaders.json`](uploaders.json) on GitHub, add your line, and propose the change:
   ```json
   { "id": "123456789", "name": "Alice Wang" }

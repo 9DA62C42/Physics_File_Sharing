@@ -8,7 +8,7 @@ window.CHANGELOG = [
       { type: "improved", text: "Every form field is marked: a red asterisk (*) when it's required, **(optional)** when it isn't. Tags and version are optional." },
       { type: "improved", text: "Example text in boxes starts with “e.g.”, so an empty box no longer looks filled in." },
       { type: "improved", text: "The upload page and form say to ignore GitHub's “similar issues” suggestions." },
-      { type: "improved", text: "The registration form has labelled boxes." },
+      { type: "improved", text: "Registering your name: the website fills in the GitHub form for you (just click **Create**), and linking your GitHub account is now the default." },
       { type: "improved", text: "Shared files are loaded straight from the repository instead of being copied into the website, so the site is no longer limited to 1 GB." }
     ]
   },

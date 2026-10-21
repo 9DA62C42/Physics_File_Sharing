@@ -1418,13 +1418,20 @@
       const line = `{ "id": "${id}", "name": "${nm || "Your Name"}"${g ? `, "github": "${g}"` : ""} }`;
       fill(out, 
         taken ? h("p", { class: "notice notice-info" }, `${id} is already registered as ${taken.name}. To change it, edit that line instead.`) : null,
-        h("p", { class: "field-l" }, "Register in one of two ways:"),
+        h("p", { class: "field-l" }, "Register with the issue form (easiest)"),
         h("ol", { class: "steps-mini" },
-          h("li", null, h("a", { class: "btn primary small", href: `${REPO}/issues/new?template=uploader-code.yml&title=${enc("[Register] " + id)}`, target: "_blank", rel: "noopener" }, icon("inbox"), "Use the issue form"),
-            " and a maintainer adds you."),
-          h("li", null, h("a", { class: "btn small", href: `${REPO}/edit/${C.branch}/uploaders.json`, target: "_blank", rel: "noopener" }, icon("external"), "Edit uploaders.json"),
-            " yourself: add this line inside ", h("code", null, "\"uploaders\": [ … ]"), " (comma between entries), then propose the change:",
-            h("div", { class: "build-name" }, h("code", null, line), h("button", { class: "btn small", type: "button", onclick: (e) => copyText(line, e.currentTarget) }, icon("copy"), "Copy")))));
+          h("li", null, "Fill in your student number and name above."),
+          h("li", null, nm ? h("a", { class: "btn primary small", href: `${REPO}/issues/new?template=uploader-code.yml&title=${enc("[Register] " + id)}&number=${enc(id)}&name=${enc(nm)}`, target: "_blank", rel: "noopener" }, icon("inbox"), "Open the registration form")
+            : h("span", { class: "muted" }, "Enter the name to show, then the button appears."),
+            " It opens on GitHub with your answers filled in (sign in or create a free account first)."),
+          h("li", null, h("strong", null, "Just click Create"), " at the bottom of the GitHub page. A maintainer adds you, and your name appears on the website.")),
+        h("div", { class: "notice notice-danger", role: "alert" }, icon("alert"),
+          h("div", null, h("p", null, h("strong", null, "Do not change the title or the answers. Only click Create.")))),
+        h("p", { class: "muted small" }, "The form links the GitHub account you submit it with, so your uploads from that account are shown as confirmed. If GitHub suggests similar issues, ignore them."),
+        h("p", { class: "field-l" }, "Or, if you have write access: edit uploaders.json yourself"),
+        h("p", { class: "muted small" }, h("a", { class: "btn small", href: `${REPO}/edit/${C.branch}/uploaders.json`, target: "_blank", rel: "noopener" }, icon("external"), "Edit uploaders.json"),
+          " and add this line inside ", h("code", null, "\"uploaders\": [ … ]"), " (comma between entries):"),
+        h("div", { class: "build-name" }, h("code", null, line), h("button", { class: "btn small", type: "button", onclick: (e) => copyText(line, e.currentTarget) }, icon("copy"), "Copy")));
     }
     [num, name, gh].forEach((el) => el.addEventListener("input", update));
     update();
@@ -1442,7 +1449,7 @@
         h("div", { class: "id-format" },
           h("h3", null, "Register your name (optional)"),
           h("div", { class: "stack" }, regField("Student number", num, true, "9 digits"), regField("Name to show", name, true),
-            regField("GitHub username", gh, false, "Links your uploads from that account")), out)),
+            regField("GitHub username", gh, false, "Only for editing uploaders.json yourself; the issue form links your account for you")), out)),
       h("h2", { class: "small-head section" }, `Registered students (${regs.length})`),
       regs.length ? h("div", { class: "table-wrap" }, h("table", { class: "table" },
         h("thead", null, h("tr", null, h("th", null, "Student no."), h("th", null, "Name"), h("th", null, "GitHub"))),

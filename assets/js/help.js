@@ -78,7 +78,7 @@ window.HELP = (function () {
       { id: "people", icon: "users", title: "Student numbers and uploaders", blocks: [
         { ul: [
           "The last part of an ID is your 9-digit student number. **It is public**, so leave it out if you prefer.",
-          "Register your name in **ID system → Uploader IDs**, so your files show your name instead of “Student 123456789”.",
+          "Register your name in **ID system → Uploader IDs**, so your files show your name instead of “Student 123456789”. How: fill in your student number and name, click **Open the registration form**, then on GitHub **just click Create**. Don't change the title or the answers.",
           "Add your GitHub username too: files you upload from that account show **✔ Uploader confirmed**.",
           "Uploading for a classmate? A maintainer records it in `uploads.json`, and the file shows “Uploaded by … on behalf of …”.",
           "The **Uploaders** page lists everyone who shares files."
@@ -250,7 +250,7 @@ window.HELP = (function () {
       { id: "people", icon: "users", title: "מספרי סטודנט ומעלים", blocks: [
         { ul: [
           "החלק האחרון של המזהה הוא מספר הסטודנט שלכם בן 9 הספרות. **הוא גלוי לכולם**, אז אפשר להשמיט אותו אם תעדיפו.",
-          "רשמו את שמכם ב-**ID system → Uploader IDs** כדי שהקבצים יציגו את שמכם במקום “Student 123456789”.",
+          "רשמו את שמכם ב-**ID system → Uploader IDs** כדי שהקבצים יציגו את שמכם במקום “Student 123456789”. איך: מלאו מספר סטודנט ושם, לחצו **Open the registration form**, ואז ב-GitHub **פשוט לחצו Create**. אל תשנו את הכותרת או את התשובות.",
           "הוסיפו גם את שם המשתמש שלכם ב-GitHub: קבצים שתעלו מהחשבון הזה יסומנו **✔ Uploader confirmed** (המעלה אומת).",
           "מעלים בשביל חבר לכיתה? מנהל רושם זאת ב-`uploads.json`, והקובץ יציג “Uploaded by … on behalf of …”.",
           "בעמוד **Uploaders** מופיעים כל מי שמשתפים קבצים."
@@ -422,7 +422,7 @@ window.HELP = (function () {
       { id: "people", icon: "users", title: "学号与上传者", blocks: [
         { ul: [
           "编号的最后一部分是你的 9 位学号。**学号是公开的**，如果不想公开可以不写。",
-          "在 **ID system → Uploader IDs** 登记姓名后，你的文件会显示你的名字，而不是 “Student 123456789”。",
+          "在 **ID system → Uploader IDs** 登记姓名后，你的文件会显示你的名字，而不是 “Student 123456789”。方法：填写学号和姓名，点击 **Open the registration form**，然后在 GitHub 上**直接点击 Create**。不要修改标题或答案。",
           "再登记你的 GitHub 用户名：从该账号上传的文件会显示 **✔ Uploader confirmed**（上传者已确认）。",
           "替同学上传？由管理员在 `uploads.json` 中记录，文件会显示 “Uploaded by … on behalf of …”。",
           "**Uploaders** 页面列出所有分享文件的人。"
@@ -594,7 +594,7 @@ window.HELP = (function () {
       { id: "people", icon: "users", title: "Números de estudiante y quién sube", blocks: [
         { ul: [
           "La última parte de un ID es tu número de estudiante de 9 dígitos. **Es público**, así que puedes omitirlo si lo prefieres.",
-          "Registra tu nombre en **ID system → Uploader IDs** para que tus archivos muestren tu nombre en lugar de “Student 123456789”.",
+          "Registra tu nombre en **ID system → Uploader IDs** para que tus archivos muestren tu nombre en lugar de “Student 123456789”. Cómo: escribe tu número de estudiante y tu nombre, haz clic en **Open the registration form** y en GitHub **solo haz clic en Create**. No cambies el título ni las respuestas.",
           "Añade también tu usuario de GitHub: los archivos que subas desde esa cuenta muestran **✔ Uploader confirmed** (autor de la subida confirmado).",
           "¿Subes algo por un compañero? Un administrador lo registra en `uploads.json` y el archivo muestra “Uploaded by … on behalf of …”.",
           "La página **Uploaders** muestra a todas las personas que comparten archivos."
@@ -766,7 +766,7 @@ window.HELP = (function () {
       { id: "people", icon: "users", title: "Numéros d’étudiant et auteurs des envois", blocks: [
         { ul: [
           "La dernière partie d’un identifiant est votre numéro d’étudiant à 9 chiffres. **Il est public** : vous pouvez l’omettre si vous préférez.",
-          "Enregistrez votre nom dans **ID system → Uploader IDs** pour que vos fichiers affichent votre nom au lieu de « Student 123456789 ».",
+          "Enregistrez votre nom dans **ID system → Uploader IDs** pour que vos fichiers affichent votre nom au lieu de « Student 123456789 ». Comment : saisissez votre numéro d’étudiant et votre nom, cliquez sur **Open the registration form**, puis sur GitHub **cliquez simplement sur Create**. Ne modifiez ni le titre ni les réponses.",
           "Ajoutez aussi votre nom d’utilisateur GitHub : les fichiers envoyés depuis ce compte affichent **✔ Uploader confirmed** (auteur de l’envoi confirmé).",
           "Vous envoyez un fichier pour un camarade ? Un administrateur l’indique dans `uploads.json`, et le fichier affiche « Uploaded by … on behalf of … ».",
           "La page **Uploaders** liste toutes les personnes qui partagent des fichiers."
@@ -938,7 +938,7 @@ window.HELP = (function () {
       { id: "people", icon: "users", title: "Matrikelnummern und Hochladende", blocks: [
         { ul: [
           "Der letzte Teil einer ID ist deine 9-stellige Matrikelnummer. **Sie ist öffentlich**, du kannst sie also weglassen.",
-          "Trage deinen Namen unter **ID system → Uploader IDs** ein, damit deine Dateien deinen Namen statt „Student 123456789“ zeigen.",
+          "Trage deinen Namen unter **ID system → Uploader IDs** ein, damit deine Dateien deinen Namen statt „Student 123456789“ zeigen. So geht’s: Matrikelnummer und Namen eintragen, auf **Open the registration form** klicken und auf GitHub **einfach auf Create klicken**. Titel und Angaben nicht ändern.",
           "Gib auch deinen GitHub-Benutzernamen an: Dateien, die du von diesem Konto hochlädst, zeigen **✔ Uploader confirmed** (Hochladende Person bestätigt).",
           "Du lädst etwas für eine Kommilitonin oder einen Kommilitonen hoch? Ein Admin vermerkt das in `uploads.json`, und die Datei zeigt „Uploaded by … on behalf of …“.",
           "Die Seite **Uploaders** listet alle, die Dateien teilen."

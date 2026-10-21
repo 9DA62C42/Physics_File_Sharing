@@ -10,6 +10,9 @@ body:
         It already works without registering; registering just shows your name instead of "Student 123456789".
 
         **This issue is public, and so is your student number on the website.**
+
+        ### ⚠️ Only click Create. Do not change the title.
+        Came from the website's **Open the registration form** button? Everything is already filled in: **just click Create** at the bottom. Do not change the title or the answers. If GitHub suggests similar issues, ignore them. A maintainer then adds you, and your name appears on the website.
   - type: input
     id: number
     attributes:
@@ -29,9 +32,9 @@ body:
     id: github
     attributes:
       label: Link this GitHub account to confirm your uploads?
-      description: Optional. If yes, files you upload from the account that opens this issue are shown as confirmed.
+      description: Files you upload from the account that opens this issue are shown as confirmed. Choose No if this isn't your own account.
       options:
-        - "No"
         - "Yes, link the account opening this issue"
+        - "No"
     validations:
       required: true

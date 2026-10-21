@@ -23,7 +23,7 @@ window.HELP = (function () {
     contents: "Contents",
     sections: [
       { id: "start", icon: "home", title: "Getting started", blocks: [
-        { p: "Physics File Sharing is a library of notes, problem-set solutions, formula sheets and lab reports shared by students. Everything is free to read." },
+        { p: "Course File Sharing is a library of notes, problem-set solutions, formula sheets and lab reports shared by students, for any course. Everything is free to read." },
         { ul: [
           "**Sidebar** (left): everything you can open. On a phone, tap **☰** at the top to show it.",
           "**Search bar** (top): finds files by name, course, ID, uploader or licence. Press **/** to jump to it.",
@@ -128,7 +128,7 @@ window.HELP = (function () {
           "Have a requested file? Upload it with the form, then comment on the request with a link to your upload."
         ] }
       ] },
-      { id: "tools", icon: "atom", title: "Study tools", blocks: [
+      { id: "tools", icon: "atom", title: "Physics tools", blocks: [
         { ul: [
           "**Physical constants**: CODATA 2022 values. The copy button copies a calculator-ready number.",
           "**Unit converter**: energy, length, mass, time, temperature, pressure, power, magnetic field and angle.",
@@ -177,7 +177,7 @@ window.HELP = (function () {
     contents: "תוכן עניינים",
     sections: [
       { id: "start", icon: "home", title: "צעדים ראשונים", blocks: [
-        { p: "Physics File Sharing הוא ספרייה של סיכומים, פתרונות לתרגילים, דפי נוסחאות ודוחות מעבדה שסטודנטים משתפים. הקריאה חופשית לכולם." },
+        { p: "Course File Sharing הוא ספרייה של סיכומים, פתרונות לתרגילים, דפי נוסחאות ודוחות מעבדה שסטודנטים משתפים, לכל קורס. הקריאה חופשית לכולם." },
         { ul: [
           "**סרגל צד** (משמאל): כל מה שאפשר לפתוח. בטלפון, הקישו על **☰** למעלה כדי להציג אותו.",
           "**שורת חיפוש** (למעלה): מוצאת קבצים לפי שם, קורס, מזהה, מעלה או רישיון. לחיצה על **/** קופצת אליה.",
@@ -282,7 +282,7 @@ window.HELP = (function () {
           "יש לכם קובץ שביקשו? העלו אותו בטופס, ואז הגיבו על הבקשה עם קישור להעלאה שלכם."
         ] }
       ] },
-      { id: "tools", icon: "atom", title: "כלי לימוד", blocks: [
+      { id: "tools", icon: "atom", title: "כלים לפיזיקה", blocks: [
         { ul: [
           "**Physical constants**: קבועים פיזיקליים לפי CODATA 2022. כפתור ההעתקה מעתיק מספר מוכן למחשבון.",
           "**Unit converter**: המרת יחידות של אנרגיה, אורך, מסה, זמן, טמפרטורה, לחץ, הספק, שדה מגנטי וזווית.",
@@ -331,7 +331,7 @@ window.HELP = (function () {
     contents: "目录",
     sections: [
       { id: "start", icon: "home", title: "快速入门", blocks: [
-        { p: "Physics File Sharing 是一个由学生分享的资料库，包括笔记、习题解答、公式表和实验报告。所有内容都可以免费阅读。" },
+        { p: "Course File Sharing 是一个由学生分享的资料库，涵盖任何课程，包括笔记、习题解答、公式表和实验报告。所有内容都可以免费阅读。" },
         { ul: [
           "**侧边栏**（左侧）：可以打开的所有页面。在手机上，点击顶部的 **☰** 显示侧边栏。",
           "**搜索栏**（顶部）：按文件名、课程、编号（ID）、上传者或许可证查找文件。按 **/** 可直接跳到搜索栏。",
@@ -436,7 +436,7 @@ window.HELP = (function () {
           "你有别人请求的文件？用上传表单上传，然后在该请求下留言并附上你的上传链接。"
         ] }
       ] },
-      { id: "tools", icon: "atom", title: "学习工具", blocks: [
+      { id: "tools", icon: "atom", title: "物理工具", blocks: [
         { ul: [
           "**Physical constants**：CODATA 2022 物理常数。复制按钮会复制可直接用于计算器的数值。",
           "**Unit converter**：能量、长度、质量、时间、温度、压强、功率、磁场和角度的单位换算。",
@@ -485,7 +485,7 @@ window.HELP = (function () {
     contents: "Contenido",
     sections: [
       { id: "start", icon: "home", title: "Primeros pasos", blocks: [
-        { p: "Physics File Sharing es una biblioteca de apuntes, soluciones de ejercicios, formularios e informes de laboratorio compartidos por estudiantes. Todo se puede leer gratis." },
+        { p: "Course File Sharing es una biblioteca de apuntes, soluciones de ejercicios, formularios e informes de laboratorio compartidos por estudiantes, de cualquier curso. Todo se puede leer gratis." },
         { ul: [
           "**Barra lateral** (izquierda): todo lo que puedes abrir. En el móvil, toca **☰** arriba para mostrarla.",
           "**Barra de búsqueda** (arriba): encuentra archivos por nombre, curso, ID, quién los subió o licencia. Pulsa **/** para ir a ella.",
@@ -590,7 +590,7 @@ window.HELP = (function () {
           "¿Tienes un archivo que alguien pidió? Súbelo con el formulario y luego comenta en la solicitud con un enlace a tu subida."
         ] }
       ] },
-      { id: "tools", icon: "atom", title: "Herramientas de estudio", blocks: [
+      { id: "tools", icon: "atom", title: "Herramientas de física", blocks: [
         { ul: [
           "**Physical constants**: constantes físicas CODATA 2022. El botón de copiar copia un número listo para la calculadora.",
           "**Unit converter**: conversión de energía, longitud, masa, tiempo, temperatura, presión, potencia, campo magnético y ángulo.",
@@ -639,7 +639,7 @@ window.HELP = (function () {
     contents: "Sommaire",
     sections: [
       { id: "start", icon: "home", title: "Premiers pas", blocks: [
-        { p: "Physics File Sharing est une bibliothèque de notes de cours, de corrigés d’exercices, de formulaires et de comptes rendus de TP partagés par des étudiants. Tout est en lecture libre." },
+        { p: "Course File Sharing est une bibliothèque de notes de cours, de corrigés d’exercices, de formulaires et de comptes rendus de TP partagés par des étudiants, pour tous les cours. Tout est en lecture libre." },
         { ul: [
           "**Barre latérale** (à gauche) : tout ce que vous pouvez ouvrir. Sur téléphone, touchez **☰** en haut pour l’afficher.",
           "**Barre de recherche** (en haut) : trouve des fichiers par nom, cours, identifiant, auteur de l’envoi ou licence. Appuyez sur **/** pour y accéder.",
@@ -744,7 +744,7 @@ window.HELP = (function () {
           "Vous avez un fichier demandé ? Envoyez-le avec le formulaire, puis commentez la demande avec un lien vers votre envoi."
         ] }
       ] },
-      { id: "tools", icon: "atom", title: "Outils d’étude", blocks: [
+      { id: "tools", icon: "atom", title: "Outils de physique", blocks: [
         { ul: [
           "**Physical constants** : les constantes physiques CODATA 2022. Le bouton de copie copie un nombre prêt pour la calculatrice.",
           "**Unit converter** : conversion d’énergie, longueur, masse, temps, température, pression, puissance, champ magnétique et angle.",
@@ -793,7 +793,7 @@ window.HELP = (function () {
     contents: "Inhalt",
     sections: [
       { id: "start", icon: "home", title: "Erste Schritte", blocks: [
-        { p: "Physics File Sharing ist eine Sammlung von Mitschriften, Übungslösungen, Formelsammlungen und Laborberichten, die Studierende teilen. Alles ist kostenlos lesbar." },
+        { p: "Course File Sharing ist eine Sammlung von Mitschriften, Übungslösungen, Formelsammlungen und Laborberichten, die Studierende teilen, für jeden Kurs. Alles ist kostenlos lesbar." },
         { ul: [
           "**Seitenleiste** (links): alles, was du öffnen kannst. Auf dem Handy tippst du oben auf **☰**, um sie anzuzeigen.",
           "**Suchleiste** (oben): findet Dateien nach Name, Kurs, ID, Hochladendem oder Lizenz. Mit **/** springst du direkt hinein.",
@@ -898,7 +898,7 @@ window.HELP = (function () {
           "Du hast eine gewünschte Datei? Lade sie mit dem Formular hoch und kommentiere die Anfrage mit einem Link zu deinem Upload."
         ] }
       ] },
-      { id: "tools", icon: "atom", title: "Lernwerkzeuge", blocks: [
+      { id: "tools", icon: "atom", title: "Physik-Werkzeuge", blocks: [
         { ul: [
           "**Physical constants**: Naturkonstanten nach CODATA 2022. Der Kopierknopf kopiert eine taschenrechnerfertige Zahl.",
           "**Unit converter**: Umrechnung von Energie, Länge, Masse, Zeit, Temperatur, Druck, Leistung, Magnetfeld und Winkel.",

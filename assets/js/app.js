@@ -1,4 +1,4 @@
-// Physics File Sharing: a small single-page app.
+// Course File Sharing: a small single-page app.
 // Files come from files.json (built by scripts/build_index.py in GitHub Actions);
 // if that is missing, the GitHub API is used to list the files/ folder instead.
 // File IDs (recommended, not required) are read from file names; the rules are
@@ -508,7 +508,7 @@
         navLink("#/uploaders", "users", "Uploaders"),
         navLink("#/requests", "inbox", "File requests"),
         navLink("#/contribute", "upload", "How to contribute")),
-      navSection("tools", "Study tools", null,
+      navSection("tools", "Physics tools", null,
         navLink("#/constants", "atom", "Physical constants"),
         navLink("#/converter", "swap", "Unit converter"),
         navLink("#/resources", "book", "Resources")),
@@ -1048,7 +1048,7 @@
             h("span", { class: "subject-count" }, counts[s] === 1 ? "1 file" : `${counts[s]} files`))))),
 
       h("section", { class: "section" },
-        h("div", { class: "section-head" }, h("h2", null, "Study tools")),
+        h("div", { class: "section-head" }, h("h2", null, "Physics tools")),
         h("div", { class: "tiles" },
           tool("#/ids", "id", "ID system", "Decode, search and build file IDs"),
           tool("#/constants", "atom", "Physical constants", "CODATA 2022 values, one click to copy"),
@@ -1591,7 +1591,7 @@
 
   VIEWS.resources = () => h("div", null,
     h("div", { class: "page-head" }, h("div", null, h("h1", null, "Resources"),
-      h("p", { class: "muted" }, "Free websites and tools that physics students find useful."))),
+      h("p", { class: "muted" }, "Free physics websites and tools that students find useful."))),
     D.resources.map((g) => h("section", { class: "section" },
       h("h2", null, g.group),
       h("div", { class: "tiles" }, g.items.map(([name, url, text]) =>
@@ -1699,6 +1699,7 @@
 
   async function init() {
     document.getElementById("brand-name").textContent = C.title;
+    fill(document.querySelector(".brand-mark"), icon("book"));
     fill(document.querySelector(".footer p"), "Built by students with GitHub Pages · Site code: ",
       h("a", { href: `${REPO}/blob/${C.branch}/LICENSE`, target: "_blank", rel: "noopener" }, "MIT"),
       " · Shared files: each has its own licence, shown in its preview · ", h("a", { href: contentLicenseUrl(), target: "_blank", rel: "noopener" }, "Copyright and takedown"),

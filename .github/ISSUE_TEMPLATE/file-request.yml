@@ -21,11 +21,11 @@ body:
     id: what
     attributes:
       label: What are you looking for?
-      placeholder: e.g. Worked solutions for Griffiths QM chapter 3, or a formula sheet for Maxwell's equations
+      placeholder: e.g. Worked solutions for homework 3, or a formula sheet for the midterm
     validations:
       required: true
   - type: input
     id: course
     attributes:
       label: Course or textbook (optional)
-      placeholder: e.g. PHYS 301, Griffiths 3rd edition
+      placeholder: e.g. 01140086 Waves

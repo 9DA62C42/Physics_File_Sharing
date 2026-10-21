@@ -1,7 +1,7 @@
 // Site settings. Edit these if you fork or rename the repository.
 window.SITE_CONFIG = {
-  title: "Physics File Sharing",
-  description: "Notes, problem sets, formula sheets and lab reports shared by physics students.",
+  title: "Course File Sharing",
+  description: "Notes, problem sets, formula sheets and lab reports shared by students, for any course.",
   owner: "9da62c42",
   repo: "physics_file_sharing",
   branch: "main"

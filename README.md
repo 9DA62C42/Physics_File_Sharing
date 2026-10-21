@@ -1,6 +1,8 @@
-# ⚛️ Physics File Sharing
+# 📚 Course File Sharing
 
-A simple website where physics students share notes, problem-set solutions, formula sheets, lab reports and code. It runs for free on **GitHub Pages**: every file you put in the `files/` folder shows up on the website automatically. You don't need to edit any HTML.
+A simple website where students share notes, problem-set solutions, formula sheets, lab reports and code. It runs for free on **GitHub Pages**: every file you put in the `files/` folder shows up on the website automatically. You don't need to edit any HTML.
+
+It started with physics but is for **any course**: each subject is a folder under `files/`, and students can add new subjects and courses from the upload form.
 
 **Website:** `https://9da62c42.github.io/Physics_File_Sharing/` (live once GitHub Pages is turned on, see [For maintainers](#for-maintainers))
 
@@ -17,9 +19,9 @@ A simple website where physics students share notes, problem-set solutions, form
 | 🔗 **Share links** | Copy a link that opens a specific file directly |
 | 🏆 **Uploaders** | Everyone who shares files, with a profile page each |
 | 📨 **File requests** | Ask for files you need; requests are GitHub Issues |
-| ⚛️ **Physical constants** | CODATA 2022 values with one-click copy |
-| 🔁 **Unit converter** | Energy (J, eV, cm⁻¹, Hz, K, nm…), length, mass, time, temperature, pressure, power, magnetic field and angle |
-| 🔭 **Resources** | Hand-picked links: HyperPhysics, PhET, MIT OCW, NIST, arXiv and more |
+| ⚛️ **Physics tools: constants** | CODATA 2022 values with one-click copy |
+| 🔁 **Physics tools: unit converter** | Energy (J, eV, cm⁻¹, Hz, K, nm…), length, mass, time, temperature, pressure, power, magnetic field and angle |
+| 🔭 **Physics tools: resources** | Hand-picked physics links: HyperPhysics, PhET, MIT OCW, NIST, arXiv and more |
 | 🌙 **Dark mode** | Follows your system, or pick light or dark at the bottom of the sidebar |
 
 ---

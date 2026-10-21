@@ -297,7 +297,7 @@ kbd {
 .seg.on { background: var(--accent-soft); color: var(--accent); }
 
 .notice { margin: var(--s4) 0 0; padding: var(--s3) var(--s4); border-radius: 10px; background: var(--b-code-bg); color: var(--b-code); }
-.notice.info { background: var(--accent-soft); color: var(--accent); }
+.notice-info { background: var(--accent-soft); color: var(--accent); }
 
 /* ---------- home ---------- */
 
@@ -730,3 +730,23 @@ code.ex { display: block; width: fit-content; margin: var(--s1) 0; }
 .badge.ver .icon { width: 12px; height: 12px; }
 .badge.ver-warn { background: var(--b-code-bg); color: var(--b-code); }
 .side-block .row.tight { display: flex; flex-wrap: wrap; margin: var(--s2) 0; }
+
+/* help */
+.nav-help { padding-top: 0; }
+.nav-help .nav-link { font-weight: 600; }
+.help { max-width: 860px; }
+.lang-bar { display: flex; flex-wrap: wrap; gap: var(--s2); margin-bottom: var(--s5); }
+.help .notice { margin: 0 0 var(--s5); }
+.help-toc { margin-bottom: var(--s6); padding: var(--s4) var(--s5); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.help-toc .field-l { margin-bottom: var(--s2); }
+.help-toc ol { margin: 0; padding-inline-start: var(--s5); columns: 2 240px; column-gap: var(--s6); }
+.help-toc li { margin-bottom: var(--s1); break-inside: avoid; }
+.help-section { margin-bottom: var(--s6); scroll-margin-top: calc(var(--topbar-h) + var(--s4)); }
+.help-section h2 { display: flex; align-items: center; gap: var(--s3); margin: 0 0 var(--s3); padding-bottom: var(--s2); border-bottom: 1px solid var(--border); font-size: 1.25rem; }
+.help-section h2 .icon { width: 22px; height: 22px; color: var(--accent); }
+.help-section ul, .help-section ol { margin: 0 0 var(--s3); padding-inline-start: var(--s5); }
+.help-section li { margin-bottom: 6px; }
+.help-section p { margin: 0 0 var(--s3); }
+.help-tip { display: flex; gap: var(--s2); align-items: flex-start; padding: var(--s3) var(--s4); background: var(--accent-soft); border-radius: 10px; }
+.help-tip .icon { width: 16px; height: 16px; margin-top: 3px; color: var(--accent); }
+.help-code { margin: 0 0 var(--s3); padding: var(--s3) var(--s4); overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 9px; font: .9rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-align: left; }

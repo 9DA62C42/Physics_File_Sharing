@@ -488,6 +488,7 @@
     const courses = countBy("course"), cats = countBy("category");
     const nav = document.getElementById("nav");
     fill(nav, 
+      h("div", { class: "nav-section nav-help" }, navLink("#/help", "help", "Help & guide")),
       navSection("library", "Library", null,
         navLink("#/", "home", "Home"),
         navLink("#/browse", "files", "All files", state.items.length),
@@ -503,7 +504,7 @@
       navSection("community", "Community", null,
         navLink("#/uploaders", "users", "Uploaders"),
         navLink("#/requests", "inbox", "File requests"),
-        navLink("#/contribute", "help", "How to contribute")),
+        navLink("#/contribute", "upload", "How to contribute")),
       navSection("tools", "Study tools", null,
         navLink("#/constants", "atom", "Physical constants"),
         navLink("#/converter", "swap", "Unit converter"),
@@ -1226,7 +1227,7 @@
         return toks.every((t) => parts.includes(t) || (t.length > 3 && id.includes(t)));
       }).sort(SORTS.id[1]);
       fill(out, 
-        shorthand ? h("p", { class: "notice info" }, `6-digit course shorthand expanded to ${padCourse(input.value.trim().slice(0, 6))}.`) : null,
+        shorthand ? h("p", { class: "notice notice-info" }, `6-digit course shorthand expanded to ${padCourse(input.value.trim().slice(0, 6))}.`) : null,
         info ? h("div", { class: "decode" },
           h("p", null, idNode(info, true)),
           h("div", { class: "table-wrap" }, h("table", { class: "table" }, h("tbody", null, info.fields.map((x) => h("tr", null,
@@ -1330,7 +1331,7 @@
       const taken = state.uploaders.get(id);
       const line = `{ "id": "${id}", "name": "${nm || "Your Name"}"${g ? `, "github": "${g}"` : ""} }`;
       fill(out, 
-        taken ? h("p", { class: "notice info" }, `${id} is already registered as ${taken.name}. To change it, edit that line instead.`) : null,
+        taken ? h("p", { class: "notice notice-info" }, `${id} is already registered as ${taken.name}. To change it, edit that line instead.`) : null,
         h("p", { class: "field-l" }, "Register in one of two ways:"),
         h("ol", { class: "steps-mini" },
           h("li", null, h("a", { class: "btn primary small", href: `${REPO}/issues/new?template=uploader-code.yml&title=${enc("[Register] " + id)}`, target: "_blank", rel: "noopener" }, icon("inbox"), "Use the issue form"),
@@ -1606,6 +1607,53 @@
           " (not in the file name). The ", h("a", { href: "#/ids?tab=build" }, "name builder"), " writes the line for you. Without one, nobody may reuse it beyond reading it here. Only license what you wrote; course material keeps its owner's terms. ",
           h("a", { href: contentLicenseUrl(), target: "_blank", rel: "noopener" }, "Details →"))),
       h("p", null, h("a", { href: `${REPO}#readme`, target: "_blank", rel: "noopener" }, "Read the full guide in the README →")));
+  };
+
+  // ---------- help ----------
+  // Guide text lives in assets/js/help.js. **bold** marks the site's (English) button names, `code` marks codes.
+
+  function rich(text) {
+    return String(text).split(/(\*\*[^*]+\*\*|`[^`]+`)/).filter(Boolean).map((part) =>
+      part.startsWith("**") ? h("strong", null, part.slice(2, -2))
+        : part.startsWith("`") ? h("code", { dir: "ltr" }, part.slice(1, -1))
+        : part);
+  }
+  function helpBlock(b) {
+    if (b.p) return h("p", null, rich(b.p));
+    if (b.ul) return h("ul", null, b.ul.map((x) => h("li", null, rich(x))));
+    if (b.ol) return h("ol", null, b.ol.map((x) => h("li", null, rich(x))));
+    if (b.tip) return h("p", { class: "help-tip" }, icon("star"), h("span", null, rich(b.tip)));
+    if (b.code) return h("pre", { class: "help-code", dir: "ltr" }, b.code);
+    return null;
+  }
+
+  VIEWS.help = (r) => {
+    const H = window.HELP;
+    if (!H) return emptyState("Help couldn't be loaded", "assets/js/help.js is missing.");
+    const has = (c) => (c && H.text[c] ? c : null);
+    let lang = has(r.arg) || has(store.get("helpLang", "")) || has((navigator.language || "en").slice(0, 2).toLowerCase()) || "en";
+    const wrap = h("div", { class: "help" });
+    function draw() {
+      const T = H.text[lang], L = H.languages.find((l) => l.code === lang);
+      store.set("helpLang", lang);
+      wrap.setAttribute("lang", lang);
+      wrap.setAttribute("dir", L.dir);
+      fill(wrap,
+        h("div", { class: "page-head" }, h("div", null, h("h1", null, T.title), h("p", { class: "muted" }, T.subtitle))),
+        h("div", { class: "lang-bar", role: "group", "aria-label": "Language" }, H.languages.map((l) =>
+          h("button", { type: "button", class: "tab" + (l.code === lang ? " on" : ""), lang: l.code, "aria-pressed": String(l.code === lang),
+            onclick: () => { lang = l.code; history.replaceState(null, "", "#/help/" + lang); draw(); } }, l.name))),
+        T.note ? h("p", { class: "notice notice-info" }, rich(T.note)) : null,
+        h("nav", { class: "help-toc", "aria-label": T.contents },
+          h("p", { class: "field-l" }, T.contents),
+          h("ol", null, T.sections.map((sec) => h("li", null, h("button", { type: "button", class: "linkish",
+            onclick: () => document.getElementById("help-" + sec.id).scrollIntoView({ behavior: "smooth", block: "start" }) }, sec.title))))),
+        T.sections.map((sec) => h("section", { class: "help-section", id: "help-" + sec.id },
+          h("h2", null, icon(sec.icon), h("span", null, sec.title)),
+          sec.blocks.map(helpBlock))));
+    }
+    draw();
+    return wrap;
   };
 
   VIEWS.notfound = () => emptyState("Page not found", "That page doesn't exist.", h("a", { class: "btn", href: "#/" }, "Go home"));

@@ -180,13 +180,15 @@ code {
 .nav-link.active .nav-count { background: var(--surface); color: var(--accent); }
 .sidebar-foot { margin-top: auto; padding-top: var(--s2); border-top: 1px solid var(--border); }
 
-.content { min-width: 0; display: flex; flex-direction: column; }
+.content { min-width: 0; display: flex; flex-direction: column; --page-w: 1280px; }
+/* On wide screens the page is centred; the top bar and footer line up with it. */
+.content { --page-pad: max(var(--gutter), calc((100% - var(--page-w)) / 2 + var(--gutter))); }
 
 .topbar {
   position: sticky; top: 0; z-index: 10;
   display: flex; align-items: center; gap: var(--s3);
   height: var(--topbar-h);
-  padding: 0 var(--gutter);
+  padding: 0 var(--page-pad);
   background: color-mix(in srgb, var(--bg) 90%, transparent);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border);
@@ -216,9 +218,9 @@ kbd {
 }
 #upload-btn { margin-left: auto; }
 
-.view { flex: 1; width: 100%; max-width: 1200px; padding: var(--s6) var(--gutter) var(--s7); outline: 0; }
-.footer { padding: var(--s5) var(--gutter) var(--s6); border-top: 1px solid var(--border); color: var(--muted); font-size: .85rem; }
-.footer p { margin: 0; max-width: 1200px; }
+.view { flex: 1; width: 100%; max-width: var(--page-w); margin: 0 auto; padding: var(--s6) var(--gutter) var(--s7); outline: 0; }
+.footer { padding: var(--s5) var(--page-pad) var(--s6); border-top: 1px solid var(--border); color: var(--muted); font-size: .85rem; }
+.footer p { margin: 0; }
 .backdrop { display: none; }
 
 /* ---------- buttons & inputs ---------- */
@@ -376,9 +378,9 @@ a.stat:hover { border-color: var(--accent); color: inherit; }
   box-shadow: var(--shadow);
 }
 .card:hover { border-color: var(--accent-line); }
-.card-top { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); margin: 0 0 var(--s3); }
+.card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s2); margin: 0 0 var(--s3); }
 .card-top .star { margin: -6px -8px -6px 0; }
-.card-tags { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.card-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-width: 0; }
 .card-body { flex: 1; min-width: 0; }
 .card h3 { margin: 0 0 var(--s1); font-size: 1rem; line-height: 1.35; }
 .title-link {

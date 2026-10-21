@@ -308,10 +308,20 @@ Maintainers can mark files as checked. Verified items get a **🛡 Verified** ba
 
 If a verified file's content changes later, the site shows **Changed** instead of Verified, and lists it under *ID system → Check files* for re-checking. A verification stays valid if a file is only renamed or moved.
 
+### Protect `main` with a ruleset
+
+Go to **Settings → Rules → Rulesets** and create (or edit) a branch ruleset:
+
+1. **Enforcement status**: Active.
+2. **Target branches**: **Add target → Include default branch**. Don't use *All branches*: that also blocks upload branches.
+3. **Rules**: turn on **Restrict deletions**, **Block force pushes** and **Require a pull request before merging** (0 required approvals, or 1 if a second person should review). Leave the other rules off.
+4. **Bypass list**: keep **Repository admin** (and **Maintain** if you have maintainers). Don't add *Write*, so collaborators also send pull requests. *Deploy keys* isn't needed.
+
+> **Verification and rules:** the Verify files workflow commits `verifications.json` to `main` as `github-actions[bot]`, which can't be added to a ruleset's bypass list. While **Require a pull request** applies to `main`, verifying fails.
+
 ### Let students upload directly (optional)
 
-- **Settings → Collaborators → Add people** gives a student write access, so they can commit without a pull request.
-- To protect `main` but still allow easy contributions, add a branch protection rule (**Settings → Branches**) that requires a pull request before merging.
+**Settings → Collaborators → Add people** gives a student write access. With the ruleset above they still go through a pull request, but they can create branches in this repository instead of a fork.
 
 ### Add or rename a subject
 

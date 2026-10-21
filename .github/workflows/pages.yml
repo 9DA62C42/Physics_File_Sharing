@@ -22,6 +22,15 @@ jobs:
         with:
           fetch-depth: 0 # full history, for upload dates and contributors
 
+      - name: Load verifications
+        # Written by the Verify files workflow to its own branch; empty until the first verification.
+        run: |
+          if git fetch --depth 1 origin verifications; then
+            git show FETCH_HEAD:verifications.json > verifications.json
+          else
+            echo '{"records": []}' > verifications.json
+          fi
+
       - name: Build file index
         run: python3 scripts/build_index.py
         env:

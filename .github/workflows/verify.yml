@@ -2,7 +2,9 @@ name: Verify files
 
 # Owner and collaborators verify files by opening an issue titled "[Verify] ..."
 # (the website's Verify button pre-fills it). This records the verification in
-# verifications.json, redeploys the site, and replies on the issue.
+# verifications.json on the "verifications" branch, redeploys the site, and replies
+# on the issue. The records live on their own branch so that rules protecting main
+# (for example "require a pull request") don't block this workflow.
 
 on:
   issues:
@@ -24,6 +26,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Load existing records
+        run: |
+          if git fetch --depth 1 origin verifications; then
+            git show FETCH_HEAD:verifications.json > verifications.json
+          fi
+
       - name: Check permission and record
         id: record
         env:
@@ -43,11 +51,19 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mv verifications.json "$RUNNER_TEMP/verifications.json"
+          if git ls-remote --exit-code --heads origin verifications > /dev/null; then
+            git fetch --depth 1 origin verifications
+            git switch -c verifications FETCH_HEAD
+          else
+            git switch --orphan verifications
+          fi
+          cp "$RUNNER_TEMP/verifications.json" verifications.json
           git add verifications.json
           git commit -m "Update verifications (issue #${ISSUE_NUMBER})"
-          git push
+          git push origin verifications
           # Pushes made with the workflow token don't start other workflows, so deploy explicitly.
-          gh workflow run pages.yml --ref "${GITHUB_REF_NAME}"
+          gh workflow run pages.yml --ref "${{ github.event.repository.default_branch }}"
 
       - name: Reply and close
         if: always()

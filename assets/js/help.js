@@ -143,7 +143,7 @@ window.HELP = (function () {
           "**Pages**: **Settings → Pages → Source** must be **GitHub Actions**. Otherwise the site shows no upload dates, uploaders or verification.",
           "**Labels**: create `file-request` and `uploader-code` under **Issues → Labels**. The request and registration forms add them automatically.",
           "**Rules** (**Settings → Rules → Rulesets**): target **Include default branch** only, not **All branches**. Turn on **Restrict deletions**, **Block force pushes** and **Require a pull request before merging** (0 or 1 approvals). Keep **Repository admin** in the bypass list, and do not add **Write**, so collaborators also send pull requests.",
-          "**Verification and rules**: the Verify button saves its records with the GitHub Actions account, which can't be added to a ruleset's bypass list. While **Require a pull request** applies to `main`, verifying fails; see the README for the current setup.",
+          "**Verification and rules**: the Verify button saves its records on a separate `verifications` branch, so rules on `main` don't block it. Don't target **All branches** or that branch, and don't delete it.",
           "**Registering students**: when someone opens a registration issue, check the 9-digit number, then add it to `uploaders.json`."
         ] }
       ] },
@@ -285,7 +285,7 @@ window.HELP = (function () {
           "**Pages**: ב-**Settings → Pages → Source** יש לבחור **GitHub Actions**. אחרת האתר לא יציג תאריכי העלאה, מעלים ואימות.",
           "**תוויות**: צרו `file-request` ו-`uploader-code` תחת **Issues → Labels**. טופסי הבקשה וההרשמה מוסיפים אותן אוטומטית.",
           "**כללים** (**Settings → Rules → Rulesets**): בחרו יעד **Include default branch** בלבד, לא **All branches**. הפעילו **Restrict deletions**, **Block force pushes** ו-**Require a pull request before merging** (0 או 1 אישורים). השאירו **Repository admin** ברשימת העקיפה, ואל תוסיפו **Write**, כדי שגם משתפי פעולה ישלחו pull request.",
-          "**אימות וכללים**: כפתור האימות שומר את הרשומות דרך חשבון GitHub Actions, שאי אפשר להוסיף לרשימת העקיפה. כל עוד **Require a pull request** חל על `main`, האימות נכשל; ראו את ה-README להגדרה העדכנית.",
+          "**אימות וכללים**: כפתור האימות שומר את הרשומות בענף נפרד בשם `verifications`, כך שכללים על `main` לא חוסמים אותו. אל תכוונו כללים ל-**All branches** או לענף הזה, ואל תמחקו אותו.",
           "**רישום סטודנטים**: כשמישהו פותח issue הרשמה, בדקו את המספר בן 9 הספרות והוסיפו אותו ל-`uploaders.json`."
         ] }
       ] },
@@ -427,7 +427,7 @@ window.HELP = (function () {
           "**Pages**：**Settings → Pages → Source** 必须设为 **GitHub Actions**，否则网站不会显示上传日期、上传者和审核信息。",
           "**标签**：在 **Issues → Labels** 中创建 `file-request` 和 `uploader-code`。请求表单和注册表单会自动添加这些标签。",
           "**规则**（**Settings → Rules → Rulesets**）：目标只选 **Include default branch**，不要选 **All branches**。开启 **Restrict deletions**、**Block force pushes** 和 **Require a pull request before merging**（0 或 1 个批准）。绕过列表保留 **Repository admin**，不要添加 **Write**，这样协作者也要通过 pull request 提交。",
-          "**审核与规则**：审核按钮通过 GitHub Actions 账号保存记录，而该账号无法加入规则集的绕过列表。只要 `main` 启用了 **Require a pull request**，审核就会失败；当前的设置方法见 README。",
+          "**审核与规则**：审核按钮把记录保存在单独的 `verifications` 分支上，因此 `main` 上的规则不会阻止它。规则不要以 **All branches** 或该分支为目标，也不要删除该分支。",
           "**登记学生**：有人提交注册 issue 时，核对 9 位学号，然后把它加入 `uploaders.json`。"
         ] }
       ] },
@@ -569,7 +569,7 @@ window.HELP = (function () {
           "**Pages**: en **Settings → Pages → Source** elige **GitHub Actions**. Si no, el sitio no muestra fechas de subida, quién subió los archivos ni la verificación.",
           "**Etiquetas**: crea `file-request` y `uploader-code` en **Issues → Labels**. Los formularios de solicitud y de registro las añaden automáticamente.",
           "**Reglas** (**Settings → Rules → Rulesets**): como destino elige solo **Include default branch**, no **All branches**. Activa **Restrict deletions**, **Block force pushes** y **Require a pull request before merging** (0 o 1 aprobaciones). Deja **Repository admin** en la lista de excepciones y no añadas **Write**, para que los colaboradores también envíen pull requests.",
-          "**Verificación y reglas**: el botón de verificar guarda los registros con la cuenta de GitHub Actions, que no se puede añadir a la lista de excepciones. Mientras **Require a pull request** se aplique a `main`, la verificación falla; consulta el README para la configuración actual.",
+          "**Verificación y reglas**: el botón de verificar guarda los registros en una rama aparte, `verifications`, así que las reglas de `main` no lo bloquean. No apliques reglas a **All branches** ni a esa rama, y no la borres.",
           "**Registrar estudiantes**: cuando alguien abra una incidencia de registro, comprueba el número de 9 cifras y añádelo a `uploaders.json`."
         ] }
       ] },
@@ -711,7 +711,7 @@ window.HELP = (function () {
           "**Pages** : dans **Settings → Pages → Source**, choisissez **GitHub Actions**. Sinon, le site n’affiche ni les dates d’envoi, ni les auteurs des envois, ni la vérification.",
           "**Étiquettes** : créez `file-request` et `uploader-code` dans **Issues → Labels**. Les formulaires de demande et d’inscription les ajoutent automatiquement.",
           "**Règles** (**Settings → Rules → Rulesets**) : comme cible, choisissez seulement **Include default branch**, pas **All branches**. Activez **Restrict deletions**, **Block force pushes** et **Require a pull request before merging** (0 ou 1 approbation). Gardez **Repository admin** dans la liste de contournement et n’ajoutez pas **Write**, pour que les collaborateurs passent aussi par des pull requests.",
-          "**Vérification et règles** : le bouton de vérification enregistre les données avec le compte GitHub Actions, qu’on ne peut pas ajouter à la liste de contournement. Tant que **Require a pull request** s’applique à `main`, la vérification échoue ; voir le README pour la configuration actuelle.",
+          "**Vérification et règles** : le bouton de vérification enregistre les données sur une branche à part, `verifications`, donc les règles de `main` ne le bloquent pas. Ne ciblez ni **All branches** ni cette branche, et ne la supprimez pas.",
           "**Inscrire des étudiants** : quand quelqu’un ouvre un ticket d’inscription, vérifiez le numéro à 9 chiffres, puis ajoutez-le à `uploaders.json`."
         ] }
       ] },
@@ -853,7 +853,7 @@ window.HELP = (function () {
           "**Pages**: Unter **Settings → Pages → Source** muss **GitHub Actions** stehen. Sonst zeigt die Seite keine Upload-Daten, Hochladenden und Prüfungen.",
           "**Labels**: Lege unter **Issues → Labels** `file-request` und `uploader-code` an. Die Anfrage- und Registrierungsformulare setzen sie automatisch.",
           "**Regeln** (**Settings → Rules → Rulesets**): Als Ziel nur **Include default branch** wählen, nicht **All branches**. Aktiviere **Restrict deletions**, **Block force pushes** und **Require a pull request before merging** (0 oder 1 Freigaben). Behalte **Repository admin** in der Bypass-Liste und füge **Write** nicht hinzu, damit auch Mitwirkende Pull Requests stellen.",
-          "**Prüfung und Regeln**: Der Prüfen-Button speichert die Einträge mit dem GitHub-Actions-Konto, das sich nicht zur Bypass-Liste hinzufügen lässt. Solange **Require a pull request** für `main` gilt, schlägt die Prüfung fehl; die aktuelle Einrichtung steht im README.",
+          "**Prüfung und Regeln**: Der Prüfen-Button speichert die Einträge auf einem eigenen Branch `verifications`, daher blockieren Regeln für `main` ihn nicht. Ziele nicht auf **All branches** oder diesen Branch und lösche ihn nicht.",
           "**Studierende registrieren**: Wenn jemand ein Registrierungs-Issue öffnet, prüfe die 9-stellige Nummer und trage sie in `uploaders.json` ein."
         ] }
       ] },

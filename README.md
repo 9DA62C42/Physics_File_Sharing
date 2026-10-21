@@ -303,7 +303,7 @@ Maintainers can mark files as checked. Verified items get a **🛡 Verified** ba
 > **What verification means:** the maintainer checked that the **course code, the uploader (student number) and the file name** are correct. It does **not** check or guarantee the content, which may still contain mistakes, and it is not a promise or endorsement.
 
 1. On the website, open a file and click **Verify this item** in the *Verification* section. GitHub opens a new issue titled `[Verify] …`, already listing the item's files. Add an optional note, then submit it.
-2. The **Verify files** workflow (`.github/workflows/verify.yml`) checks that you're the **owner or a collaborator with write access**. It then records the files' paths and SHA-256 hashes in [`verifications.json`](verifications.json), redeploys the site and closes the issue with a reply. Anyone else's request is refused, and nothing changes.
+2. The **Verify files** workflow (`.github/workflows/verify.yml`) checks that you're the **owner or a collaborator with write access**. It then records the files' paths and SHA-256 hashes in `verifications.json` on the **`verifications` branch**, redeploys the site and closes the issue with a reply. Anyone else's request is refused, and nothing changes.
 3. **Unverify** works the same way (`[Unverify] …`).
 
 If a verified file's content changes later, the site shows **Changed** instead of Verified, and lists it under *ID system → Check files* for re-checking. A verification stays valid if a file is only renamed or moved.
@@ -317,7 +317,7 @@ Go to **Settings → Rules → Rulesets** and create (or edit) a branch ruleset:
 3. **Rules**: turn on **Restrict deletions**, **Block force pushes** and **Require a pull request before merging** (0 required approvals, or 1 if a second person should review). Leave the other rules off.
 4. **Bypass list**: keep **Repository admin** (and **Maintain** if you have maintainers). Don't add *Write*, so collaborators also send pull requests. *Deploy keys* isn't needed.
 
-> **Verification and rules:** the Verify files workflow commits `verifications.json` to `main` as `github-actions[bot]`, which can't be added to a ruleset's bypass list. While **Require a pull request** applies to `main`, verifying fails.
+> **Verification and rules:** the Verify files workflow saves its records to its own **`verifications`** branch, not to `main`, so the ruleset doesn't block it (`github-actions[bot]` can't be added to a ruleset's bypass list). Don't target *All branches* or `verifications`, and don't delete that branch: it holds every verification. The deploy reads it on each build.
 
 ### Let students upload directly (optional)
 
@@ -350,7 +350,7 @@ Create a new folder under `files/`. Git can't store empty folders, so put at lea
 | `assets/naming.json` | The ID rules |
 | `uploaders.json` | Registered student numbers → names (and optional GitHub accounts) |
 | `uploads.json` | Who uploaded a file on another student's behalf |
-| `verifications.json` | Files verified by the owner or collaborators (written by the Verify files workflow) |
+| `verifications.json` (on the `verifications` branch) | Files verified by the owner or collaborators (written by the Verify files workflow) |
 | `scripts/verify.py`, `.github/workflows/verify.yml` | Check a `[Verify]` issue's author permission and record the verification |
 | `courses.json` | Optional course names |
 | `assets/js/data.js` | Physical constants, unit definitions and the resources list |

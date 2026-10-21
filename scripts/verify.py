@@ -9,7 +9,7 @@ everyone else gets a polite refusal.
 Reads the issue from environment variables (never from the command line, so
 issue text can't inject shell commands):
   ISSUE_TITLE, ISSUE_BODY, ISSUE_USER, ISSUE_NUMBER, GITHUB_REPOSITORY, GITHUB_TOKEN
-Writes verifications.json, and the reply text to the file in REPLY_FILE.
+Writes verifications.json (the workflow commits it to the "verifications" branch), and the reply text to the file in REPLY_FILE.
 Prints "changed=true|false" to GITHUB_OUTPUT.
 """
 import hashlib

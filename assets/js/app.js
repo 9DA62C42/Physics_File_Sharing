@@ -845,7 +845,7 @@
       ? "Maintainers: submit this issue to remove the verification of the files below."
       : "Maintainers: submit this issue to verify the files below.")
       + " Verify only after checking that the course code, uploader (student number) and file name are correct; verification says nothing about the content."
-      + " A workflow checks that you're the owner or a collaborator, updates verifications.json and closes the issue.\n\n"
+      + " A workflow checks that you're the owner or a collaborator, records it and closes the issue.\n\n"
       + paths.join("\n") + "\n\n" + (undo ? "" : "Note (optional): \n");
     return `${REPO}/issues/new?title=${enc(title)}&body=${enc(body)}`;
   }

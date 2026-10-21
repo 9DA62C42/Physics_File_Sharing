@@ -1,0 +1,124 @@
+name: 📤 Upload a file
+description: Share notes, solutions or other files. No Git needed; a maintainer reviews it before it goes on the website.
+title: "[Upload] "
+labels: ["upload"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fill in the form and drag your file into the box below. A bot checks it and opens a pull request; a maintainer reviews it, and once it's merged the file appears on the website.
+
+        **Everything here is public.** Share only your own work or material you have permission to share, and remove personal information first.
+  - type: textarea
+    id: files
+    attributes:
+      label: Files
+      description: |
+        Drag the files into this box and wait until each one shows as a link. PDF is best. Put LaTeX or other source files in one **.zip** (GitHub doesn't accept .tex attachments). Up to 25 MB per file.
+    validations:
+      required: true
+  - type: input
+    id: title
+    attributes:
+      label: Title
+      description: A readable title. Letters, numbers, spaces and . , - ( ) & only.
+      placeholder: Waves Homework 1 Solution
+    validations:
+      required: true
+  - type: dropdown
+    id: subject
+    attributes:
+      label: Subject
+      options:
+        - Waves
+    validations:
+      required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: Kind of material
+      options:
+        - "HWQ · Homework question"
+        - "HWS · Homework solution"
+        - "HWA · Homework answer"
+        - "PEQ · Past exam question"
+        - "PES · Past exam solution"
+        - "PEA · Past exam answer"
+        - "MEQ · Mock exam question"
+        - "MES · Mock exam solution"
+        - "MEA · Mock exam answer"
+        - "SY · Syllabus"
+        - "XT · Textbook"
+        - "LP · Lecture paper / handout"
+        - "LN · Lecture note"
+        - "LS · Lecture scan / board photo"
+        - "TP · Tutorial paper / sheet"
+        - "TN · Tutorial note"
+        - "TS · Tutorial solution"
+        - "TSS · Tutorial scan / board photo"
+        - "WSP · Workshop paper"
+        - "WSN · Workshop note"
+        - "WSS · Workshop scan"
+        - "LBP · Lab paper / guide"
+        - "LBD · Lab data"
+        - "LBR · Lab report"
+    validations:
+      required: true
+  - type: dropdown
+    id: license
+    attributes:
+      label: Licence
+      description: How others may use the file. Only the author can choose an open licence. Not sure? Choose "All rights reserved". The Help page explains every code.
+      options:
+        - "ARR · All rights reserved"
+        - "CC0 · CC0 1.0 (public domain dedication)"
+        - "PD · Public domain"
+        - "CCBY · Creative Commons Attribution 4.0"
+        - "CCBYSA · Creative Commons Attribution-ShareAlike 4.0"
+        - "CCBYNC · Creative Commons Attribution-NonCommercial 4.0"
+        - "CCBYNCSA · Creative Commons Attribution-NonCommercial-ShareAlike 4.0"
+        - "CCBYND · Creative Commons Attribution-NoDerivatives 4.0"
+        - "CCBYNCND · Creative Commons Attribution-NonCommercial-NoDerivatives 4.0"
+        - "MIT · MIT License (software)"
+        - "GPL3 · GNU General Public License 3.0 (software)"
+        - "STUDY · Shared with permission, for study only"
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ### File ID (recommended)
+        Fill in all four boxes to give the file an ID such as `01140086_HWS_2627W_01_123456789`. Leave them all empty to upload without one. The website's **ID system → Build a name** page explains each part.
+  - type: input
+    id: course
+    attributes:
+      label: Course code
+      description: 8 digits.
+      placeholder: "01140086"
+  - type: input
+    id: term
+    attributes:
+      label: Term
+      description: e.g. 2627W (Winter 2026–27), 2526S (Spring 2026), LEGACY or Undated.
+      placeholder: 2627W
+  - type: input
+    id: item
+    attributes:
+      label: Item
+      description: e.g. 01, 01b, A, Q01, PS01, C01 or FULL. You can add a version or tags after it, e.g. 01_V02 or 01_AN.
+      placeholder: "01"
+  - type: input
+    id: student
+    attributes:
+      label: Student number
+      description: Your 9-digit student number. It is public and credits the file to you.
+      placeholder: "123456789"
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Before you submit
+      options:
+        - label: I wrote this file, or I have permission to share it under the licence above.
+          required: true
+        - label: It contains no personal information (phone numbers, grades, ...) and isn't a solution to an open assignment.
+          required: true

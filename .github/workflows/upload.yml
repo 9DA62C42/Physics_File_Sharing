@@ -1,0 +1,76 @@
+name: Prepare upload
+
+# Students upload with the "Upload a file" issue form (the website's Upload
+# button opens it). This checks the form, saves the attached files under a
+# proper name on an "upload/issue-<n>" branch, committed as the student, and
+# opens a pull request for a maintainer to review. Editing the issue runs it again.
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: upload-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  upload:
+    if: startsWith(github.event.issue.title, '[Upload]') && github.event.issue.state == 'open'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the form and download the files
+        id: prepare
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPLY_FILE: ${{ runner.temp }}/reply.md
+        run: python3 scripts/upload.py
+
+      - name: Commit and open a pull request
+        if: steps.prepare.outputs.ok == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_USER: ${{ github.event.issue.user.login }}
+          ISSUE_USER_ID: ${{ github.event.issue.user.id }}
+          PR_TITLE: ${{ steps.prepare.outputs.title }}
+          BASE: ${{ github.event.repository.default_branch }}
+          REPLY_FILE: ${{ runner.temp }}/reply.md
+        run: |
+          branch="upload/issue-${ISSUE_NUMBER}"
+          git switch -c "$branch"
+          git add files licenses.json
+          # Committed as the student, so the website credits them as the uploader.
+          git -c user.name="$ISSUE_USER" -c user.email="${ISSUE_USER_ID}+${ISSUE_USER}@users.noreply.github.com" \
+            commit -m "$PR_TITLE" -m "Uploaded with the upload form (issue #${ISSUE_NUMBER})."
+          git push --force origin "$branch"
+
+          pr=$(gh pr list --head "$branch" --state open --json url --jq '.[0].url')
+          if [ -z "$pr" ]; then
+            body="Uploaded by @${ISSUE_USER} with the upload form. Closes #${ISSUE_NUMBER}.
+
+          Maintainers: check the file, its name and licence, then merge with **Create a merge commit** or **Rebase and merge** (not *Squash*), so @${ISSUE_USER} stays credited as the uploader."
+            pr=$(gh pr create --base "$BASE" --head "$branch" --title "$PR_TITLE" --body "$body") || pr=""
+          fi
+          if [ -n "$pr" ]; then
+            echo "A maintainer will review it in $pr. Once it's merged, the file appears on the website within a few minutes." >> "$REPLY_FILE"
+          else
+            echo "A maintainer needs to open the pull request: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/compare/${BASE}...${branch}?expand=1 (the workflow isn't allowed to create pull requests; see the README)." >> "$REPLY_FILE"
+          fi
+
+      - name: Reply
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPLY_FILE: ${{ runner.temp }}/reply.md
+        run: |
+          [ -f "$REPLY_FILE" ] || echo "Something went wrong while preparing this upload. A maintainer will check the workflow run." > "$REPLY_FILE"
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file "$REPLY_FILE"

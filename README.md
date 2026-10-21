@@ -27,7 +27,7 @@ A simple website where physics students share notes, problem-set solutions, form
 ## Contents
 
 - [How the site works](#how-the-site-works)
-- [Add a file from your browser (easiest)](#add-a-file-from-your-browser-easiest)
+- [Upload a file with the form (easiest)](#upload-a-file-with-the-form-easiest)
 - [Add files with Git (for many files)](#add-files-with-git-for-many-files)
 - [File IDs (recommended)](#file-ids-recommended)
 - [Your student number as uploader ID](#your-student-number-as-uploader-id)
@@ -57,22 +57,25 @@ files/
 
 ---
 
-## Add a file from your browser (easiest)
+## Upload a file with the form (easiest)
 
-You only need a free [GitHub account](https://github.com/signup).
+You only need a free [GitHub account](https://github.com/signup). No Git, and you don't have to name the file yourself.
 
-1. **Open the subject folder.** Go to the repository, click `files/`, then open your subject (e.g. `Waves`).
-   Or use the **Upload** button on the website. The **How to contribute** page has a subject picker that takes you straight to the right folder.
-2. **Upload.** Click **Add file → Upload files**, then drag your file(s) into the page.
-   - **New subject?** Upload from inside `files/` and drag in a whole folder (e.g. `Astrophysics/` containing your files). The folder becomes a new subject.
-3. **Describe your change.** At the bottom, under *Commit changes*, write a short message such as
-   `Add Griffiths ch. 4 solutions`.
-4. **Submit.**
-   - **No write access** (most students): GitHub makes a copy of the repository (a *fork*) for you and opens a **pull request**. Click **Propose changes**, then **Create pull request**. A maintainer will review it and merge it.
-   - **Write access** (you were added as a collaborator): choose **Commit directly to the `main` branch**, or create a branch and open a pull request if you'd like someone to check it first.
-5. **Wait a few minutes**, then refresh the website. Your file is there! 🎉
+1. **Open the form.** Click **Upload** on the website, or [open the upload form](https://github.com/9DA62C42/Physics_File_Sharing/issues/new?template=upload.yml) directly.
+2. **Attach your file.** Drag it into the **Files** box and wait until it shows as a link.
+   - PDF is best. Put LaTeX or other source files in **one `.zip`**: GitHub doesn't accept `.tex` attachments.
+   - Up to 25 MB per file and 10 files per upload. Accepted: pdf, zip, txt, md, csv, png, jpg, docx, pptx, xlsx, ipynb.
+3. **Describe it.** Title, subject, kind of material and licence. For a [file ID](#file-ids-recommended) (recommended), also fill in the course code, term, item and your student number; leave all four empty to upload without an ID.
+4. **Submit.** Within a minute the **Prepare upload** bot replies on the issue:
+   - **Something wrong?** It lists what to fix. Edit the issue (**···** → **Edit**) and it checks again.
+   - **All good?** It saves the file under the right name in `files/<Subject>/<Material>/`, adds its licence to `licenses.json`, and opens a **pull request** committed under your GitHub account.
+5. **Review.** A maintainer checks the pull request and merges it. The issue closes, and a few minutes later your file is on the website, credited to you.
 
-> 💡 Uploading in the browser works for files up to **25 MB**. For bigger files, see the [FAQ](#faq).
+### Collaborators: add files directly
+
+With write access you can also open a subject folder on GitHub and use **Add file → Upload files**. Name the file yourself with the website's **ID system → Build a name** page and add its licence to `licenses.json`. If `main` requires pull requests, choose **Create a new branch** and open one.
+
+> 💡 For files over 25 MB, see the [FAQ](#faq).
 
 ---
 
@@ -253,7 +256,7 @@ Yes, any file type works. Word, PowerPoint and Excel files are previewed with Mi
 In your browser only. They are not shared, and you won't see them on another device or after clearing site data.
 
 **Do I need to know how to code?**
-No. The browser upload method only takes clicking and dragging.
+No. The upload form only takes filling in a few boxes and dragging your file in.
 
 ---
 
@@ -272,7 +275,7 @@ From then on, every push to `main` runs `.github/workflows/pages.yml`. It builds
 
 ### Set up file requests and student registrations
 
-Create two labels (**Issues → Labels → New label**): **`file-request`** and **`uploader-code`**. The issue forms add them automatically. The website lists open issues labelled `file-request` (or whose title starts with `[Request]`).
+Create three labels (**Issues → Labels → New label**): **`file-request`**, **`uploader-code`** and **`upload`**. The issue forms add them automatically. The website lists open issues labelled `file-request` (or whose title starts with `[Request]`).
 
 When a student registers with the issue form, check the number has 9 digits and isn't listed yet, then add `{ "id": "…", "name": "…" }` to `uploaders.json`. If they chose to link their GitHub account, add `"github": "<the issue author's username>"`. Only link the account that opened the issue, so nobody can claim someone else's number.
 
@@ -307,6 +310,13 @@ Maintainers can mark files as checked. Verified items get a **🛡 Verified** ba
 3. **Unverify** works the same way (`[Unverify] …`).
 
 If a verified file's content changes later, the site shows **Changed** instead of Verified, and lists it under *ID system → Check files* for re-checking. A verification stays valid if a file is only renamed or moved.
+
+### Set up the upload form (one time)
+
+1. **Settings → Actions → General → Workflow permissions**: tick **Allow GitHub Actions to create and approve pull requests**, then **Save**. Without it, the bot can't open the pull request and asks a maintainer to open it from the link it posts.
+2. Make sure the **`upload`** label exists (see above).
+3. **Reviewing an upload:** open the pull request, check the file (permission, privacy, academic integrity), its name and its licence, then merge with **Create a merge commit** or **Rebase and merge**. Avoid *Squash and merge*: it credits the bot instead of the student.
+4. **New subject:** add it to the *Subject* list in `.github/ISSUE_TEMPLATE/upload.yml` as well as creating its folder.
 
 ### Protect `main` with a ruleset
 
@@ -352,12 +362,14 @@ Create a new folder under `files/`. Git can't store empty folders, so put at lea
 | `uploads.json` | Who uploaded a file on another student's behalf |
 | `verifications.json` (on the `verifications` branch) | Files verified by the owner or collaborators (written by the Verify files workflow) |
 | `scripts/verify.py`, `.github/workflows/verify.yml` | Check a `[Verify]` issue's author permission and record the verification |
+| `scripts/upload.py`, `.github/workflows/upload.yml` | Turn an upload-form issue into a pull request with the file named and licensed |
 | `courses.json` | Optional course names |
 | `assets/js/data.js` | Physical constants, unit definitions and the resources list |
 | `assets/js/config.js` | Site settings |
 | `assets/css/style.css` | Styling (light and dark) |
 | `scripts/build_index.py` | Builds `files.json` from the `files/` folder and git history: sizes, dates, uploaders, content hashes |
 | `.github/workflows/pages.yml` | Builds and deploys the site on every push to `main` |
+| `.github/ISSUE_TEMPLATE/upload.yml` | The "Upload a file" issue form |
 | `.github/ISSUE_TEMPLATE/file-request.yml` | The "File request" issue form |
 | `.github/ISSUE_TEMPLATE/uploader-code.yml` | The "Register your student number" issue form |
 | `files/` | All shared files, organised by subject |

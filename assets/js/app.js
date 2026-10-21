@@ -428,7 +428,10 @@
     return state.favs.has(path);
   }
 
-  const uploadUrl = (subject) => `${REPO}/upload/${C.branch}/files${subject ? "/" + enc(subject) : ""}`;
+  // Everyone uploads with the "Upload a file" issue form; a workflow turns it into a pull request.
+  const uploadUrl = () => `${REPO}/issues/new?template=upload.yml`;
+  // Collaborators can also add files straight to the repository.
+  const directUploadUrl = (subject) => `${REPO}/upload/${C.branch}/files${subject ? "/" + enc(subject) : ""}`;
 
   // ---------- routing ----------
 
@@ -718,7 +721,7 @@
       ". The backup listing can't read a private repository."));
 
   const uploadEmpty = (subject) => emptyState("No files here yet", "Be the first to share something!",
-    h("a", { class: "btn primary", href: uploadUrl(subject), target: "_blank", rel: "noopener" }, icon("upload"), "Upload a file"));
+    h("a", { class: "btn primary", href: uploadUrl(), target: "_blank", rel: "noopener" }, icon("upload"), "Upload a file"));
 
   // ---------- licences ----------
   // Every shared file can have its own licence, kept out of the file name. Where it comes from, in order:
@@ -1047,7 +1050,7 @@
 
   VIEWS.subject = (r) => fileListView({
     title: pretty(r.arg), filter: (f) => f.subject === r.arg, empty: uploadEmpty(r.arg),
-    extra: h("a", { class: "btn primary", href: uploadUrl(r.arg), target: "_blank", rel: "noopener" }, icon("upload"), "Upload to " + pretty(r.arg))
+    extra: h("a", { class: "btn primary", href: uploadUrl(), target: "_blank", rel: "noopener" }, icon("upload"), "Upload a file")
   });
 
   VIEWS.course = (r) => fileListView({
@@ -1298,7 +1301,7 @@
         info && (info.problems.length || info.hints.length || !c) ? h("ul", { class: "id-notes" },
           !c ? h("li", { class: "bad" }, "Enter the 8-digit course code (6-digit shorthand works too).") : null,
           info.problems.filter((p) => c || !/Course/.test(p)).map((p) => h("li", { class: "bad" }, p)), info.hints.map((p) => h("li", null, p))) : null,
-        h("p", { class: "muted small" }, "Suggested folder: ", h("code", null, `files/<subject>/${cat === "Syllabus" ? "" : cat + "/"}`), ". Upload it with the ", h("a", { href: uploadUrl(), target: "_blank", rel: "noopener" }, "Upload"), " button."));
+        h("p", { class: "muted small" }, "Suggested folder: ", h("code", null, `files/<subject>/${cat === "Syllabus" ? "" : cat + "/"}`), " (for collaborators adding files directly). The ", h("a", { href: uploadUrl(), target: "_blank", rel: "noopener" }, "upload form"), " names and files uploads for you."));
     }
     [course, type, year, season, item, version, licSel, uploader, title, ext, ...tagBoxes.map((l) => l.firstChild)].forEach((el) => el.addEventListener("input", update));
     update();
@@ -1583,31 +1586,35 @@
   VIEWS.contribute = () => {
     const counts = subjectCounts();
     const subjectSel = h("select", { class: "input", "aria-label": "Subject" }, Object.keys(counts).sort().map((s) => h("option", { value: s }, pretty(s))));
-    const go = h("a", { class: "btn primary", target: "_blank", rel: "noopener" }, icon("upload"), "Upload to this subject");
-    const sync = () => { go.href = uploadUrl(subjectSel.value); };
+    const go = h("a", { class: "btn small", target: "_blank", rel: "noopener" }, icon("external"), "Open the folder");
+    const sync = () => { go.href = directUploadUrl(subjectSel.value); };
     subjectSel.addEventListener("change", sync);
     sync();
     const step = (n, title, ...body) => h("li", { class: "step" }, h("span", { class: "step-n" }, String(n)), h("div", null, h("h3", null, title), ...body));
     return h("div", { class: "prose" },
       h("div", { class: "page-head" }, h("div", null, h("h1", null, "How to contribute"),
-        h("p", { class: "muted" }, "You only need a free GitHub account. No coding required."))),
-      h("div", { class: "callout" }, h("p", null, h("strong", null, "Quick upload: "), "pick a subject and you'll go straight to GitHub's upload page."),
-        h("div", { class: "row" }, subjectSel, go)),
+        h("p", { class: "muted" }, "You only need a free GitHub account. No Git or coding required."))),
+      h("div", { class: "callout" }, h("p", null, h("strong", null, "Upload form: "), "fill in a short form, drag your file in, and submit. A maintainer reviews it before it goes on the site."),
+        h("div", { class: "row" }, h("a", { class: "btn primary", href: uploadUrl(), target: "_blank", rel: "noopener" }, icon("upload"), "Open the upload form"))),
       h("ol", { class: "steps" },
-        step(1, "Name your file (recommended)", h("p", null, "Give it an ID with the ", h("a", { href: "#/ids?tab=build" }, "name builder"), ", e.g. ", h("code", null, "01140086_HWS_2627W_01_123456789 Waves Homework 1 Solution.pdf"),
-          ". The last part is your student number, so your work is credited (it will be public). No ID? Upload it anyway.")),
-        step(2, "Open the subject folder", h("p", null, "Use the button above, or open the ", h("a", { href: `${REPO}/tree/${C.branch}/files`, target: "_blank", rel: "noopener" }, "files/ folder"), " on GitHub and choose a subject.")),
-        step(3, "Upload your file", h("p", null, "Click ", h("strong", null, "Add file → Upload files"), " and drag your file in. Up to 25 MB per file in the browser.")),
-        step(4, "Describe and submit", h("p", null, "Write a short message like ", h("code", null, "Add Waves HW1 solution"), ". Without write access, GitHub opens a ", h("strong", null, "pull request"), " for you. Click ", h("strong", null, "Propose changes"), " and then ", h("strong", null, "Create pull request"), ".")),
-        step(5, "It appears on the site", h("p", null, "Once your change is merged, the site rebuilds automatically. Your file shows up within a few minutes, credited to you."))),
+        step(1, "Open the form", h("p", null, "Click ", h("strong", null, "Upload"), " at the top of any page. GitHub asks you to sign in or create a free account first.")),
+        step(2, "Attach your file", h("p", null, "Drag it into the ", h("strong", null, "Files"), " box and wait until it shows as a link. PDF is best; put LaTeX or other sources in one ", h("code", null, ".zip"), " (GitHub doesn't accept ", h("code", null, ".tex"), "). Up to 25 MB per file.")),
+        step(3, "Describe it", h("p", null, "Give a title, the subject, the kind of material and a licence. For a file ID (recommended), also fill in the course code, term, item and your student number; the ",
+          h("a", { href: "#/ids?tab=build" }, "name builder"), " explains each part. You don't have to name the file yourself.")),
+        step(4, "Submit and wait for review", h("p", null, "A bot checks the form within a minute and replies on the issue. If something is wrong, it says what; edit the issue to fix it. Otherwise it opens a pull request for a maintainer.")),
+        step(5, "It appears on the site", h("p", null, "Once the maintainer merges it, the site rebuilds and your file shows up within a few minutes, credited to your GitHub account (and to your student number if it's in the ID)."))),
+      h("h2", null, "Collaborators and many files"),
+      h("p", null, "If you have write access, you can add files straight to a subject folder (", h("strong", null, "Add file → Upload files"), "), or use Git for many files at once. Name files yourself with the ",
+        h("a", { href: "#/ids?tab=build" }, "name builder"), " and add their licence to ", h("a", { href: licensesUrl(), target: "_blank", rel: "noopener" }, "licenses.json"), "."),
+      h("div", { class: "row" }, subjectSel, go),
       h("h2", null, "Rules"),
       h("ul", null,
         h("li", null, "Share your own work, or material that is clearly free to share."),
         h("li", null, "Follow your university's academic-integrity rules. No solutions to open assignments or private exams."),
         h("li", null, "Remove other personal information (phone numbers, grades). Your student number appears only if you put it in the ID."),
         h("li", null, "Everything here is public, and Git keeps old versions."),
-        h("li", null, "Choose a licence for each file you share in ", h("a", { href: licensesUrl(), target: "_blank", rel: "noopener" }, "licenses.json"),
-          " (not in the file name). The ", h("a", { href: "#/ids?tab=build" }, "name builder"), " writes the line for you. Without one, nobody may reuse it beyond reading it here. Only license what you wrote; course material keeps its owner's terms. ",
+        h("li", null, "Choose a licence for each file (in the upload form, or in ", h("a", { href: licensesUrl(), target: "_blank", rel: "noopener" }, "licenses.json"),
+          "; never in the file name). Without one, nobody may reuse it beyond reading it here. Only license what you wrote; course material keeps its owner's terms. ",
           h("a", { href: contentLicenseUrl(), target: "_blank", rel: "noopener" }, "Details →"))),
       h("p", null, h("a", { href: `${REPO}#readme`, target: "_blank", rel: "noopener" }, "Read the full guide in the README →")));
   };

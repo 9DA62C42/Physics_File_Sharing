@@ -67,12 +67,13 @@ window.HELP = (function () {
       ] },
       { id: "upload", icon: "upload", title: "Uploading a file", blocks: [
         { ol: [
-          "Name your file with **ID system → Build a name** (optional, but recommended).",
-          "Click **Upload** at the top, or open the subject folder on GitHub and choose **Add file → Upload files**. Drag your file in (up to 25 MB).",
-          "Write a short message and propose the change. GitHub opens a pull request; tick its checklist (permission, licence, privacy).",
-          "When it's merged, the site updates within a few minutes."
+          "Click **Upload** at the top. GitHub opens the upload form (sign in or create a free account first).",
+          "Drag your file into the **Files** box and wait until it shows as a link. PDF is best; put LaTeX or other sources in one `.zip`, because GitHub doesn't accept `.tex` files. Up to 25 MB per file.",
+          "Fill in the title, subject, kind of material and licence. For a file ID (recommended), also fill in the course code, term, item and your student number. You don't need to rename the file: the bot names it for you.",
+          "Submit. Within a minute a bot replies on the issue. If something is missing, it says what; edit the issue (**···** → **Edit**) and it checks again. Otherwise it opens a pull request.",
+          "A maintainer reviews the pull request. Once it's merged, the file appears on the site within a few minutes, credited to your GitHub account."
         ] },
-        { tip: "You need a free GitHub account. If the repository is private, ask the owner to add you as a collaborator." }
+        { tip: "Collaborators with write access can also add files directly (**Add file → Upload files** in a subject folder), naming them with **ID system → Build a name** and adding the licence to `licenses.json`." }
       ] },
       { id: "people", icon: "users", title: "Student numbers and uploaders", blocks: [
         { ul: [
@@ -114,7 +115,7 @@ window.HELP = (function () {
       { id: "requests", icon: "inbox", title: "File requests", blocks: [
         { ul: [
           "Looking for something? Open **File requests** and click **Request a file**.",
-          "Have a requested file? Upload it and write “Closes #number” in your pull request."
+          "Have a requested file? Upload it with the form, then comment on the request with a link to your upload."
         ] }
       ] },
       { id: "tools", icon: "atom", title: "Study tools", blocks: [
@@ -141,7 +142,8 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "Repository setup (owner)", blocks: [
         { ol: [
           "**Pages**: **Settings → Pages → Source** must be **GitHub Actions**. Otherwise the site shows no upload dates, uploaders or verification.",
-          "**Labels**: create `file-request` and `uploader-code` under **Issues → Labels**. The request and registration forms add them automatically.",
+          "**Labels**: create `file-request`, `uploader-code` and `upload` under **Issues → Labels**. The request, registration and upload forms add them automatically.",
+          "**Upload form**: under **Settings → Actions → General → Workflow permissions**, tick **Allow GitHub Actions to create and approve pull requests**. Merge uploads with **Create a merge commit** or **Rebase and merge**, not squash, so the student stays credited. A new subject also goes in the Subject list of `.github/ISSUE_TEMPLATE/upload.yml`.",
           "**Rules** (**Settings → Rules → Rulesets**): target **Include default branch** only, not **All branches**. Turn on **Restrict deletions**, **Block force pushes** and **Require a pull request before merging** (0 or 1 approvals). Keep **Repository admin** in the bypass list, and do not add **Write**, so collaborators also send pull requests.",
           "**Verification and rules**: the Verify button saves its records on a separate `verifications` branch, so rules on `main` don't block it. Don't target **All branches** or that branch, and don't delete it.",
           "**Registering students**: when someone opens a registration issue, check the 9-digit number, then add it to `uploaders.json`."
@@ -209,12 +211,13 @@ window.HELP = (function () {
       ] },
       { id: "upload", icon: "upload", title: "העלאת קובץ", blocks: [
         { ol: [
-          "תנו לקובץ שם בעזרת **ID system → Build a name** (לא חובה, אבל מומלץ).",
-          "לחצו על **Upload** למעלה, או פתחו את תיקיית המקצוע ב-GitHub ובחרו **Add file → Upload files**. גררו את הקובץ פנימה (עד ‎25 MB).",
-          "כתבו הודעה קצרה והציעו את השינוי. ‏GitHub פותח בקשת משיכה (pull request); סמנו את רשימת הבדיקה (הרשאה, רישיון, פרטיות).",
-          "אחרי המיזוג האתר מתעדכן תוך כמה דקות."
+          "לחצו על **Upload** למעלה. ‏GitHub פותח את טופס ההעלאה (התחברו או צרו חשבון חינמי קודם).",
+          "גררו את הקובץ לתיבה **Files** וחכו עד שהוא מופיע כקישור. עדיף PDF; קבצי LaTeX או מקור אחר שימו בקובץ `.zip` אחד, כי GitHub לא מקבל קבצי `.tex`. עד ‎25 MB לקובץ.",
+          "מלאו כותרת, מקצוע, סוג חומר ורישיון. כדי לתת לקובץ מזהה (מומלץ), מלאו גם קוד קורס, סמסטר, פריט ומספר סטודנט. אין צורך לשנות את שם הקובץ: הבוט נותן לו שם.",
+          "שלחו. תוך דקה בוט עונה ב-issue. אם חסר משהו, הוא כותב מה; ערכו את ה-issue (**···** → **Edit**) והבדיקה תרוץ שוב. אחרת הוא פותח pull request.",
+          "מתחזק בודק את ה-pull request. אחרי המיזוג הקובץ מופיע באתר תוך כמה דקות, בשם חשבון ה-GitHub שלכם."
         ] },
-        { tip: "צריך חשבון GitHub (בחינם). אם המאגר פרטי, בקשו מהבעלים להוסיף אתכם כמשתפי פעולה (collaborators)." }
+        { tip: "משתפי פעולה עם הרשאת כתיבה יכולים גם להוסיף קבצים ישירות (**Add file → Upload files** בתיקיית המקצוע), לתת שם בעזרת **ID system → Build a name** ולהוסיף את הרישיון ל-`licenses.json`." }
       ] },
       { id: "people", icon: "users", title: "מספרי סטודנט ומעלים", blocks: [
         { ul: [
@@ -256,7 +259,7 @@ window.HELP = (function () {
       { id: "requests", icon: "inbox", title: "בקשות לקבצים", blocks: [
         { ul: [
           "מחפשים משהו? פתחו את **File requests** ולחצו על **Request a file**.",
-          "יש לכם קובץ שביקשו? העלו אותו וכתבו “Closes #מספר” בבקשת המשיכה."
+          "יש לכם קובץ שביקשו? העלו אותו בטופס, ואז הגיבו על הבקשה עם קישור להעלאה שלכם."
         ] }
       ] },
       { id: "tools", icon: "atom", title: "כלי לימוד", blocks: [
@@ -283,7 +286,8 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "הגדרת המאגר (בעלים)", blocks: [
         { ol: [
           "**Pages**: ב-**Settings → Pages → Source** יש לבחור **GitHub Actions**. אחרת האתר לא יציג תאריכי העלאה, מעלים ואימות.",
-          "**תוויות**: צרו `file-request` ו-`uploader-code` תחת **Issues → Labels**. טופסי הבקשה וההרשמה מוסיפים אותן אוטומטית.",
+          "**תוויות**: צרו `file-request`, `uploader-code` ו-`upload` תחת **Issues → Labels**. טופסי הבקשה, ההרשמה וההעלאה מוסיפים אותן אוטומטית.",
+          "**טופס ההעלאה**: ב-**Settings → Actions → General → Workflow permissions** סמנו **Allow GitHub Actions to create and approve pull requests**. מזגו העלאות עם **Create a merge commit** או **Rebase and merge**, לא squash, כדי שהסטודנט יישאר מקבל הקרדיט. מקצוע חדש מוסיפים גם לרשימת Subject בקובץ `.github/ISSUE_TEMPLATE/upload.yml`.",
           "**כללים** (**Settings → Rules → Rulesets**): בחרו יעד **Include default branch** בלבד, לא **All branches**. הפעילו **Restrict deletions**, **Block force pushes** ו-**Require a pull request before merging** (0 או 1 אישורים). השאירו **Repository admin** ברשימת העקיפה, ואל תוסיפו **Write**, כדי שגם משתפי פעולה ישלחו pull request.",
           "**אימות וכללים**: כפתור האימות שומר את הרשומות בענף נפרד בשם `verifications`, כך שכללים על `main` לא חוסמים אותו. אל תכוונו כללים ל-**All branches** או לענף הזה, ואל תמחקו אותו.",
           "**רישום סטודנטים**: כשמישהו פותח issue הרשמה, בדקו את המספר בן 9 הספרות והוסיפו אותו ל-`uploaders.json`."
@@ -351,12 +355,13 @@ window.HELP = (function () {
       ] },
       { id: "upload", icon: "upload", title: "上传文件", blocks: [
         { ol: [
-          "用 **ID system → Build a name** 为文件命名（可选，但推荐）。",
-          "点击顶部的 **Upload**，或在 GitHub 上打开学科文件夹，选择 **Add file → Upload files**，把文件拖进去（最大 25 MB）。",
-          "写一句简短的说明并提交修改。GitHub 会创建一个拉取请求（pull request），请勾选其中的检查清单（授权、许可证、隐私）。",
-          "合并之后，网站会在几分钟内更新。"
+          "点击顶部的 **Upload**，GitHub 会打开上传表单（需先登录或注册免费账号）。",
+          "把文件拖进 **Files** 框，等它显示为链接。最好上传 PDF；LaTeX 等源文件请打包成一个 `.zip`，因为 GitHub 不接受 `.tex` 文件。每个文件最大 25 MB。",
+          "填写标题、学科、资料类型和许可证。若要给文件编 ID（推荐），还要填写课程代码、学期、条目和学号。不用自己改文件名，机器人会替你命名。",
+          "提交。一分钟内机器人会在 issue 中回复。如果缺少信息，它会说明缺什么；编辑该 issue（**···** → **Edit**）后会重新检查。否则它会创建一个拉取请求（pull request）。",
+          "维护者审核这个拉取请求。合并后，文件会在几分钟内出现在网站上，并署名你的 GitHub 账号。"
         ] },
-        { tip: "你需要一个免费的 GitHub 账号。如果仓库是私有的，请让所有者把你添加为协作者（collaborator）。" }
+        { tip: "有写入权限的协作者也可以直接添加文件（在学科文件夹中选择 **Add file → Upload files**），用 **ID system → Build a name** 命名，并在 `licenses.json` 中添加许可证。" }
       ] },
       { id: "people", icon: "users", title: "学号与上传者", blocks: [
         { ul: [
@@ -398,7 +403,7 @@ window.HELP = (function () {
       { id: "requests", icon: "inbox", title: "文件请求", blocks: [
         { ul: [
           "在找资料？打开 **File requests**，点击 **Request a file**。",
-          "你有别人请求的文件？上传它，并在拉取请求中写上 “Closes #编号”。"
+          "你有别人请求的文件？用上传表单上传，然后在该请求下留言并附上你的上传链接。"
         ] }
       ] },
       { id: "tools", icon: "atom", title: "学习工具", blocks: [
@@ -425,7 +430,8 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "仓库设置（所有者）", blocks: [
         { ol: [
           "**Pages**：**Settings → Pages → Source** 必须设为 **GitHub Actions**，否则网站不会显示上传日期、上传者和审核信息。",
-          "**标签**：在 **Issues → Labels** 中创建 `file-request` 和 `uploader-code`。请求表单和注册表单会自动添加这些标签。",
+          "**标签**：在 **Issues → Labels** 中创建 `file-request`、`uploader-code` 和 `upload`。请求、注册和上传表单会自动添加这些标签。",
+          "**上传表单**：在 **Settings → Actions → General → Workflow permissions** 中勾选 **Allow GitHub Actions to create and approve pull requests**。合并上传时用 **Create a merge commit** 或 **Rebase and merge**，不要用 squash，这样上传者的署名才会保留。新增学科时，还要把它加入 `.github/ISSUE_TEMPLATE/upload.yml` 的 Subject 列表。",
           "**规则**（**Settings → Rules → Rulesets**）：目标只选 **Include default branch**，不要选 **All branches**。开启 **Restrict deletions**、**Block force pushes** 和 **Require a pull request before merging**（0 或 1 个批准）。绕过列表保留 **Repository admin**，不要添加 **Write**，这样协作者也要通过 pull request 提交。",
           "**审核与规则**：审核按钮把记录保存在单独的 `verifications` 分支上，因此 `main` 上的规则不会阻止它。规则不要以 **All branches** 或该分支为目标，也不要删除该分支。",
           "**登记学生**：有人提交注册 issue 时，核对 9 位学号，然后把它加入 `uploaders.json`。"
@@ -493,12 +499,13 @@ window.HELP = (function () {
       ] },
       { id: "upload", icon: "upload", title: "Subir un archivo", blocks: [
         { ol: [
-          "Ponle nombre al archivo con **ID system → Build a name** (opcional, pero recomendado).",
-          "Haz clic en **Upload** arriba, o abre la carpeta de la asignatura en GitHub y elige **Add file → Upload files**. Arrastra tu archivo (hasta 25 MB).",
-          "Escribe un mensaje corto y propón el cambio. GitHub abre una solicitud de cambios (pull request); marca su lista de comprobación (permiso, licencia, privacidad).",
-          "Cuando se fusiona, el sitio se actualiza en pocos minutos."
+          "Haz clic en **Upload** arriba. GitHub abre el formulario de subida (antes inicia sesión o crea una cuenta gratuita).",
+          "Arrastra tu archivo al cuadro **Files** y espera a que aparezca como enlace. Mejor en PDF; pon LaTeX u otras fuentes en un solo `.zip`, porque GitHub no acepta archivos `.tex`. Hasta 25 MB por archivo.",
+          "Rellena el título, la asignatura, el tipo de material y la licencia. Para darle un ID (recomendado), rellena también el código del curso, el cuatrimestre, el elemento y tu número de estudiante. No hace falta renombrar el archivo: el bot le pone nombre.",
+          "Envíalo. En un minuto un bot responde en la incidencia. Si falta algo, dice qué; edita la incidencia (**···** → **Edit**) y vuelve a comprobarla. Si todo está bien, abre una solicitud de cambios (pull request).",
+          "Un responsable revisa la solicitud. Cuando se fusiona, el archivo aparece en el sitio en pocos minutos, atribuido a tu cuenta de GitHub."
         ] },
-        { tip: "Necesitas una cuenta gratuita de GitHub. Si el repositorio es privado, pide al propietario que te añada como colaborador." }
+        { tip: "Los colaboradores con permiso de escritura también pueden añadir archivos directamente (**Add file → Upload files** en la carpeta de la asignatura), ponerles nombre con **ID system → Build a name** y añadir la licencia en `licenses.json`." }
       ] },
       { id: "people", icon: "users", title: "Números de estudiante y quién sube", blocks: [
         { ul: [
@@ -540,7 +547,7 @@ window.HELP = (function () {
       { id: "requests", icon: "inbox", title: "Solicitudes de archivos", blocks: [
         { ul: [
           "¿Buscas algo? Abre **File requests** y haz clic en **Request a file**.",
-          "¿Tienes un archivo que alguien pidió? Súbelo y escribe “Closes #número” en tu solicitud de cambios."
+          "¿Tienes un archivo que alguien pidió? Súbelo con el formulario y luego comenta en la solicitud con un enlace a tu subida."
         ] }
       ] },
       { id: "tools", icon: "atom", title: "Herramientas de estudio", blocks: [
@@ -567,7 +574,8 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "Configuración del repositorio (propietario)", blocks: [
         { ol: [
           "**Pages**: en **Settings → Pages → Source** elige **GitHub Actions**. Si no, el sitio no muestra fechas de subida, quién subió los archivos ni la verificación.",
-          "**Etiquetas**: crea `file-request` y `uploader-code` en **Issues → Labels**. Los formularios de solicitud y de registro las añaden automáticamente.",
+          "**Etiquetas**: crea `file-request`, `uploader-code` y `upload` en **Issues → Labels**. Los formularios de solicitud, registro y subida las añaden automáticamente.",
+          "**Formulario de subida**: en **Settings → Actions → General → Workflow permissions**, marca **Allow GitHub Actions to create and approve pull requests**. Fusiona las subidas con **Create a merge commit** o **Rebase and merge**, no con squash, para que el estudiante siga figurando como autor de la subida. Una asignatura nueva también va en la lista Subject de `.github/ISSUE_TEMPLATE/upload.yml`.",
           "**Reglas** (**Settings → Rules → Rulesets**): como destino elige solo **Include default branch**, no **All branches**. Activa **Restrict deletions**, **Block force pushes** y **Require a pull request before merging** (0 o 1 aprobaciones). Deja **Repository admin** en la lista de excepciones y no añadas **Write**, para que los colaboradores también envíen pull requests.",
           "**Verificación y reglas**: el botón de verificar guarda los registros en una rama aparte, `verifications`, así que las reglas de `main` no lo bloquean. No apliques reglas a **All branches** ni a esa rama, y no la borres.",
           "**Registrar estudiantes**: cuando alguien abra una incidencia de registro, comprueba el número de 9 cifras y añádelo a `uploaders.json`."
@@ -635,12 +643,13 @@ window.HELP = (function () {
       ] },
       { id: "upload", icon: "upload", title: "Envoyer un fichier", blocks: [
         { ol: [
-          "Nommez votre fichier avec **ID system → Build a name** (facultatif, mais recommandé).",
-          "Cliquez sur **Upload** en haut, ou ouvrez le dossier de la matière sur GitHub et choisissez **Add file → Upload files**. Glissez-y votre fichier (25 Mo maximum).",
-          "Écrivez un court message et proposez la modification. GitHub ouvre une demande de fusion (pull request) ; cochez sa liste de vérification (autorisation, licence, confidentialité).",
-          "Une fois la demande fusionnée, le site se met à jour en quelques minutes."
+          "Cliquez sur **Upload** en haut. GitHub ouvre le formulaire d’envoi (connectez-vous ou créez d’abord un compte gratuit).",
+          "Glissez votre fichier dans la zone **Files** et attendez qu’il apparaisse sous forme de lien. Le PDF est préférable ; mettez les sources LaTeX ou autres dans un seul `.zip`, car GitHub n’accepte pas les fichiers `.tex`. 25 Mo maximum par fichier.",
+          "Indiquez le titre, la matière, le type de document et la licence. Pour un identifiant (recommandé), indiquez aussi le code du cours, le semestre, l’élément et votre numéro d’étudiant. Inutile de renommer le fichier : le bot le nomme pour vous.",
+          "Envoyez. En une minute, un bot répond sur le ticket. S’il manque quelque chose, il l’indique ; modifiez le ticket (**···** → **Edit**) et la vérification recommence. Sinon, il ouvre une demande de fusion (pull request).",
+          "Un responsable examine la demande. Une fois fusionnée, le fichier apparaît sur le site en quelques minutes, crédité à votre compte GitHub."
         ] },
-        { tip: "Il vous faut un compte GitHub gratuit. Si le dépôt est privé, demandez au propriétaire de vous ajouter comme collaborateur." }
+        { tip: "Les collaborateurs ayant un accès en écriture peuvent aussi ajouter des fichiers directement (**Add file → Upload files** dans le dossier de la matière), les nommer avec **ID system → Build a name** et ajouter leur licence dans `licenses.json`." }
       ] },
       { id: "people", icon: "users", title: "Numéros d’étudiant et auteurs des envois", blocks: [
         { ul: [
@@ -682,7 +691,7 @@ window.HELP = (function () {
       { id: "requests", icon: "inbox", title: "Demandes de fichiers", blocks: [
         { ul: [
           "Vous cherchez quelque chose ? Ouvrez **File requests** et cliquez sur **Request a file**.",
-          "Vous avez un fichier demandé ? Envoyez-le et écrivez « Closes #numéro » dans votre demande de fusion."
+          "Vous avez un fichier demandé ? Envoyez-le avec le formulaire, puis commentez la demande avec un lien vers votre envoi."
         ] }
       ] },
       { id: "tools", icon: "atom", title: "Outils d’étude", blocks: [
@@ -709,7 +718,8 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "Configuration du dépôt (propriétaire)", blocks: [
         { ol: [
           "**Pages** : dans **Settings → Pages → Source**, choisissez **GitHub Actions**. Sinon, le site n’affiche ni les dates d’envoi, ni les auteurs des envois, ni la vérification.",
-          "**Étiquettes** : créez `file-request` et `uploader-code` dans **Issues → Labels**. Les formulaires de demande et d’inscription les ajoutent automatiquement.",
+          "**Étiquettes** : créez `file-request`, `uploader-code` et `upload` dans **Issues → Labels**. Les formulaires de demande, d’inscription et d’envoi les ajoutent automatiquement.",
+          "**Formulaire d’envoi** : dans **Settings → Actions → General → Workflow permissions**, cochez **Allow GitHub Actions to create and approve pull requests**. Fusionnez les envois avec **Create a merge commit** ou **Rebase and merge**, pas squash, pour que l’étudiant reste crédité. Une nouvelle matière doit aussi être ajoutée à la liste Subject de `.github/ISSUE_TEMPLATE/upload.yml`.",
           "**Règles** (**Settings → Rules → Rulesets**) : comme cible, choisissez seulement **Include default branch**, pas **All branches**. Activez **Restrict deletions**, **Block force pushes** et **Require a pull request before merging** (0 ou 1 approbation). Gardez **Repository admin** dans la liste de contournement et n’ajoutez pas **Write**, pour que les collaborateurs passent aussi par des pull requests.",
           "**Vérification et règles** : le bouton de vérification enregistre les données sur une branche à part, `verifications`, donc les règles de `main` ne le bloquent pas. Ne ciblez ni **All branches** ni cette branche, et ne la supprimez pas.",
           "**Inscrire des étudiants** : quand quelqu’un ouvre un ticket d’inscription, vérifiez le numéro à 9 chiffres, puis ajoutez-le à `uploaders.json`."
@@ -777,12 +787,13 @@ window.HELP = (function () {
       ] },
       { id: "upload", icon: "upload", title: "Eine Datei hochladen", blocks: [
         { ol: [
-          "Benenne deine Datei mit **ID system → Build a name** (optional, aber empfohlen).",
-          "Klicke oben auf **Upload** oder öffne den Fachordner auf GitHub und wähle **Add file → Upload files**. Ziehe deine Datei hinein (bis 25 MB).",
-          "Schreibe eine kurze Nachricht und schlage die Änderung vor. GitHub öffnet einen Pull Request; hake dessen Checkliste ab (Erlaubnis, Lizenz, Datenschutz).",
-          "Nach dem Zusammenführen (Merge) aktualisiert sich die Website innerhalb weniger Minuten."
+          "Klicke oben auf **Upload**. GitHub öffnet das Upload-Formular (vorher anmelden oder ein kostenloses Konto anlegen).",
+          "Ziehe deine Datei in das Feld **Files** und warte, bis sie als Link erscheint. Am besten PDF; LaTeX- oder andere Quelldateien kommen in eine einzige `.zip`, weil GitHub keine `.tex`-Dateien annimmt. Bis 25 MB pro Datei.",
+          "Gib Titel, Fach, Art des Materials und Lizenz an. Für eine Datei-ID (empfohlen) zusätzlich Kurscode, Semester, Eintrag und deine Matrikelnummer. Du musst die Datei nicht umbenennen: Der Bot benennt sie für dich.",
+          "Absenden. Innerhalb einer Minute antwortet ein Bot im Issue. Fehlt etwas, sagt er was; bearbeite das Issue (**···** → **Edit**), dann prüft er erneut. Sonst öffnet er einen Pull Request.",
+          "Ein Betreuer prüft den Pull Request. Nach dem Zusammenführen erscheint die Datei innerhalb weniger Minuten auf der Website, deinem GitHub-Konto zugeordnet."
         ] },
-        { tip: "Du brauchst ein kostenloses GitHub-Konto. Ist das Repository privat, bitte den Eigentümer, dich als Mitwirkenden (Collaborator) hinzuzufügen." }
+        { tip: "Mitwirkende mit Schreibrechten können Dateien auch direkt hinzufügen (**Add file → Upload files** im Fachordner), sie mit **ID system → Build a name** benennen und die Lizenz in `licenses.json` eintragen." }
       ] },
       { id: "people", icon: "users", title: "Matrikelnummern und Hochladende", blocks: [
         { ul: [
@@ -824,7 +835,7 @@ window.HELP = (function () {
       { id: "requests", icon: "inbox", title: "Dateiwünsche", blocks: [
         { ul: [
           "Du suchst etwas? Öffne **File requests** und klicke auf **Request a file**.",
-          "Du hast eine gewünschte Datei? Lade sie hoch und schreibe „Closes #Nummer“ in deinen Pull Request."
+          "Du hast eine gewünschte Datei? Lade sie mit dem Formular hoch und kommentiere die Anfrage mit einem Link zu deinem Upload."
         ] }
       ] },
       { id: "tools", icon: "atom", title: "Lernwerkzeuge", blocks: [
@@ -851,7 +862,8 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "Repository einrichten (Eigentümer)", blocks: [
         { ol: [
           "**Pages**: Unter **Settings → Pages → Source** muss **GitHub Actions** stehen. Sonst zeigt die Seite keine Upload-Daten, Hochladenden und Prüfungen.",
-          "**Labels**: Lege unter **Issues → Labels** `file-request` und `uploader-code` an. Die Anfrage- und Registrierungsformulare setzen sie automatisch.",
+          "**Labels**: Lege unter **Issues → Labels** `file-request`, `uploader-code` und `upload` an. Die Anfrage-, Registrierungs- und Upload-Formulare setzen sie automatisch.",
+          "**Upload-Formular**: Unter **Settings → Actions → General → Workflow permissions** **Allow GitHub Actions to create and approve pull requests** anhaken. Uploads mit **Create a merge commit** oder **Rebase and merge** zusammenführen, nicht mit Squash, damit die Studierenden als Hochladende genannt bleiben. Ein neues Fach gehört auch in die Subject-Liste von `.github/ISSUE_TEMPLATE/upload.yml`.",
           "**Regeln** (**Settings → Rules → Rulesets**): Als Ziel nur **Include default branch** wählen, nicht **All branches**. Aktiviere **Restrict deletions**, **Block force pushes** und **Require a pull request before merging** (0 oder 1 Freigaben). Behalte **Repository admin** in der Bypass-Liste und füge **Write** nicht hinzu, damit auch Mitwirkende Pull Requests stellen.",
           "**Prüfung und Regeln**: Der Prüfen-Button speichert die Einträge auf einem eigenen Branch `verifications`, daher blockieren Regeln für `main` ihn nicht. Ziele nicht auf **All branches** oder diesen Branch und lösche ihn nicht.",
           "**Studierende registrieren**: Wenn jemand ein Registrierungs-Issue öffnet, prüfe die 9-stellige Nummer und trage sie in `uploaders.json` ein."

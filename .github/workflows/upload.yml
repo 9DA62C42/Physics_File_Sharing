@@ -46,7 +46,7 @@ jobs:
         run: |
           branch="upload/issue-${ISSUE_NUMBER}"
           git switch -c "$branch"
-          git add files licenses.json
+          git add files licenses.json courses.json .github/ISSUE_TEMPLATE
           # Committed as the student, so the website credits them as the uploader.
           git -c user.name="$ISSUE_USER" -c user.email="${ISSUE_USER_ID}+${ISSUE_USER}@users.noreply.github.com" \
             commit -m "$PR_TITLE" -m "Uploaded with the upload form (issue #${ISSUE_NUMBER})."

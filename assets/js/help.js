@@ -69,7 +69,7 @@ window.HELP = (function () {
         { ol: [
           "Click **Upload** at the top. GitHub opens the upload form (sign in or create a free account first).",
           "Drag your file into the **Files** box and wait until it shows as a link. PDF is best; put LaTeX or other sources in one `.zip`, because GitHub doesn't accept `.tex` files. Up to 25 MB per file.",
-          "Fill in the title, subject, kind of material and licence. For a file ID (recommended), also fill in the course code, term, item and your student number. You don't need to rename the file: the bot names it for you.",
+          "Fill in the title, subject, kind of material and licence. For a file ID (recommended), also fill in the course code, term, item and your student number. Subject or course not listed? Choose **New subject** and write its name, and give the course name. You don't need to rename the file: the bot names it for you.",
           "Submit. Within a minute a bot replies on the issue. If something is missing, it says what; edit the issue (**···** → **Edit**) and it checks again. Otherwise it opens a pull request.",
           "A maintainer reviews the pull request. Once it's merged, the file appears on the site within a few minutes, credited to your GitHub account."
         ] },
@@ -143,7 +143,7 @@ window.HELP = (function () {
         { ol: [
           "**Pages**: **Settings → Pages → Source** must be **GitHub Actions**. Otherwise the site shows no upload dates, uploaders or verification.",
           "**Labels**: create `file-request`, `uploader-code` and `upload` under **Issues → Labels**. The request, registration and upload forms add them automatically.",
-          "**Upload form**: under **Settings → Actions → General → Workflow permissions**, tick **Allow GitHub Actions to create and approve pull requests**. Merge uploads with **Create a merge commit** or **Rebase and merge**, not squash, so the student stays credited. A new subject also goes in the Subject list of `.github/ISSUE_TEMPLATE/upload.yml`.",
+          "**Upload form**: under **Settings → Actions → General → Workflow permissions**, tick **Allow GitHub Actions to create and approve pull requests**. Merge uploads with **Create a merge commit** or **Rebase and merge**, not squash, so the student stays credited. New subjects and course names from the form arrive in the same pull request; check their spelling before merging.",
           "**Rules** (**Settings → Rules → Rulesets**): target **Include default branch** only, not **All branches**. Turn on **Restrict deletions**, **Block force pushes** and **Require a pull request before merging** (0 or 1 approvals). Keep **Repository admin** in the bypass list, and do not add **Write**, so collaborators also send pull requests.",
           "**Verification and rules**: the Verify button saves its records on a separate `verifications` branch, so rules on `main` don't block it. Don't target **All branches** or that branch, and don't delete it.",
           "**Registering students**: when someone opens a registration issue, check the 9-digit number, then add it to `uploaders.json`."
@@ -213,7 +213,7 @@ window.HELP = (function () {
         { ol: [
           "לחצו על **Upload** למעלה. ‏GitHub פותח את טופס ההעלאה (התחברו או צרו חשבון חינמי קודם).",
           "גררו את הקובץ לתיבה **Files** וחכו עד שהוא מופיע כקישור. עדיף PDF; קבצי LaTeX או מקור אחר שימו בקובץ `.zip` אחד, כי GitHub לא מקבל קבצי `.tex`. עד ‎25 MB לקובץ.",
-          "מלאו כותרת, מקצוע, סוג חומר ורישיון. כדי לתת לקובץ מזהה (מומלץ), מלאו גם קוד קורס, סמסטר, פריט ומספר סטודנט. אין צורך לשנות את שם הקובץ: הבוט נותן לו שם.",
+          "מלאו כותרת, מקצוע, סוג חומר ורישיון. כדי לתת לקובץ מזהה (מומלץ), מלאו גם קוד קורס, סמסטר, פריט ומספר סטודנט. המקצוע או הקורס לא ברשימה? בחרו **New subject** וכתבו את שמו, ומלאו את שם הקורס. אין צורך לשנות את שם הקובץ: הבוט נותן לו שם.",
           "שלחו. תוך דקה בוט עונה ב-issue. אם חסר משהו, הוא כותב מה; ערכו את ה-issue (**···** → **Edit**) והבדיקה תרוץ שוב. אחרת הוא פותח pull request.",
           "מתחזק בודק את ה-pull request. אחרי המיזוג הקובץ מופיע באתר תוך כמה דקות, בשם חשבון ה-GitHub שלכם."
         ] },
@@ -287,7 +287,7 @@ window.HELP = (function () {
         { ol: [
           "**Pages**: ב-**Settings → Pages → Source** יש לבחור **GitHub Actions**. אחרת האתר לא יציג תאריכי העלאה, מעלים ואימות.",
           "**תוויות**: צרו `file-request`, `uploader-code` ו-`upload` תחת **Issues → Labels**. טופסי הבקשה, ההרשמה וההעלאה מוסיפים אותן אוטומטית.",
-          "**טופס ההעלאה**: ב-**Settings → Actions → General → Workflow permissions** סמנו **Allow GitHub Actions to create and approve pull requests**. מזגו העלאות עם **Create a merge commit** או **Rebase and merge**, לא squash, כדי שהסטודנט יישאר מקבל הקרדיט. מקצוע חדש מוסיפים גם לרשימת Subject בקובץ `.github/ISSUE_TEMPLATE/upload.yml`.",
+          "**טופס ההעלאה**: ב-**Settings → Actions → General → Workflow permissions** סמנו **Allow GitHub Actions to create and approve pull requests**. מזגו העלאות עם **Create a merge commit** או **Rebase and merge**, לא squash, כדי שהסטודנט יישאר מקבל הקרדיט. מקצועות ושמות קורסים חדשים מהטופס מגיעים באותו pull request; בדקו את האיות לפני המיזוג.",
           "**כללים** (**Settings → Rules → Rulesets**): בחרו יעד **Include default branch** בלבד, לא **All branches**. הפעילו **Restrict deletions**, **Block force pushes** ו-**Require a pull request before merging** (0 או 1 אישורים). השאירו **Repository admin** ברשימת העקיפה, ואל תוסיפו **Write**, כדי שגם משתפי פעולה ישלחו pull request.",
           "**אימות וכללים**: כפתור האימות שומר את הרשומות בענף נפרד בשם `verifications`, כך שכללים על `main` לא חוסמים אותו. אל תכוונו כללים ל-**All branches** או לענף הזה, ואל תמחקו אותו.",
           "**רישום סטודנטים**: כשמישהו פותח issue הרשמה, בדקו את המספר בן 9 הספרות והוסיפו אותו ל-`uploaders.json`."
@@ -357,7 +357,7 @@ window.HELP = (function () {
         { ol: [
           "点击顶部的 **Upload**，GitHub 会打开上传表单（需先登录或注册免费账号）。",
           "把文件拖进 **Files** 框，等它显示为链接。最好上传 PDF；LaTeX 等源文件请打包成一个 `.zip`，因为 GitHub 不接受 `.tex` 文件。每个文件最大 25 MB。",
-          "填写标题、学科、资料类型和许可证。若要给文件编 ID（推荐），还要填写课程代码、学期、条目和学号。不用自己改文件名，机器人会替你命名。",
+          "填写标题、学科、资料类型和许可证。若要给文件编 ID（推荐），还要填写课程代码、学期、条目和学号。学科或课程不在列表里？选择 **New subject** 并写上名称，再填写课程名称。不用自己改文件名，机器人会替你命名。",
           "提交。一分钟内机器人会在 issue 中回复。如果缺少信息，它会说明缺什么；编辑该 issue（**···** → **Edit**）后会重新检查。否则它会创建一个拉取请求（pull request）。",
           "维护者审核这个拉取请求。合并后，文件会在几分钟内出现在网站上，并署名你的 GitHub 账号。"
         ] },
@@ -431,7 +431,7 @@ window.HELP = (function () {
         { ol: [
           "**Pages**：**Settings → Pages → Source** 必须设为 **GitHub Actions**，否则网站不会显示上传日期、上传者和审核信息。",
           "**标签**：在 **Issues → Labels** 中创建 `file-request`、`uploader-code` 和 `upload`。请求、注册和上传表单会自动添加这些标签。",
-          "**上传表单**：在 **Settings → Actions → General → Workflow permissions** 中勾选 **Allow GitHub Actions to create and approve pull requests**。合并上传时用 **Create a merge commit** 或 **Rebase and merge**，不要用 squash，这样上传者的署名才会保留。新增学科时，还要把它加入 `.github/ISSUE_TEMPLATE/upload.yml` 的 Subject 列表。",
+          "**上传表单**：在 **Settings → Actions → General → Workflow permissions** 中勾选 **Allow GitHub Actions to create and approve pull requests**。合并上传时用 **Create a merge commit** 或 **Rebase and merge**，不要用 squash，这样上传者的署名才会保留。表单中新增的学科和课程名称会包含在同一个拉取请求里；合并前请检查拼写。",
           "**规则**（**Settings → Rules → Rulesets**）：目标只选 **Include default branch**，不要选 **All branches**。开启 **Restrict deletions**、**Block force pushes** 和 **Require a pull request before merging**（0 或 1 个批准）。绕过列表保留 **Repository admin**，不要添加 **Write**，这样协作者也要通过 pull request 提交。",
           "**审核与规则**：审核按钮把记录保存在单独的 `verifications` 分支上，因此 `main` 上的规则不会阻止它。规则不要以 **All branches** 或该分支为目标，也不要删除该分支。",
           "**登记学生**：有人提交注册 issue 时，核对 9 位学号，然后把它加入 `uploaders.json`。"
@@ -501,7 +501,7 @@ window.HELP = (function () {
         { ol: [
           "Haz clic en **Upload** arriba. GitHub abre el formulario de subida (antes inicia sesión o crea una cuenta gratuita).",
           "Arrastra tu archivo al cuadro **Files** y espera a que aparezca como enlace. Mejor en PDF; pon LaTeX u otras fuentes en un solo `.zip`, porque GitHub no acepta archivos `.tex`. Hasta 25 MB por archivo.",
-          "Rellena el título, la asignatura, el tipo de material y la licencia. Para darle un ID (recomendado), rellena también el código del curso, el cuatrimestre, el elemento y tu número de estudiante. No hace falta renombrar el archivo: el bot le pone nombre.",
+          "Rellena el título, la asignatura, el tipo de material y la licencia. Para darle un ID (recomendado), rellena también el código del curso, el cuatrimestre, el elemento y tu número de estudiante. ¿La asignatura o el curso no aparecen? Elige **New subject**, escribe su nombre e indica el nombre del curso. No hace falta renombrar el archivo: el bot le pone nombre.",
           "Envíalo. En un minuto un bot responde en la incidencia. Si falta algo, dice qué; edita la incidencia (**···** → **Edit**) y vuelve a comprobarla. Si todo está bien, abre una solicitud de cambios (pull request).",
           "Un responsable revisa la solicitud. Cuando se fusiona, el archivo aparece en el sitio en pocos minutos, atribuido a tu cuenta de GitHub."
         ] },
@@ -575,7 +575,7 @@ window.HELP = (function () {
         { ol: [
           "**Pages**: en **Settings → Pages → Source** elige **GitHub Actions**. Si no, el sitio no muestra fechas de subida, quién subió los archivos ni la verificación.",
           "**Etiquetas**: crea `file-request`, `uploader-code` y `upload` en **Issues → Labels**. Los formularios de solicitud, registro y subida las añaden automáticamente.",
-          "**Formulario de subida**: en **Settings → Actions → General → Workflow permissions**, marca **Allow GitHub Actions to create and approve pull requests**. Fusiona las subidas con **Create a merge commit** o **Rebase and merge**, no con squash, para que el estudiante siga figurando como autor de la subida. Una asignatura nueva también va en la lista Subject de `.github/ISSUE_TEMPLATE/upload.yml`.",
+          "**Formulario de subida**: en **Settings → Actions → General → Workflow permissions**, marca **Allow GitHub Actions to create and approve pull requests**. Fusiona las subidas con **Create a merge commit** o **Rebase and merge**, no con squash, para que el estudiante siga figurando como autor de la subida. Las asignaturas y nombres de curso nuevos del formulario llegan en la misma solicitud; revisa la ortografía antes de fusionar.",
           "**Reglas** (**Settings → Rules → Rulesets**): como destino elige solo **Include default branch**, no **All branches**. Activa **Restrict deletions**, **Block force pushes** y **Require a pull request before merging** (0 o 1 aprobaciones). Deja **Repository admin** en la lista de excepciones y no añadas **Write**, para que los colaboradores también envíen pull requests.",
           "**Verificación y reglas**: el botón de verificar guarda los registros en una rama aparte, `verifications`, así que las reglas de `main` no lo bloquean. No apliques reglas a **All branches** ni a esa rama, y no la borres.",
           "**Registrar estudiantes**: cuando alguien abra una incidencia de registro, comprueba el número de 9 cifras y añádelo a `uploaders.json`."
@@ -645,7 +645,7 @@ window.HELP = (function () {
         { ol: [
           "Cliquez sur **Upload** en haut. GitHub ouvre le formulaire d’envoi (connectez-vous ou créez d’abord un compte gratuit).",
           "Glissez votre fichier dans la zone **Files** et attendez qu’il apparaisse sous forme de lien. Le PDF est préférable ; mettez les sources LaTeX ou autres dans un seul `.zip`, car GitHub n’accepte pas les fichiers `.tex`. 25 Mo maximum par fichier.",
-          "Indiquez le titre, la matière, le type de document et la licence. Pour un identifiant (recommandé), indiquez aussi le code du cours, le semestre, l’élément et votre numéro d’étudiant. Inutile de renommer le fichier : le bot le nomme pour vous.",
+          "Indiquez le titre, la matière, le type de document et la licence. Pour un identifiant (recommandé), indiquez aussi le code du cours, le semestre, l’élément et votre numéro d’étudiant. Matière ou cours absent de la liste ? Choisissez **New subject**, écrivez son nom et indiquez le nom du cours. Inutile de renommer le fichier : le bot le nomme pour vous.",
           "Envoyez. En une minute, un bot répond sur le ticket. S’il manque quelque chose, il l’indique ; modifiez le ticket (**···** → **Edit**) et la vérification recommence. Sinon, il ouvre une demande de fusion (pull request).",
           "Un responsable examine la demande. Une fois fusionnée, le fichier apparaît sur le site en quelques minutes, crédité à votre compte GitHub."
         ] },
@@ -719,7 +719,7 @@ window.HELP = (function () {
         { ol: [
           "**Pages** : dans **Settings → Pages → Source**, choisissez **GitHub Actions**. Sinon, le site n’affiche ni les dates d’envoi, ni les auteurs des envois, ni la vérification.",
           "**Étiquettes** : créez `file-request`, `uploader-code` et `upload` dans **Issues → Labels**. Les formulaires de demande, d’inscription et d’envoi les ajoutent automatiquement.",
-          "**Formulaire d’envoi** : dans **Settings → Actions → General → Workflow permissions**, cochez **Allow GitHub Actions to create and approve pull requests**. Fusionnez les envois avec **Create a merge commit** ou **Rebase and merge**, pas squash, pour que l’étudiant reste crédité. Une nouvelle matière doit aussi être ajoutée à la liste Subject de `.github/ISSUE_TEMPLATE/upload.yml`.",
+          "**Formulaire d’envoi** : dans **Settings → Actions → General → Workflow permissions**, cochez **Allow GitHub Actions to create and approve pull requests**. Fusionnez les envois avec **Create a merge commit** ou **Rebase and merge**, pas squash, pour que l’étudiant reste crédité. Les nouvelles matières et les noms de cours du formulaire arrivent dans la même demande ; vérifiez l’orthographe avant de fusionner.",
           "**Règles** (**Settings → Rules → Rulesets**) : comme cible, choisissez seulement **Include default branch**, pas **All branches**. Activez **Restrict deletions**, **Block force pushes** et **Require a pull request before merging** (0 ou 1 approbation). Gardez **Repository admin** dans la liste de contournement et n’ajoutez pas **Write**, pour que les collaborateurs passent aussi par des pull requests.",
           "**Vérification et règles** : le bouton de vérification enregistre les données sur une branche à part, `verifications`, donc les règles de `main` ne le bloquent pas. Ne ciblez ni **All branches** ni cette branche, et ne la supprimez pas.",
           "**Inscrire des étudiants** : quand quelqu’un ouvre un ticket d’inscription, vérifiez le numéro à 9 chiffres, puis ajoutez-le à `uploaders.json`."
@@ -789,7 +789,7 @@ window.HELP = (function () {
         { ol: [
           "Klicke oben auf **Upload**. GitHub öffnet das Upload-Formular (vorher anmelden oder ein kostenloses Konto anlegen).",
           "Ziehe deine Datei in das Feld **Files** und warte, bis sie als Link erscheint. Am besten PDF; LaTeX- oder andere Quelldateien kommen in eine einzige `.zip`, weil GitHub keine `.tex`-Dateien annimmt. Bis 25 MB pro Datei.",
-          "Gib Titel, Fach, Art des Materials und Lizenz an. Für eine Datei-ID (empfohlen) zusätzlich Kurscode, Semester, Eintrag und deine Matrikelnummer. Du musst die Datei nicht umbenennen: Der Bot benennt sie für dich.",
+          "Gib Titel, Fach, Art des Materials und Lizenz an. Für eine Datei-ID (empfohlen) zusätzlich Kurscode, Semester, Eintrag und deine Matrikelnummer. Fach oder Kurs fehlt? Wähle **New subject**, schreibe den Namen hin und gib den Kursnamen an. Du musst die Datei nicht umbenennen: Der Bot benennt sie für dich.",
           "Absenden. Innerhalb einer Minute antwortet ein Bot im Issue. Fehlt etwas, sagt er was; bearbeite das Issue (**···** → **Edit**), dann prüft er erneut. Sonst öffnet er einen Pull Request.",
           "Ein Betreuer prüft den Pull Request. Nach dem Zusammenführen erscheint die Datei innerhalb weniger Minuten auf der Website, deinem GitHub-Konto zugeordnet."
         ] },
@@ -863,7 +863,7 @@ window.HELP = (function () {
         { ol: [
           "**Pages**: Unter **Settings → Pages → Source** muss **GitHub Actions** stehen. Sonst zeigt die Seite keine Upload-Daten, Hochladenden und Prüfungen.",
           "**Labels**: Lege unter **Issues → Labels** `file-request`, `uploader-code` und `upload` an. Die Anfrage-, Registrierungs- und Upload-Formulare setzen sie automatisch.",
-          "**Upload-Formular**: Unter **Settings → Actions → General → Workflow permissions** **Allow GitHub Actions to create and approve pull requests** anhaken. Uploads mit **Create a merge commit** oder **Rebase and merge** zusammenführen, nicht mit Squash, damit die Studierenden als Hochladende genannt bleiben. Ein neues Fach gehört auch in die Subject-Liste von `.github/ISSUE_TEMPLATE/upload.yml`.",
+          "**Upload-Formular**: Unter **Settings → Actions → General → Workflow permissions** **Allow GitHub Actions to create and approve pull requests** anhaken. Uploads mit **Create a merge commit** oder **Rebase and merge** zusammenführen, nicht mit Squash, damit die Studierenden als Hochladende genannt bleiben. Neue Fächer und Kursnamen aus dem Formular kommen im selben Pull Request; prüfe die Schreibweise vor dem Zusammenführen.",
           "**Regeln** (**Settings → Rules → Rulesets**): Als Ziel nur **Include default branch** wählen, nicht **All branches**. Aktiviere **Restrict deletions**, **Block force pushes** und **Require a pull request before merging** (0 oder 1 Freigaben). Behalte **Repository admin** in der Bypass-Liste und füge **Write** nicht hinzu, damit auch Mitwirkende Pull Requests stellen.",
           "**Prüfung und Regeln**: Der Prüfen-Button speichert die Einträge auf einem eigenen Branch `verifications`, daher blockieren Regeln für `main` ihn nicht. Ziele nicht auf **All branches** oder diesen Branch und lösche ihn nicht.",
           "**Studierende registrieren**: Wenn jemand ein Registrierungs-Issue öffnet, prüfe die 9-stellige Nummer und trage sie in `uploaders.json` ein."

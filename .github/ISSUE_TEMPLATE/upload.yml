@@ -29,10 +29,18 @@ body:
     id: subject
     attributes:
       label: Subject
+      description: Not listed? Choose "New subject" and write its name in the next box.
       options:
         - Waves
+        - New subject (write it below)
     validations:
       required: true
+  - type: input
+    id: new_subject
+    attributes:
+      label: New subject
+      description: Only if you chose "New subject". The bot adds it to the website.
+      placeholder: Quantum Mechanics
   - type: dropdown
     id: type
     attributes:
@@ -95,6 +103,12 @@ body:
       label: Course code
       description: 8 digits.
       placeholder: "01140086"
+  - type: input
+    id: course_name
+    attributes:
+      label: Course name
+      description: Only needed if the course isn't on the website yet, so it shows as "01140086 · Waves".
+      placeholder: Waves
   - type: input
     id: term
     attributes:

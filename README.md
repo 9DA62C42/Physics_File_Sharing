@@ -66,9 +66,10 @@ You only need a free [GitHub account](https://github.com/signup). No Git, and yo
    - PDF is best. Put LaTeX or other source files in **one `.zip`**: GitHub doesn't accept `.tex` attachments.
    - Up to 25 MB per file and 10 files per upload. Accepted: pdf, zip, txt, md, csv, png, jpg, docx, pptx, xlsx, ipynb.
 3. **Describe it.** Title, subject, kind of material and licence. For a [file ID](#file-ids-recommended) (recommended), also fill in the course code, term, item and your student number; leave all four empty to upload without an ID.
+   - **Subject not listed?** Choose **New subject** and write its name. **Course not on the site yet?** Also fill in the course name.
 4. **Submit.** Within a minute the **Prepare upload** bot replies on the issue:
    - **Something wrong?** It lists what to fix. Edit the issue (**···** → **Edit**) and it checks again.
-   - **All good?** It saves the file under the right name in `files/<Subject>/<Material>/`, adds its licence to `licenses.json`, and opens a **pull request** committed under your GitHub account.
+   - **All good?** It saves the file under the right name in `files/<Subject>/<Material>/`, adds its licence to `licenses.json`, and opens a **pull request** committed under your GitHub account. A new subject is added to the forms' subject lists, and a new course name to `courses.json`, in the same pull request.
 5. **Review.** A maintainer checks the pull request and merges it. The issue closes, and a few minutes later your file is on the website, credited to you.
 
 ### Collaborators: add files directly
@@ -316,7 +317,7 @@ If a verified file's content changes later, the site shows **Changed** instead o
 1. **Settings → Actions → General → Workflow permissions**: tick **Allow GitHub Actions to create and approve pull requests**, then **Save**. Without it, the bot can't open the pull request and asks a maintainer to open it from the link it posts.
 2. Make sure the **`upload`** label exists (see above).
 3. **Reviewing an upload:** open the pull request, check the file (permission, privacy, academic integrity), its name and its licence, then merge with **Create a merge commit** or **Rebase and merge**. Avoid *Squash and merge*: it credits the bot instead of the student.
-4. **New subject:** add it to the *Subject* list in `.github/ISSUE_TEMPLATE/upload.yml` as well as creating its folder.
+4. **New subjects and courses** from the form arrive in the same pull request (a new folder, a line in the forms' *Subject* lists, a line in `courses.json`). Check the spelling before merging. To add a subject yourself, create its folder and add it to the *Subject* list in `.github/ISSUE_TEMPLATE/upload.yml` and `file-request.yml`.
 
 ### Protect `main` with a ruleset
 
@@ -335,7 +336,7 @@ Go to **Settings → Rules → Rulesets** and create (or edit) a branch ruleset:
 
 ### Add or rename a subject
 
-Create a new folder under `files/`. Git can't store empty folders, so put at least one file in it (an empty `.gitkeep` is fine). Empty subjects show in the sidebar with a count of 0.
+Students can add one with the upload form (**New subject**). To do it yourself, create a new folder under `files/` (use hyphens for spaces: `Quantum-Mechanics`). Git can't store empty folders, so put at least one file in it (an empty `.gitkeep` is fine). Empty subjects show in the sidebar with a count of 0. Also add it to the *Subject* list in `.github/ISSUE_TEMPLATE/upload.yml` and `file-request.yml`.
 
 ### Customise
 

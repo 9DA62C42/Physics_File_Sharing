@@ -4,7 +4,8 @@
 Run by .github/workflows/upload.yml. Reads the issue form, checks the answers,
 downloads the attached files into files/<Subject>/<Material>/ under a name
 built from the form (with a file ID when all ID boxes are filled), and adds a
-licence rule to licenses.json. The workflow then commits the result as the
+licence rule to licenses.json. A new subject gets its folder and is added to
+the Subject lists of the issue forms; a new course name goes in courses.json. The workflow then commits the result as the
 issue author and opens a pull request for a maintainer to review.
 
 Reads the issue from environment variables (never from the command line, so
@@ -21,6 +22,9 @@ import urllib.request
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FILES = os.path.join(ROOT, "files")
 LICENSES = os.path.join(ROOT, "licenses.json")
+COURSES = os.path.join(ROOT, "courses.json")
+FORMS = os.path.join(ROOT, ".github", "ISSUE_TEMPLATE")
+NEW_SUBJECT = "New subject (write it below)"
 NAMING = json.load(open(os.path.join(ROOT, "assets", "naming.json"), encoding="utf-8"))
 
 MAX_BYTES = 25 * 1024 * 1024
@@ -32,6 +36,7 @@ ATTACHMENT = re.compile(
     r"|[A-Za-z0-9-]+/[A-Za-z0-9._-]+/files/\d+/[^\s)\"'<>]+)")
 TITLE_OK = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 .,()&-]*$")
 TERM_OK = re.compile(r"^(?:\d{4}[WSAF]|LEGACY|Undated)$")
+SUBJECT_OK = re.compile(r"^[A-Za-z][A-Za-z0-9 &,()-]{1,49}$")
 
 
 def form_fields(body):
@@ -139,6 +144,67 @@ def target_names(base, exts, originals):
     return names
 
 
+def subjects():
+    return sorted(d for d in os.listdir(FILES) if os.path.isdir(os.path.join(FILES, d)) and not d.startswith((".", "_")))
+
+
+def choose_subject(answer, new_name):
+    """(folder name, is new) for the Subject answers. Raises ValueError when the choice is unusable."""
+    existing = subjects()
+    if answer != NEW_SUBJECT:
+        # The lists show folder names with spaces ("Quantum Mechanics" is files/Quantum-Mechanics).
+        match = [d for d in existing if d.replace("-", " ") == answer]
+        if not match:
+            raise ValueError("Choose a **Subject** from the list.")
+        return match[0], False
+    name = clean_words(new_name)
+    if not name or not SUBJECT_OK.match(name):
+        raise ValueError("Write the **New subject** name (letters, numbers, spaces and & , - ( ) only, up to 50 characters).")
+    folder = name.replace(" ", "-")
+    same = [d for d in existing if d.replace("-", " ").lower() == name.lower()]
+    return (same[0], False) if same else (folder, True)
+
+
+def add_subject_to_forms(folder):
+    """Add a new subject to the Subject dropdown of each issue form that has one, before its last ("other") option."""
+    label = folder.replace("-", " ")
+    for name in sorted(os.listdir(FORMS)):
+        path = os.path.join(FORMS, name)
+        if not name.endswith(".yml"):
+            continue
+        lines = open(path, encoding="utf-8").read().split("\n")
+        try:
+            start = lines.index("    id: subject")
+        except ValueError:
+            continue
+        opts = [i for i in range(start, len(lines)) if lines[i].startswith("        - ")]
+        block = []
+        for i in opts:
+            if block and i != block[-1] + 1:
+                break
+            block.append(i)
+        if not block or f"        - {label}" in (lines[i] for i in block):
+            continue
+        lines.insert(block[-1], f"        - {label}")
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write("\n".join(lines))
+
+
+def add_course(code, name):
+    """Add a course name to courses.json if the code has none yet. Returns True when added."""
+    with open(COURSES, encoding="utf-8") as fh:
+        data = json.load(fh)
+    courses = data.setdefault("courses", {})
+    if code in courses or not name:
+        return False
+    courses[code] = name
+    data["courses"] = dict(sorted(courses.items()))
+    with open(COURSES, "w", encoding="utf-8") as fh:
+        json.dump(data, fh, ensure_ascii=False, indent=2)
+        fh.write("\n")
+    return True
+
+
 def existing_ids():
     ids = set()
     for _, _, names in os.walk(FILES):
@@ -169,9 +235,12 @@ def run(body):
     title = clean_words(f.get("Title", ""))
     if not title or not TITLE_OK.match(title):
         problems.append("Add a **Title** (letters, numbers, spaces and . , - ( ) & only).")
-    subject = f.get("Subject", "")
-    if not subject or not os.path.isdir(os.path.join(FILES, subject)) or subject.startswith((".", "_")) or "/" in subject:
-        problems.append("Choose a **Subject** from the list.")
+    subject, new_subject = None, False
+    try:
+        subject, new_subject = choose_subject(f.get("Subject", ""), f.get("New subject", ""))
+    except ValueError as e:
+        problems.append(str(e))
+    course_name = clean_words(f.get("Course name", ""))[:60]
     types = {t["code"]: t for t in NAMING["types"]}
     type_code = code_of(f.get("Kind of material", ""))
     if type_code not in types:
@@ -227,10 +296,22 @@ def run(body):
         with open(os.path.join(ROOT, path), "wb") as fh:
             fh.write(data)
     add_license(file_id, paths, lic)
+    notes = []
+    if new_subject:
+        add_subject_to_forms(subject)
+        notes.append(f"New subject: **{subject.replace('-', ' ')}**")
+    if file_id:
+        code = file_id[:8]
+        if add_course(code, course_name):
+            notes.append(f"New course: **{code} · {course_name}**")
+        else:
+            with open(COURSES, encoding="utf-8") as fh:
+                if code not in json.load(fh).get("courses", {}):
+                    notes.append(f"Course {code} has no name yet; a maintainer can add it.")
 
     lines = [f"- `{p}`" for p in paths]
     reply = ["Thanks! Your upload is ready for review:", *lines, "",
-             f"Licence: **{lic}**" + (f" · ID: `{file_id}`" if file_id else " · no file ID"), ""]
+             f"Licence: **{lic}**" + (f" · ID: `{file_id}`" if file_id else " · no file ID"), *notes, ""]
     return True, reply, f"Add {title}"
 
 

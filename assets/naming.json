@@ -1,6 +1,6 @@
 {
   "_about": "ID naming system for shared files, based on the GTIIT course-file convention. Used by the website (assets/js/app.js). IDs are recommended, not required.",
-  "template": "<course code>_<TYPE>_<term>_<item>_<TAG>_<student number> <human-readable title>.ext",
+  "template": "<course code>_<TYPE>_<term>_<item>_<TAG>_<LICENCE>_<student number> <human-readable title>.ext",
   "types": [
     {
       "code": "HWQ",
@@ -273,5 +273,182 @@
     "Student": "Written by a student. The student number in the ID says whose work it is.",
     "Published": "A published book or paper.",
     "Scan": "A photo or scan taken by the uploader."
-  }
+  },
+  "licenses": [
+    {
+      "code": "CC0",
+      "spdx": [
+        "CC0-1.0"
+      ],
+      "short": "CC0",
+      "name": "CC0 1.0 (public domain dedication)",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "share": true,
+      "adapt": true,
+      "commercial": true,
+      "credit": false,
+      "shareAlike": false,
+      "note": "The author gives up all rights. Use it for anything."
+    },
+    {
+      "code": "PD",
+      "spdx": [],
+      "short": "Public domain",
+      "name": "Public domain",
+      "url": null,
+      "share": true,
+      "adapt": true,
+      "commercial": true,
+      "credit": false,
+      "shareAlike": false,
+      "note": "No longer under copyright (e.g. very old works)."
+    },
+    {
+      "code": "CCBY",
+      "spdx": [
+        "CC-BY-4.0"
+      ],
+      "short": "CC BY",
+      "name": "Creative Commons Attribution 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "share": true,
+      "adapt": true,
+      "commercial": true,
+      "credit": true,
+      "shareAlike": false,
+      "note": "Reuse and adapt freely, with credit."
+    },
+    {
+      "code": "CCBYSA",
+      "spdx": [
+        "CC-BY-SA-4.0"
+      ],
+      "short": "CC BY-SA",
+      "name": "Creative Commons Attribution-ShareAlike 4.0",
+      "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "share": true,
+      "adapt": true,
+      "commercial": true,
+      "credit": true,
+      "shareAlike": true,
+      "note": "Reuse with credit; adaptations must use the same licence."
+    },
+    {
+      "code": "CCBYNC",
+      "spdx": [
+        "CC-BY-NC-4.0"
+      ],
+      "short": "CC BY-NC",
+      "name": "Creative Commons Attribution-NonCommercial 4.0",
+      "url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "share": true,
+      "adapt": true,
+      "commercial": false,
+      "credit": true,
+      "shareAlike": false,
+      "note": "Reuse with credit, not for commercial purposes."
+    },
+    {
+      "code": "CCBYNCSA",
+      "spdx": [
+        "CC-BY-NC-SA-4.0"
+      ],
+      "short": "CC BY-NC-SA",
+      "name": "Creative Commons Attribution-NonCommercial-ShareAlike 4.0",
+      "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+      "share": true,
+      "adapt": true,
+      "commercial": false,
+      "credit": true,
+      "shareAlike": true,
+      "note": "Non-commercial reuse with credit; adaptations under the same licence."
+    },
+    {
+      "code": "CCBYND",
+      "spdx": [
+        "CC-BY-ND-4.0"
+      ],
+      "short": "CC BY-ND",
+      "name": "Creative Commons Attribution-NoDerivatives 4.0",
+      "url": "https://creativecommons.org/licenses/by-nd/4.0/",
+      "share": true,
+      "adapt": false,
+      "commercial": true,
+      "credit": true,
+      "shareAlike": false,
+      "note": "Share unchanged copies with credit; no adaptations."
+    },
+    {
+      "code": "CCBYNCND",
+      "spdx": [
+        "CC-BY-NC-ND-4.0"
+      ],
+      "short": "CC BY-NC-ND",
+      "name": "Creative Commons Attribution-NonCommercial-NoDerivatives 4.0",
+      "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+      "share": true,
+      "adapt": false,
+      "commercial": false,
+      "credit": true,
+      "shareAlike": false,
+      "note": "Share unchanged copies with credit, non-commercially."
+    },
+    {
+      "code": "MIT",
+      "spdx": [
+        "MIT"
+      ],
+      "short": "MIT",
+      "name": "MIT License (software)",
+      "url": "https://opensource.org/license/mit",
+      "share": true,
+      "adapt": true,
+      "commercial": true,
+      "credit": true,
+      "shareAlike": false,
+      "note": "For code. Reuse freely; keep the copyright notice."
+    },
+    {
+      "code": "GPL3",
+      "spdx": [
+        "GPL-3.0-only",
+        "GPL-3.0-or-later"
+      ],
+      "short": "GPL-3.0",
+      "name": "GNU General Public License 3.0 (software)",
+      "url": "https://www.gnu.org/licenses/gpl-3.0.html",
+      "share": true,
+      "adapt": true,
+      "commercial": true,
+      "credit": true,
+      "shareAlike": true,
+      "note": "For code. Changed versions must also be GPL."
+    },
+    {
+      "code": "STUDY",
+      "spdx": [],
+      "short": "Study only",
+      "name": "Shared with permission, for study only",
+      "url": null,
+      "share": false,
+      "adapt": false,
+      "commercial": false,
+      "credit": true,
+      "shareAlike": false,
+      "note": "Course or third-party material shared with the owner's permission. Copyright stays with the owner; read it here for personal study, don't reshare."
+    },
+    {
+      "code": "ARR",
+      "spdx": [],
+      "short": "All rights reserved",
+      "name": "All rights reserved",
+      "url": null,
+      "share": false,
+      "adapt": false,
+      "commercial": false,
+      "credit": true,
+      "shareAlike": false,
+      "note": "The author keeps all rights. You may read it here; ask the author before copying, adapting or resharing."
+    }
+  ]
 }

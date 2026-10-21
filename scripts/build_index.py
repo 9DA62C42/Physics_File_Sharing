@@ -9,7 +9,8 @@ For each file it records who uploaded it (the author of the commit that
 added it). In GitHub Actions the commit is looked up through the GitHub API
 to get the uploader's GitHub username, which the website compares with the
 GitHub account registered for the student number in the file name (if any). It also stores a SHA-256 hash so the site
-can spot duplicate files.
+can spot duplicate files, and any licence notice
+("SPDX-License-Identifier: CC-BY-4.0") found near the top of a text file.
 """
 import hashlib
 import json
@@ -22,6 +23,8 @@ from datetime import datetime, timezone
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FILES_DIR = os.path.join(ROOT, "files")
 OUTPUT = os.path.join(ROOT, "files.json")
+SPDX = re.compile(rb"SPDX-License-Identifier:\s*([A-Za-z0-9.+-]+)")
+TEXT_EXT = {".txt", ".md", ".tex", ".bib", ".py", ".m", ".jl", ".c", ".cpp", ".h", ".f90", ".js", ".r", ".sh", ".csv", ".dat", ".json", ".ipynb"}
 NOREPLY = re.compile(r"^(?:\d+\+)?([A-Za-z0-9-]+)@users\.noreply\.github\.com$", re.I)
 
 REPO = os.environ.get("GITHUB_REPOSITORY")
@@ -90,6 +93,15 @@ def sha256(path):
     return h.hexdigest()
 
 
+def spdx_license(path):
+    """Licence identifier declared near the top of a text file, if any."""
+    if os.path.splitext(path)[1].lower() not in TEXT_EXT:
+        return None
+    with open(path, "rb") as fh:
+        m = SPDX.search(fh.read(8192))
+    return m.group(1).decode() if m else None
+
+
 def main():
     subjects = sorted(
         d for d in os.listdir(FILES_DIR)
@@ -105,6 +117,9 @@ def main():
             full = os.path.join(dirpath, name)
             rel = os.path.relpath(full, ROOT).replace(os.sep, "/")
             entry = {"path": rel, "size": os.path.getsize(full), "sha256": sha256(full)}
+            spdx = spdx_license(full)
+            if spdx:
+                entry["spdx"] = spdx
 
             history = git_history(rel)
             if history:

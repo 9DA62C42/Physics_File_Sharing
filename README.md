@@ -120,11 +120,11 @@ python3 -m http.server 8000
 A file's **ID** is the start of its name. IDs are **recommended, not required**: a file without one is still published and shown normally. With an ID, the site can sort your file into the right course and material type, link question, solution and answer files together, and credit you.
 
 ```
-<course>_<TYPE>_<term>_<item>_<TAG>_<student number> <title>.ext
+<course>_<TYPE>_<term>_<item>_<TAG>_<LICENCE>_<student number> <title>.ext
 
-01140086_HWS_2627W_01_123456789 Waves Homework 1 Solution.pdf
-└──┬───┘ └┬┘ └─┬─┘ └┤ └───┬───┘ └──────────┬───────────────┘
- course  type term item student no.    title (after one space)
+01140086_HWS_2627W_01_CCBY_123456789 Waves Homework 1 Solution.pdf
+└──┬───┘ └┬┘ └─┬─┘ └┤ └┬─┘ └───┬───┘ └──────────┬───────────────┘
+ course  type term item licence student no.  title (after one space)
 ```
 
 | Field | Rule | Examples |
@@ -135,6 +135,7 @@ A file's **ID** is the start of its name. IDs are **recommended, not required**:
 | **item** | Serial (at least 2 digits) or a pattern. Optional for handouts and readings | `01` · `01b` supplement · `A` exam paper · `Q01` quiz · `PS01` problem set · `C01` chapter · `FULL` |
 | **version** | Optional | `V01`, `V02` |
 | **TAG** | Optional | `AN` annotated · `DR` draft · `GR` graded |
+| **LICENCE** | Optional. How others may reuse this file ([all codes](#licence)) | `CCBY` · `CCBYNC` · `CC0` · `MIT` · `STUDY` · `ARR` |
 | **student number** | Your 9-digit student number. Recommended for your own work. **It will be public** | `123456789` |
 | **title** | Short English title after **one space**. Use `_` between ID fields, never `-` | `Waves Homework 1 Solution` |
 
@@ -176,26 +177,43 @@ To register, open **ID system → Uploader IDs** on the website, fill in your nu
 2. **Follow your university's academic-integrity rules.** Don't upload solutions to assignments that are still open, or exam papers that aren't meant to be public.
 3. **No other personal information.** Remove phone numbers, grades, ID photos, etc. before uploading. Your student number appears only if you choose to put it in a file's ID.
 4. **Everything here is public.** Anyone on the internet can see and download it, and Git keeps old versions even after a file is deleted.
-5. **Your work is shared openly.** Your own files are licensed under CC BY 4.0 unless you write other terms in the file. See [Licence](#licence).
+5. **Choose a licence for each file.** Every document can have its own; without one, others can only read it here. See [Licence](#licence).
 6. Be kind and helpful in pull-request discussions. 🙂
 
 ---
 
 ## Licence
 
-This repository has two licences, because it holds two different things:
+**The website code** (`index.html`, `assets/`, `scripts/`, `.github/`, config files) is under the [MIT licence](LICENSE). Reuse it freely, for example to run the same site for another class.
 
-| What | Licence | In short |
+**Shared files don't share one licence. Each document has its own**, chosen by whoever wrote it. Set it in any one of three ways; the first one found wins:
+
+1. **In the file name**, as part of the ID: `01140086_HWS_2627W_01_CCBY_123456789 Waves Homework 1 Solution.pdf`
+2. **In [`licenses.json`](licenses.json)**, for one file, a folder or an ID prefix, without renaming anything:
+   ```json
+   { "rules": [ { "path": "files/Lab-Reports/", "license": "CCBY" } ] }
+   ```
+3. **Inside a text file**, with a line like `% SPDX-License-Identifier: CC-BY-4.0` near the top.
+
+If none of these is set, the file has **no licence stated**: the author keeps all rights, and others may only read it here.
+
+| Code | Licence | Others may… |
 | --- | --- | --- |
-| **Website code**: `index.html`, `assets/`, `scripts/`, `.github/`, config files | [MIT](LICENSE) | Reuse it freely, e.g. to run the same site for another class. Keep the copyright notice |
-| **Students' own work** in `files/`: solutions, notes, reports, data, code (ID types `HWS`, `PES`, `MES`, `LN`, `TN`, `WSN`, `LBD`, `LBR`) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), unless the file says otherwise | Anyone may reuse and adapt it if they credit the author |
-| **Course and third-party material** in `files/`: question sheets, official answers, handouts, scans, textbooks | **Not licensed by this site.** Copyright stays with the original authors | Shared with permission, for personal study only |
+| `CC0` / `PD` | No rights reserved / public domain | do anything |
+| `CCBY` | CC BY 4.0 | share and adapt, with credit |
+| `CCBYSA` | CC BY-SA 4.0 | share and adapt with credit; adaptations stay CC BY-SA |
+| `CCBYNC` | CC BY-NC 4.0 | share and adapt with credit, not commercially |
+| `CCBYNCSA` | CC BY-NC-SA 4.0 | as CC BY-NC; adaptations stay the same |
+| `CCBYND` / `CCBYNCND` | CC BY-ND / BY-NC-ND 4.0 | share unchanged copies, with credit (ND-NC: also not commercially) |
+| `MIT` / `GPL3` | Software licences | use the code (GPL: changes stay GPL) |
+| `STUDY` | Shared with permission, for study only | read it here for personal study |
+| `ARR` | All rights reserved | read it here; ask the author for anything else |
 
-- **Different terms for your file?** Write a licence notice inside the file (e.g. "CC BY-NC 4.0"). It overrides the default.
-- **By uploading,** you confirm you wrote the file or have permission to share it. The pull-request checklist asks you to tick this.
-- **Want something removed?** If you own material shared here, or spot personal information, open an issue and a maintainer will take it down.
+- **Only the owner can choose a licence.** For course material that isn't yours (question sheets, handouts, official answers, textbooks), use `STUDY`, or the licence it was published under.
+- **Each file's page** on the website shows its licence in plain terms (✓ share, ✓ adapt, ✕ commercial…) and where it was set. **All files** has a licence filter, and **ID system → Check files** lists files with no licence stated.
+- **Want something removed or relicensed?** If you own material shared here, open an issue.
 
-Each file's preview on the website shows which licence applies. Full details are in [CONTENT-LICENSE.md](CONTENT-LICENSE.md). This is a plain-language summary, not legal advice.
+Full details: [CONTENT-LICENSE.md](CONTENT-LICENSE.md). This is a plain-language summary, not legal advice.
 
 ---
 
@@ -286,7 +304,8 @@ Create a new folder under `files/`. Git can't store empty folders, so put at lea
 | --- | --- |
 | Site title, description, repository, branch | `assets/js/config.js` |
 | Constants, units in the converter, resource links | `assets/js/data.js` |
-| ID rules: type codes, terms, tags, item patterns | `assets/naming.json` |
+| ID rules: type codes, terms, tags, item patterns, licence codes | `assets/naming.json` |
+| Licences for files without a licence code | `licenses.json` |
 | Registered students (number, name, optional GitHub) | `uploaders.json` |
 | Course names | `courses.json` |
 | Colours, layout, dark mode | `assets/css/style.css` |
@@ -310,5 +329,6 @@ Create a new folder under `files/`. Git can't store empty folders, so put at lea
 | `.github/ISSUE_TEMPLATE/uploader-code.yml` | The "Register your student number" issue form |
 | `files/` | All shared files, organised by subject |
 | `LICENSE` | MIT licence for the website code |
-| `CONTENT-LICENSE.md` | Licence for shared files: CC BY 4.0 for students' own work; course material keeps its copyright |
+| `CONTENT-LICENSE.md` | How each shared file's licence is set, and what each licence code means |
+| `licenses.json` | Licences for files (or folders, or ID prefixes) that don't carry a licence code in their name |
 | `.github/pull_request_template.md` | Checklist contributors confirm when proposing files |

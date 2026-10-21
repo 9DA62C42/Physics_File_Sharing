@@ -1,0 +1,4 @@
+{
+  "_about": "Licences for files that don't carry a licence code in their name. Each rule gives a licence code from assets/naming.json (CCBY, CCBYNC, CC0, MIT, STUDY, ARR, ...) and either a 'path' (one file, or a folder ending in /) or an 'id' (a file ID, or the start of one). The most specific match wins. A licence code in a file's name always overrides this list.",
+  "rules": []
+}

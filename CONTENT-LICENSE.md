@@ -1,57 +1,72 @@
-# Licence for shared files
+# Licences for shared files
 
-This page covers everything in the [`files/`](files/) folder. The website code is under the MIT licence in [`LICENSE`](LICENSE).
+The files in [`files/`](files/) **don't share one licence. Each document has its own**, chosen by the person who wrote it. The website code is separate: it is under the MIT licence in [`LICENSE`](LICENSE).
 
-Shared files fall into two groups, and they're treated differently because we can only licence work that belongs to the person sharing it.
+## How a file's licence is set
 
-## 1. Students' own work: CC BY 4.0
+The website checks these in order and uses the first one it finds:
 
-Work written by the student who shares it is licensed under the
-**[Creative Commons Attribution 4.0 International licence (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)**, unless the file itself says otherwise.
+1. **A licence code in the file name.** Put it in the [ID](README.md#file-ids-recommended) after any tags:
+   `01140086_HWS_2627W_01_CCBY_231000001 Waves Homework 1 Solution.pdf`
+2. **A rule in [`licenses.json`](licenses.json).** This sets a licence for one file, a whole folder, or every file whose ID starts a certain way, without renaming anything:
+   ```json
+   { "rules": [
+     { "path": "files/Lab-Reports/", "license": "CCBY" },
+     { "path": "files/Electromagnetism/Maxwell Summary.pdf", "license": "CCBYNC" },
+     { "id": "01140086_LP_2627W", "license": "STUDY" }
+   ] }
+   ```
+   The most specific rule wins: an exact file beats an ID, and an ID beats a folder.
+3. **A notice inside the file.** In a text file (`.tex`, `.md`, `.py`, `.ipynb` …), put an [SPDX](https://spdx.org/licenses/) line near the top, e.g. `% SPDX-License-Identifier: CC-BY-4.0`.
 
-That covers your solutions, notes, reports, data and code. In the [ID system](README.md#file-ids-recommended) these are the **Student** types: `HWS`, `PES`, `MES`, `LN`, `TN`, `WSN`, `LBD`, `LBR`.
+With none of these, the file has **no licence stated**. Copyright law then gives the author all rights: others can read it on this site but must ask before copying, adapting or resharing. The site says so on the file's page.
 
-In short, anyone may copy, share and adapt the work, even commercially, as long as they:
+## Licence codes
 
-- **credit the author**, e.g. by name or student number, plus the file ID and a link to this site, and
-- **indicate if they changed it**.
+| Code | Licence | Share | Adapt | Commercial | Typical use |
+| --- | --- | :-: | :-: | :-: | --- |
+| `CC0` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/): no rights reserved | ✓ | ✓ | ✓ | You want no conditions at all |
+| `PD` | Public domain | ✓ | ✓ | ✓ | Very old works, no longer under copyright |
+| `CCBY` | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) | ✓ | ✓ | ✓ | Your notes and solutions, reusable with credit |
+| `CCBYSA` | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | ✓ | ✓ | ✓ | As CC BY, and adaptations must stay open |
+| `CCBYNC` | [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) | ✓ | ✓ | ✕ | Reusable with credit, but not for profit |
+| `CCBYNCSA` | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) | ✓ | ✓ | ✕ | Non-commercial, adaptations stay open |
+| `CCBYND` | [CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0/) | ✓ | ✕ | ✓ | Share unchanged copies only |
+| `CCBYNCND` | [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/) | ✓ | ✕ | ✕ | Most restrictive Creative Commons licence |
+| `MIT` | [MIT](https://opensource.org/license/mit) | ✓ | ✓ | ✓ | Code you share |
+| `GPL3` | [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.html) | ✓ | ✓ | ✓ | Code, where changed versions must stay GPL |
+| `STUDY` | Shared with permission, for study only | ✕ | ✕ | ✕ | Course material you may share here but don't own |
+| `ARR` | All rights reserved | ✕ | ✕ | ✕ | Your work, readable here but not reusable |
 
-The author keeps their copyright. CC BY 4.0 only grants permission to reuse; it can't be withdrawn for copies already shared, so think before uploading.
+All Creative Commons licences require crediting the author. The list lives in [`assets/naming.json`](assets/naming.json); other SPDX identifiers found inside files are shown as they are.
 
-**Want different terms?** Put a licence notice inside the file, e.g. "CC BY-NC 4.0" or "All rights reserved, shared for study only". That notice wins over this default.
+## Whose licence it is
 
-**Code** you share (`.py`, `.m`, `.ipynb` …) may instead carry an MIT notice at the top if you prefer a software licence.
+**Only the person who owns a work can choose its licence.**
 
-## 2. Course and third-party material: original copyright
+- **Your own work** (solutions, notes, reports, data, code): pick any code you like. If you're unsure, `CCBY` (reusable with credit) or `CCBYNC` (not for profit) are common choices.
+- **Someone else's work** (homework and exam questions, official answers, handouts, tutorial sheets, lab guides, board photos, textbooks): you can't license it. Upload it only with the owner's permission, and mark it
+  - `STUDY` when the instructor or university allows sharing for study, or
+  - the licence it was **published under**, e.g. `CCBY` for an OpenStax textbook.
+- **Mixed work**, such as an annotated printout (`_AN`): your notes are yours, but the page underneath still belongs to its owner. Use the more restrictive of the two, usually `STUDY`.
 
-Material written by someone else **is not licensed by this site**. It stays under its original author's copyright (the university, your instructor, a publisher…). That covers homework and exam questions, official answers, lecture handouts, tutorial sheets, lab guides, scans of the board and textbooks. In the ID system these are the **School**, **Scan** and **Published** types.
+Paid textbooks, solution manuals and exams that aren't meant to be public must not be uploaded, whatever licence code they carry.
 
-It may only be shared here when the owner allows it, for example:
-
-- the instructor or university has permitted students to share it,
-- it is already published under an open licence (for example an OpenStax or LibreTexts textbook), or
-- it is in the public domain.
-
-Shared copies are for **personal study only**. Don't republish them elsewhere without the owner's permission. Paid textbooks, solution manuals and exams that aren't meant to be public must **not** be uploaded.
-
-An annotated copy (`_AN`) mixes both groups. Your own notes on it are yours; the underlying page belongs to its original author.
+Once you've shared something under an open licence (CC, MIT, GPL), copies people already made stay usable under that licence, even if you later change or remove it.
 
 ## Taking material down
 
-If you own something shared here and want it removed, or you find personal information in a file:
+If you own something shared here and want it removed or relicensed, or you find personal information in a file:
 
-1. [Open an issue](../../issues/new), or contact a maintainer, with the file's name or ID and what's wrong.
-2. A maintainer removes the file promptly, usually within a few days.
+1. [Open an issue](../../issues/new), or contact a maintainer, with the file's name or ID.
+2. A maintainer updates or removes the file promptly, usually within a few days.
 
-Removal deletes the file from the website and the current repository. Old copies remain in Git history unless a maintainer rewrites it, so please report private information quickly.
+Removed files disappear from the website and the current repository. Old copies remain in Git history unless a maintainer rewrites it.
 
 ## When you contribute
 
-By submitting a file (upload, pull request or commit), you confirm that:
-
-- the parts you wrote yourself may be shared under CC BY 4.0, or under the terms you state in the file, and
-- you have the right to share anything else you include (see section 2).
+By submitting a file, you confirm that you wrote it or have permission to share it, and that any licence you state for it is one you're entitled to give.
 
 ---
 
-*This is a plain-language summary written for a student project, not legal advice. The full CC BY 4.0 terms are at <https://creativecommons.org/licenses/by/4.0/legalcode>.*
+*A plain-language guide for a student project, not legal advice. Each licence's full terms are at the links above.*

@@ -8,7 +8,7 @@
   "use strict";
 
   const C = window.SITE_CONFIG;
-  const D = window.PHYS_DATA;
+  const D = window.STUDY_DATA;
   const REPO = `https://github.com/${C.owner}/${C.repo}`;
   const API = `https://api.github.com/repos/${C.owner}/${C.repo}`;
   const SITE_BASE = location.href.split("#")[0].replace(/[^/]*$/, "");
@@ -51,6 +51,9 @@
     users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/>',
     inbox: '<path d="M3 13l3-8h12l3 8v6H3z"/><path d="M3 13h5l1 3h6l1-3h5"/>',
     help: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17h.01"/>',
+    calc: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h1M12 12h1M16 12h0M8 16h1M12 16h1M16 12v4"/>',
+    timer: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/>',
+    palette: '<path d="M12 3a9 9 0 1 0 0 18c1 0 1.5-.8 1.5-1.6 0-.5-.3-.9-.3-1.4 0-.8.6-1.5 1.5-1.5H17a4 4 0 0 0 4-4c0-4.4-4-8.5-9-8.5z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="14.5" cy="7" r="1"/>',
     atom: '<circle cx="12" cy="12" r="1.5"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>',
     swap: '<path d="M7 4L3 8l4 4"/><path d="M3 8h14"/><path d="M17 12l4 4-4 4"/><path d="M21 16H7"/>',
     link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
@@ -526,9 +529,9 @@
         navLink("#/uploaders", "users", "Uploaders"),
         navLink("#/requests", "inbox", "File requests"),
         navLink("#/contribute", "upload", "How to contribute")),
-      navSection("tools", "Physics tools", null,
-        navLink("#/constants", "atom", "Physical constants"),
-        navLink("#/converter", "swap", "Unit converter"),
+      navSection("tools", "Study tools", null,
+        navLink("#/grades", "calc", "Grade calculator"),
+        navLink("#/timer", "timer", "Study timer"),
         navLink("#/resources", "book", "Resources")),
       h("div", { class: "nav-section" },
         h("a", { class: "nav-link", href: REPO, target: "_blank", rel: "noopener" }, icon("github"), h("span", { class: "nav-label" }, "GitHub repository")))
@@ -572,22 +575,37 @@
 
   // ---------- theme ----------
 
-  const THEMES = [["auto", "auto", "Theme: system"], ["light", "sun", "Theme: light"], ["dark", "moon", "Theme: dark"]];
+  // Theme (background and ink) and accent colour, each picked from a list in the sidebar.
+  const THEMES = [["auto", "System (light or dark)"], ["light", "Light"], ["dark", "Dark"], ["paper", "Paper (warm, navy ink)"],
+    ["sage", "Sage (green-gray)"], ["newsprint", "Newsprint (gray, crisp)"], ["midnight", "Midnight (deep navy)"]];
+  const ACCENTS = [["orange", "Orange", "#c2410c"], ["red", "Red", "#b91c1c"], ["rose", "Rose", "#be123c"], ["amber", "Amber", "#a16207"],
+    ["green", "Green", "#15803d"], ["teal", "Teal", "#0f766e"], ["blue", "Blue", "#1d4ed8"], ["indigo", "Indigo", "#4338ca"],
+    ["purple", "Purple", "#7e22ce"], ["graphite", "Graphite", "#3f3f46"]];
   function applyTheme(t) {
     if (t === "auto") delete document.documentElement.dataset.theme;
     else document.documentElement.dataset.theme = t;
-    const [, ic, label] = THEMES.find((x) => x[0] === t);
-    fill(document.getElementById("theme-toggle"), icon(ic), h("span", { class: "nav-label" }, label));
   }
-
-  // Accent colour: orange (default) or gray + red.
-  const ACCENTS = [["orange", "Accent: orange", "#c2410c"], ["red", "Accent: red", "#b91c1c"]];
   function applyAccent(a) {
     if (a === "orange") delete document.documentElement.dataset.accent;
     else document.documentElement.dataset.accent = a;
-    const [, label, swatch] = ACCENTS.find((x) => x[0] === a) || ACCENTS[0];
-    fill(document.getElementById("accent-toggle"), 
-      h("span", { class: "swatch", style: `background:${swatch}`, "aria-hidden": "true" }), h("span", { class: "nav-label" }, label));
+    const sw = document.getElementById("accent-swatch");
+    if (sw) sw.style.background = (ACCENTS.find((x) => x[0] === a) || ACCENTS[0])[2];
+  }
+  // The two lists at the bottom of the sidebar.
+  function appearancePickers() {
+    let theme = store.get("theme", "auto"), accent = store.get("accent", "orange");
+    if (!THEMES.some((x) => x[0] === theme)) theme = "auto";
+    if (!ACCENTS.some((x) => x[0] === accent)) accent = "orange";
+    const pick = (label, ic, list, value, onchange, extra) => {
+      const sel = h("select", { class: "input", "aria-label": label }, list.map(([v, name]) => h("option", { value: v, selected: v === value }, name)));
+      sel.addEventListener("change", () => onchange(sel.value));
+      return h("label", { class: "pick" }, h("span", { class: "pick-l" }, icon(ic), label, extra || null), sel);
+    };
+    applyTheme(theme); applyAccent(accent);
+    return [
+      pick("Theme", "sun", THEMES, theme, (v) => { store.set("theme", v); applyTheme(v); }),
+      pick("Accent", "palette", ACCENTS, accent, (v) => { store.set("accent", v); applyAccent(v); },
+        h("span", { class: "swatch", id: "accent-swatch", style: `background:${(ACCENTS.find((x) => x[0] === accent) || ACCENTS[0])[2]}`, "aria-hidden": "true" }))];
   }
 
   // ---------- file cards and lists ----------
@@ -648,7 +666,8 @@
         h("h3", null, h("button", { class: "title-link", type: "button", onclick: () => openPreview(f) }, f.title)),
         h("p", { class: "card-sub" }, sub),
         info ? h("p", { class: "card-id" }, idNode(info), info.status === "partial" ? h("span", { class: "id-flag", title: info.problems.join(" ") }, icon("alert")) : null) : null,
-        h("p", { class: "card-meta" }, uploaderLine(f), fileMeta(f) ? h("span", null, fileMeta(f)) : null),
+        // Each piece stays on one line; the line breaks between pieces, never inside one.
+        h("p", { class: "card-meta" }, uploaderLine(f), fileMeta(f).split(" · ").filter(Boolean).map((x) => h("span", { class: "nowrap" }, x))),
         f.alts.length ? h("p", { class: "card-alts" }, h("span", { class: "muted" }, "Also:"),
           f.alts.map((a) => h("a", { class: "alt-link", href: a.raw, download: a.name, title: `Download ${a.name}` },
             icon("download"), altLabel(a, f), h("span", { class: "muted" }, ` · ${a.ext.toUpperCase()}${a.size != null ? " " + fmtSize(a.size) : ""}`)))) : null),
@@ -753,13 +772,11 @@
   // The "Report a file" issue form, pre-filled with the file when there is one.
   const reportUrl = (f) => `${REPO}/issues/new?template=report.yml` + (f ? `&title=${enc("[Report] " + f.name)}&file=${enc(f.path)}` : "");
 
-  // Copyright reminder shown on Home, the contribute page and in Help.
+  // Short copyright reminder, used on Home and the contribute page.
   const copyrightNotice = () => h("div", { class: "notice notice-legal", role: "note" }, icon("alert"),
-    h("div", null,
-      h("p", null, h("strong", null, "Copyright. "), "Share only your own work, or material you have permission to share. Don't upload textbooks, solution manuals, official exams, homework sheets or lecture slides without the owner's permission, or solutions to assignments that are still open."),
-      h("p", null, "Files here are for study. Each file's licence says what else you may do with it; without one, ask the author before copying or resharing. ",
-        "Own something posted here, or found personal information? ", h("a", { href: reportUrl(), target: "_blank", rel: "noopener" }, "Report it"),
-        " and a maintainer removes it. ", h("a", { class: "nowrap", href: contentLicenseUrl(), target: "_blank", rel: "noopener" }, "Copyright and takedown →"))));
+    h("p", null, h("strong", null, "Copyright: "), "share only your own work or material you may share. No textbooks, official exams or solutions to open assignments. ",
+      h("a", { href: reportUrl(), target: "_blank", rel: "noopener" }, "Report a file"), " · ",
+      h("a", { class: "nowrap", href: contentLicenseUrl(), target: "_blank", rel: "noopener" }, "Details")));
 
 
   // Most specific rule for a file from licenses.json / uploads.json: exact ID > exact path > ID prefix > folder.
@@ -1054,10 +1071,10 @@
     const tool = (href, ic, name, text) => h("a", { class: "tile", href }, icon(ic), h("span", { class: "tile-name" }, name), h("span", { class: "tile-text" }, text));
 
     return h("div", null,
-      h("a", { class: "start-here", href: "#/help" }, icon("help"),
-        h("span", { class: "start-text" }, h("strong", null, "New here? Read the Help & guide first."),
-          h("span", null, "Before you upload a file, register your name or request something, take two minutes to see how the site works. Available in English, Hebrew, Chinese, Spanish, French and German.")),
-        h("span", { class: "btn primary small" }, "Open Help & guide →")),
+      h("div", { class: "home-notes" },
+        h("a", { class: "notice start-here", href: "#/help" }, icon("help"),
+          h("p", null, h("strong", null, "New here? "), "Read the ", h("span", { class: "link-like" }, "Help & guide"), " before you upload or register (6 languages).")),
+        copyrightNotice()),
       h("section", { class: "hero" },
         h("p", { class: "eyebrow" }, "Shared by students, for students"),
         h("h1", null, C.title),
@@ -1074,8 +1091,6 @@
         stat(people.length || "—", "uploaders", "#/uploaders"),
         stat(Object.keys(countBy("course")).length || Object.keys(counts).length, Object.keys(countBy("course")).length ? "courses" : "subjects")),
 
-      copyrightNotice(),
-
       recent.length ? h("section", { class: "section" },
         h("div", { class: "section-head" }, h("h2", null, "Recently added"), h("a", { href: "#/recent" }, "See all →")),
         h("div", { class: "files grid" }, recent.map(card))) : null,
@@ -1088,12 +1103,12 @@
             h("span", { class: "subject-count" }, counts[s] === 1 ? "1 file" : `${counts[s]} files`))))),
 
       h("section", { class: "section" },
-        h("div", { class: "section-head" }, h("h2", null, "Physics tools")),
+        h("div", { class: "section-head" }, h("h2", null, "Study tools")),
         h("div", { class: "tiles" },
-          tool("#/ids", "id", "ID system", "Decode, search and build file IDs"),
-          tool("#/constants", "atom", "Physical constants", "CODATA 2022 values, one click to copy"),
-          tool("#/converter", "swap", "Unit converter", "Energy, length, mass, temperature and more"),
-          tool("#/resources", "book", "Resources", "HyperPhysics, PhET, MIT OCW, arXiv…"))),
+          tool("#/ids", "id", "ID system", "Register, decode, search and build file IDs"),
+          tool("#/grades", "calc", "Grade calculator", "Your weighted average and the score you still need"),
+          tool("#/timer", "timer", "Study timer", "Focus and break cycles (Pomodoro)"),
+          tool("#/resources", "book", "Resources", "OpenStax, MIT OCW, Desmos, Overleaf…"))),
 
       state.source === "none" ? loadErrorNotice() : null
     );
@@ -1132,10 +1147,21 @@
     const latest = items.filter((f) => f.added).sort(SORTS.newest[1])[0];
     return latest ? h("p", { class: "overview-latest" }, "Latest: ", h("strong", null, latest.title), ` · ${timeAgo(latest.added)}`) : null;
   }
-  function overviewPage(title, desc, cards, empty) {
+  function overviewPage(title, desc, cards, empty, extra) {
     return h("div", null,
       h("div", { class: "page-head" }, h("div", null, h("h1", null, title), h("p", { class: "muted" }, desc))),
-      state.source === "none" ? loadErrorNotice() : cards.length ? h("div", { class: "overview" }, cards) : empty);
+      state.source === "none" ? loadErrorNotice() : cards.length ? [extra || null, h("div", { class: "overview" }, cards)] : empty);
+  }
+
+  // A small countable chart: one dot per item, a row per course, the count at the end.
+  function dotChart(title, rows) {
+    if (rows.length < 2) return null;
+    return h("figure", { class: "dot-chart" },
+      h("figcaption", null, title),
+      rows.map(([label, n, href]) => h("a", { class: "dot-row", href },
+        h("span", { class: "dot-label" }, label),
+        h("span", { class: "dots", "aria-hidden": "true" }, Array.from({ length: Math.min(n, 60) }, () => h("i"))),
+        h("span", { class: "dot-n" }, String(n)))));
   }
 
   VIEWS.subjects = () => {
@@ -1167,7 +1193,9 @@
           chips(items, "category"),
           latestLine(items));
       }),
-      emptyState("No courses yet", "Courses appear when files carry a course code in their ID.", h("a", { class: "btn", href: "#/ids?tab=build" }, "Build a file name")));
+      emptyState("No courses yet", "Courses appear when files carry a course code in their ID.", h("a", { class: "btn", href: "#/ids?tab=build" }, "Build a file name")),
+      dotChart("Items per course", codes.map((c) => [courseName(c) || c, state.items.filter((f) => f.course === c).length, "#/course/" + c])
+        .filter((r) => r[1]).sort((a, b) => b[1] - a[1])));
   };
 
   VIEWS.materials = () => {
@@ -1240,8 +1268,8 @@
 
   VIEWS.ids = (r) => {
     if (!N.raw) return emptyState("ID rules couldn't be loaded", "assets/naming.json is missing.");
-    const tabs = [["lookup", "Look up"], ["build", "Build a name"], ["codes", "Uploader IDs"], ["rules", "Reference"], ["check", "Check files"]];
-    let tab = tabs.some(([k]) => k === r.params.get("tab")) ? r.params.get("tab") : "lookup";
+    const tabs = [["codes", "Uploader IDs"], ["lookup", "Look up"], ["build", "Build a name"], ["rules", "Reference"], ["check", "Check files"]];
+    let tab = tabs.some(([k]) => k === r.params.get("tab")) ? r.params.get("tab") : "codes";
     const tabBar = h("div", { class: "tabs", role: "tablist" });
     const panel = h("div", { class: "id-panel" });
     const draw = () => {
@@ -1591,85 +1619,137 @@
       list);
   };
 
-  VIEWS.constants = () => {
-    const rows = D.constants.map(([sym, sub, name, value, unit, exact]) => {
-      const v = Number(value);
-      return h("tr", { "data-search": `${sym} ${sub} ${name} ${unit}`.toLowerCase() },
-        h("td", { class: "sym" }, h("var", null, sym, sub ? h("sub", null, sub) : null)),
-        h("td", null, name, exact ? h("span", { class: "tag" }, "exact") : null),
-        h("td", { class: "value" }, sciNode(v, value.replace(/^-|\.|e.*$/g, "").replace(/^0+/, "").length || 1)),
-        h("td", { class: "nowrap" }, unit),
-        h("td", null, h("button", { class: "icon-btn", type: "button", title: `Copy ${value}`, "aria-label": `Copy value of ${name}`,
-          onclick: (e) => copyText(value, e.currentTarget) }, icon("copy"))));
-    });
-    const filter = h("input", { type: "search", class: "input", placeholder: "Filter, e.g. “electron” or “J K”", "aria-label": "Filter constants",
-      oninput: (e) => { const q = e.target.value.toLowerCase().trim(); rows.forEach((r) => { r.hidden = q && !r.dataset.search.includes(q); }); } });
-    return h("div", null,
-      h("div", { class: "page-head" }, h("div", null, h("h1", null, "Physical constants"),
-        h("p", { class: "muted" }, "CODATA 2022 recommended values. Click the copy button to copy a value in calculator-ready form (e.g. 6.62607015e-34). ",
-          h("a", { href: "https://physics.nist.gov/cuu/Constants/", target: "_blank", rel: "noopener" }, "Source: NIST"), "."))),
-      h("div", { class: "toolbar" }, filter),
-      h("div", { class: "table-wrap" }, h("table", { class: "table constants" },
-        h("thead", null, h("tr", null, h("th", null, "Symbol"), h("th", null, "Quantity"), h("th", null, "Value"), h("th", null, "Unit"), h("th", null, h("span", { class: "sr-only" }, "Copy")))),
-        h("tbody", null, rows))));
-  };
+  // ---------- study tools ----------
 
-  VIEWS.converter = (r) => {
-    const cats = Object.keys(D.units);
-    let cat = cats.includes(r.params.get("q")) ? r.params.get("q") : store.get("conv-cat", "Energy");
-    if (!D.units[cat]) cat = "Energy";
-
-    const toBase = (u, x) => typeof u[2] === "function" ? u[2](x) : x * u[2];
-    const fromBase = (u, b) => typeof u[2] === "function" ? u[3](b) : b / u[2];
-
-    const tabs = h("div", { class: "tabs", role: "tablist" });
-    const panel = h("div");
-
-    function draw() {
-      store.set("conv-cat", cat);
-      fill(tabs, ...cats.map((c) => h("button", { type: "button", role: "tab", class: "tab" + (c === cat ? " on" : ""), "aria-selected": String(c === cat),
-        onclick: () => { cat = c; draw(); } }, c)));
-      const units = D.units[cat].units;
-      const saved = store.get("conv:" + cat, null);
-      const input = h("input", { type: "number", class: "input big", value: saved ? saved.v : "1", step: "any", "aria-label": "Value" });
-      const sel = (val) => h("select", { class: "input" }, units.map((u, i) => h("option", { value: String(i), selected: i === val }, `${u[0]} — ${u[1]}`)));
-      const from = sel(saved ? saved.from : 0), to = sel(saved ? saved.to : Math.min(1, units.length - 1));
-      const out = h("output", { class: "result" });
-      const tbody = h("tbody");
-
-      function calc() {
-        const x = parseFloat(input.value);
-        const fu = units[from.value], tu = units[to.value];
-        store.set("conv:" + cat, { v: input.value, from: Number(from.value), to: Number(to.value) });
-        if (!isFinite(x)) { fill(out, "Enter a number"); fill(tbody, ); return; }
-        const b = toBase(fu, x);
-        fill(out, h("span", { class: "muted" }, `${input.value} ${fu[0]} = `), sciNode(fromBase(tu, b), 7), " ", tu[0]);
-        fill(tbody, ...units.map((u) => {
-          const val = fromBase(u, b);
-          return h("tr", null, h("td", { class: "value" }, sciNode(val, 7)), h("td", null, h("strong", null, u[0])), h("td", { class: "muted" }, u[1]),
-            h("td", null, h("button", { class: "icon-btn", type: "button", title: "Copy", onclick: (e) => copyText(String(Number(val.toPrecision(10))), e.currentTarget) }, icon("copy"))));
-        }));
-      }
-      const swap = h("button", { class: "icon-btn", type: "button", title: "Swap units", "aria-label": "Swap units",
-        onclick: () => { const t = from.value; from.value = to.value; to.value = t; calc(); } }, icon("swap"));
-      [input, from, to].forEach((el) => el.addEventListener("input", calc));
-      fill(panel, 
-        h("div", { class: "converter" }, input, from, swap, to),
-        h("p", { class: "result-line" }, out),
-        h("h2", { class: "small-head" }, "In all units"),
-        h("div", { class: "table-wrap" }, h("table", { class: "table" }, tbody)));
-      calc();
+  // Grade calculator: weighted average of the parts done so far, and the score still needed.
+  VIEWS.grades = () => {
+    const saved = store.get("grades", null);
+    let rows = Array.isArray(saved) && saved.length ? saved : [{ name: "Homework", weight: 20, score: "" }, { name: "Midterm", weight: 30, score: "" }, { name: "Final exam", weight: 50, score: "" }];
+    let target = store.get("gradeTarget", 60);
+    const list = h("div", { class: "grade-rows" });
+    const out = h("div", { class: "grade-out" });
+    const num = (v) => (v === "" || v == null || isNaN(Number(v)) ? null : Number(v));
+    const targetIn = h("input", { class: "input mono", type: "number", min: "0", max: "100", step: "any", value: String(target), "aria-label": "Target grade" });
+    function save() { store.set("grades", rows); store.set("gradeTarget", target); }
+    function result() {
+      const total = rows.reduce((a, r) => a + (num(r.weight) || 0), 0);
+      const done = rows.filter((r) => num(r.score) != null && num(r.weight));
+      const doneW = done.reduce((a, r) => a + num(r.weight), 0);
+      const earned = done.reduce((a, r) => a + num(r.weight) * num(r.score) / 100, 0);
+      const restW = total - doneW;
+      const need = restW > 0 ? (target * total / 100 - earned) / restW * 100 : null;
+      const stat = (n, label) => h("div", { class: "stat" }, h("span", { class: "stat-n" }, n), h("span", { class: "stat-l" }, label));
+      fill(out,
+        total !== 100 ? h("p", { class: "notice" }, `The weights add up to ${+total.toFixed(2)}%, not 100%. Results are scaled to your weights.`) : null,
+        h("div", { class: "stats" },
+          stat(doneW ? (earned / doneW * 100).toFixed(1) + "%" : "—", "average so far"),
+          stat(total ? (doneW / total * 100).toFixed(0) + "%" : "—", "of the grade done"),
+          stat(total ? (earned / total * 100).toFixed(1) + "%" : "—", "earned so far"),
+          stat(need == null ? "—" : need <= 0 ? "reached" : need > 100 ? "out of reach" : need.toFixed(1) + "%", "needed on the rest")));
     }
+    function draw() {
+      fill(list, rows.map((r, i) => {
+        const name = h("input", { class: "input", value: r.name, placeholder: "e.g. Quiz 1", "aria-label": "Part" });
+        const weight = h("input", { class: "input mono", type: "number", min: "0", step: "any", value: r.weight, placeholder: "e.g. 20", "aria-label": "Weight (%)" });
+        const score = h("input", { class: "input mono", type: "number", min: "0", max: "100", step: "any", value: r.score, placeholder: "e.g. 85", "aria-label": "Score (%)" });
+        name.addEventListener("input", () => { r.name = name.value; save(); });
+        weight.addEventListener("input", () => { r.weight = weight.value; save(); result(); });
+        score.addEventListener("input", () => { r.score = score.value; save(); result(); });
+        return h("div", { class: "grade-row" }, name, weight, score,
+          h("button", { class: "icon-btn", type: "button", "aria-label": "Remove " + (r.name || "row"), onclick: () => { rows.splice(i, 1); save(); draw(); } }, icon("close")));
+      }));
+      result();
+    }
+    targetIn.addEventListener("input", () => { target = num(targetIn.value) ?? 0; save(); result(); });
     draw();
     return h("div", null,
-      h("div", { class: "page-head" }, h("div", null, h("h1", null, "Unit converter"),
-        h("p", { class: "muted" }, "Convert between SI and common physics units. Energy also converts to wavenumber, frequency, temperature and photon wavelength."))),
-      tabs, panel);
+      h("div", { class: "page-head" }, h("div", null, h("h1", null, "Grade calculator"),
+        h("p", { class: "muted" }, "Enter each part of a course's grade with its weight and, once you have it, your score (leave it empty until then). It shows your average so far and what you still need. Saved only in this browser."))),
+      h("div", { class: "grade-head" }, h("span", null, "Part"), h("span", null, "Weight (%)"), h("span", null, "Score (%)"), h("span")),
+      list,
+      h("div", { class: "row" },
+        h("button", { class: "btn small", type: "button", onclick: () => { rows.push({ name: "", weight: "", score: "" }); save(); draw(); } }, "+ Add a part"),
+        h("label", { class: "row tight grade-target" }, fieldLabel("Target grade (%)"), targetIn)),
+      h("p", { class: "muted small" }, "“Earned so far” counts only the parts you have a score for, out of the whole course. “Needed on the rest” is the average you need on the parts still to come to reach your target."),
+      out);
+  };
+
+  // Study timer: focus / break cycles (Pomodoro). Keeps running while you browse other pages.
+  const TIMER = { mode: "focus", left: null, running: false, done: store.get("timerDone", { day: "", n: 0 }), tick: null, el: null };
+  const TIMER_MODES = { focus: ["Focus", "focusMin", 25], short: ["Short break", "shortMin", 5], long: ["Long break", "longMin", 15] };
+  const timerLen = (m) => (Number(store.get(TIMER_MODES[m][1], TIMER_MODES[m][2])) || TIMER_MODES[m][2]) * 60;
+  function beep() {
+    try { const a = new (window.AudioContext || window.webkitAudioContext)(), o = a.createOscillator(), g = a.createGain();
+      o.connect(g); g.connect(a.destination); o.frequency.value = 880; g.gain.setValueAtTime(.2, a.currentTime); g.gain.exponentialRampToValueAtTime(.001, a.currentTime + 1);
+      o.start(); o.stop(a.currentTime + 1); } catch (e) { /* no sound */ }
+  }
+  function timerStep() {
+    TIMER.left -= 1;
+    if (TIMER.left <= 0) {
+      beep();
+      if (TIMER.mode === "focus") {
+        const today = new Date().toISOString().slice(0, 10);
+        TIMER.done = { day: today, n: (TIMER.done.day === today ? TIMER.done.n : 0) + 1 };
+        store.set("timerDone", TIMER.done);
+        TIMER.mode = TIMER.done.n % 4 === 0 ? "long" : "short";
+      } else TIMER.mode = "focus";
+      TIMER.left = timerLen(TIMER.mode);
+    }
+    if (TIMER.el && TIMER.el.isConnected) TIMER.el.update();
+    document.title = TIMER.running ? `${fmtClock(TIMER.left)} · ${TIMER_MODES[TIMER.mode][0]}` : C.title;
+  }
+  const fmtClock = (t) => `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`;
+  VIEWS.timer = () => {
+    if (TIMER.left == null) TIMER.left = timerLen(TIMER.mode);
+    const clock = h("div", { class: "timer-clock", "aria-live": "off" });
+    const ring = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    ring.setAttribute("viewBox", "0 0 120 120"); ring.setAttribute("class", "timer-ring"); ring.setAttribute("aria-hidden", "true");
+    ring.innerHTML = '<circle cx="60" cy="60" r="54" class="timer-track"/><circle cx="60" cy="60" r="54" class="timer-arc"/>';
+    const modeTabs = h("div", { class: "tabs" });
+    const startBtn = h("button", { class: "btn primary", type: "button" });
+    const count = h("p", { class: "muted small" });
+    const setMode = (m) => { TIMER.mode = m; TIMER.left = timerLen(m); wrap.update(); };
+    startBtn.addEventListener("click", () => {
+      TIMER.running = !TIMER.running;
+      clearInterval(TIMER.tick);
+      if (TIMER.running) TIMER.tick = setInterval(timerStep, 1000); else document.title = C.title;
+      wrap.update();
+    });
+    const lenField = (m) => {
+      const [label, key, def] = TIMER_MODES[m];
+      const inp = h("input", { class: "input mono", type: "number", min: "1", max: "180", value: String(store.get(key, def)) });
+      inp.addEventListener("input", () => { const v = Math.max(1, Math.min(180, Number(inp.value) || def)); store.set(key, v); if (!TIMER.running && TIMER.mode === m) { TIMER.left = v * 60; wrap.update(); } });
+      return h("label", { class: "field" }, fieldLabel(label + " (minutes)"), inp);
+    };
+    const wrap = h("div", { class: "timer" },
+      modeTabs,
+      h("div", { class: "timer-face" }, ring, clock),
+      h("div", { class: "row timer-buttons" }, startBtn,
+        h("button", { class: "btn", type: "button", onclick: () => setMode(TIMER.mode) }, "Reset"),
+        h("button", { class: "btn", type: "button", onclick: () => setMode(TIMER.mode === "focus" ? "short" : "focus") }, "Skip")),
+      count,
+      h("div", { class: "build-grid timer-settings" }, lenField("focus"), lenField("short"), lenField("long")));
+    wrap.update = () => {
+      fill(clock, fmtClock(TIMER.left));
+      const f = 1 - TIMER.left / timerLen(TIMER.mode);
+      ring.querySelector(".timer-arc").style.strokeDashoffset = String(339.3 * (1 - Math.max(0, Math.min(1, f))));
+      fill(modeTabs, Object.entries(TIMER_MODES).map(([m, [label]]) =>
+        h("button", { type: "button", class: "tab" + (TIMER.mode === m ? " on" : ""), onclick: () => setMode(m) }, label)));
+      fill(startBtn, TIMER.running ? "Pause" : "Start");
+      const today = new Date().toISOString().slice(0, 10);
+      fill(count, `Focus sessions today: ${TIMER.done.day === today ? TIMER.done.n : 0}. A long break comes after every fourth.`);
+    };
+    TIMER.el = wrap;
+    wrap.update();
+    return h("div", null,
+      h("div", { class: "page-head" }, h("div", null, h("h1", null, "Study timer"),
+        h("p", { class: "muted" }, "Work in focused blocks with short breaks in between (the Pomodoro method). The timer keeps running while you browse other pages and beeps when a block ends."))),
+      wrap);
   };
 
   VIEWS.resources = () => h("div", null,
     h("div", { class: "page-head" }, h("div", null, h("h1", null, "Resources"),
-      h("p", { class: "muted" }, "Free physics websites and tools that students find useful."))),
+      h("p", { class: "muted" }, "Free websites and tools that students find useful."))),
     D.resources.map((g) => h("section", { class: "section" },
       h("h2", null, g.group),
       h("div", { class: "tiles" }, g.items.map(([name, url, text]) =>
@@ -1721,7 +1801,7 @@
         step(1, "Your uploader ID", h("p", null, "Your uploader ID is your ", h("strong", null, "9-digit student number"), ". Enter it here; the next step uses it."),
           h("label", { class: "field uploader-field" }, fieldLabel("Student number", true), number, numberNote)),
         step(2, "Build the file's ID", h("p", null, "Fill in the course code (its name appears by itself), subject, kind of material, term, item, a short title and the licence. The builder shows the file's ID; ",
-          h("a", { href: "#/ids" }, "the ID system"), " explains each part. You don't need to rename your file: the upload form does it."), builder),
+          h("a", { href: "#/ids?tab=rules" }, "the ID reference"), " explains each part. You don't need to rename your file: the upload form does it."), builder),
         step(3, "Upload", h("p", null, "When everything below is ticked, open the upload form. It opens on GitHub with all your answers filled in."),
           checks,
           h("div", { class: "notice notice-danger", role: "alert" }, icon("alert"),
@@ -1856,23 +1936,7 @@
     fill(document.getElementById("menu-btn"), icon("menu"));
     document.querySelector(".search-icon").replaceWith(icon("search"));
 
-    let theme = store.get("theme", "auto");
-    applyTheme(theme);
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-      const i = THEMES.findIndex((x) => x[0] === theme);
-      theme = THEMES[(i + 1) % THEMES.length][0];
-      store.set("theme", theme);
-      applyTheme(theme);
-    });
-
-    let accent = store.get("accent", "orange");
-    if (!ACCENTS.some((x) => x[0] === accent)) accent = "orange";
-    applyAccent(accent);
-    document.getElementById("accent-toggle").addEventListener("click", () => {
-      accent = ACCENTS[(ACCENTS.findIndex((x) => x[0] === accent) + 1) % ACCENTS.length][0];
-      store.set("accent", accent);
-      applyAccent(accent);
-    });
+    fill(document.querySelector(".sidebar-foot"), appearancePickers());
 
     document.getElementById("menu-btn").addEventListener("click", () => sidebar().classList.contains("open") ? closeSidebar() : openSidebar());
     document.getElementById("backdrop").addEventListener("click", closeSidebar);

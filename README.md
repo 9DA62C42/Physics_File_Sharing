@@ -19,10 +19,10 @@ It started with physics but is for **any course**: each subject is a folder unde
 | 🔗 **Share links** | Copy a link that opens a specific file directly |
 | 🏆 **Uploaders** | Everyone who shares files, with a profile page each |
 | 📨 **File requests** | Ask for files you need; requests are GitHub Issues |
-| ⚛️ **Physics tools: constants** | CODATA 2022 values with one-click copy |
-| 🔁 **Physics tools: unit converter** | Energy (J, eV, cm⁻¹, Hz, K, nm…), length, mass, time, temperature, pressure, power, magnetic field and angle |
-| 🔭 **Physics tools: resources** | Hand-picked physics links: HyperPhysics, PhET, MIT OCW, NIST, arXiv and more |
-| 🌙 **Dark mode** | Follows your system, or pick light or dark at the bottom of the sidebar |
+| 🧮 **Grade calculator** | Your weighted average so far and the score you still need for a target |
+| ⏱️ **Study timer** | Focus and break cycles (Pomodoro) that keep running while you browse |
+| 🔭 **Resources** | Free sites for any course: OpenStax, MIT OCW, Desmos, Overleaf, Google Scholar, plus some physics sites |
+| 🎨 **Themes and accents** | Pick a theme (System, Light, Dark, Paper, Sage, Newsprint, Midnight) and one of ten accent colours from the lists at the bottom of the sidebar |
 
 ---
 
@@ -394,7 +394,7 @@ Students can add one with the upload form (**New subject**). To do it yourself, 
 | `scripts/verify.py`, `.github/workflows/verify.yml` | Check the author permission of an issue labelled `verify` or `unverify` and record the verification |
 | `scripts/upload.py`, `.github/workflows/upload.yml` | Turn an upload-form issue into a pull request with the file named and licensed |
 | `courses.json` | Optional course names |
-| `assets/js/data.js` | Physical constants, unit definitions and the resources list |
+| `assets/js/data.js` | The Resources list (Study tools) |
 | `assets/js/config.js` | Site settings |
 | `assets/css/style.css` | Styling (light and dark) |
 | `scripts/build_index.py` | Builds `files.json` from the `files/` folder and git history: sizes, dates, uploaders, content hashes |

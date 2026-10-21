@@ -63,7 +63,7 @@ window.HELP = (function () {
           "`800012999`: the student number of the person the file belongs to.",
           "After one space: a short title."
         ] },
-        { p: "The **ID system** page has five tabs: **Look up** (decode or search an ID), **Build a name** (fill in a form and copy the file name), **Uploader IDs** (register your name), **Reference** (every code) and **Check files** (mistakes, duplicates, missing licences, unverified files)." }
+        { p: "The **ID system** page has five tabs: **Uploader IDs** (register your name), **Look up** (decode or search an ID), **Build a name** (fill in a form and copy the file name), **Reference** (every code) and **Check files** (mistakes, duplicates, missing licences, unverified files)." }
       ] },
       { id: "upload", icon: "upload", title: "Uploading a file", blocks: [
         { ol: [
@@ -128,16 +128,16 @@ window.HELP = (function () {
           "Have a requested file? Upload it with the form, then comment on the request with a link to your upload."
         ] }
       ] },
-      { id: "tools", icon: "atom", title: "Physics tools", blocks: [
+      { id: "tools", icon: "timer", title: "Study tools", blocks: [
         { ul: [
-          "**Physical constants**: CODATA 2022 values. The copy button copies a calculator-ready number.",
-          "**Unit converter**: energy, length, mass, time, temperature, pressure, power, magnetic field and angle.",
-          "**Resources**: useful free websites such as HyperPhysics, PhET, MIT OpenCourseWare, NIST and arXiv."
+          "**Grade calculator**: enter each part of a course's grade with its weight and your score. It shows your average so far and the score you still need for a target.",
+          "**Study timer**: focus and break cycles (Pomodoro). It keeps running while you browse and beeps when a block ends.",
+          "**Resources**: free websites for any course, such as OpenStax, MIT OpenCourseWare, Desmos and Overleaf, plus a few physics sites."
         ] }
       ] },
       { id: "look", icon: "sun", title: "Appearance", blocks: [
         { ul: [
-          "At the bottom of the sidebar: **Theme** (system, light or dark) and **Accent** (orange or red).",
+          "At the bottom of the sidebar, pick from two lists: **Theme** (System, Light, Dark, Paper, Sage, Newsprint or Midnight) and **Accent** (ten colours, such as orange, blue, green or purple). Warnings always stay red.",
           "The site works on phones: tap **☰** to open the sidebar.",
           "Choose this guide's language with the buttons at the top of this page."
         ] }
@@ -235,7 +235,7 @@ window.HELP = (function () {
           "`800012999`: מספר הסטודנט של מי שהקובץ שייך לו.",
           "אחרי רווח אחד: כותרת קצרה."
         ] },
-        { p: "בעמוד **ID system** יש חמש לשוניות: **Look up** (פענוח או חיפוש מזהה), ‏**Build a name** (ממלאים טופס ומעתיקים את שם הקובץ), ‏**Uploader IDs** (רישום השם שלכם), ‏**Reference** (כל הקודים) ו-**Check files** (שגיאות, כפילויות, קבצים בלי רישיון או בלי אימות)." }
+        { p: "בעמוד **ID system** יש חמש לשוניות: **Uploader IDs** (רישום השם שלכם), ‏**Look up** (פענוח או חיפוש מזהה), ‏**Build a name** (ממלאים טופס ומעתיקים את שם הקובץ), ‏**Reference** (כל הקודים) ו-**Check files** (שגיאות, כפילויות, קבצים בלי רישיון או בלי אימות)." }
       ] },
       { id: "upload", icon: "upload", title: "העלאת קובץ", blocks: [
         { ol: [
@@ -300,16 +300,16 @@ window.HELP = (function () {
           "יש לכם קובץ שביקשו? העלו אותו בטופס, ואז הגיבו על הבקשה עם קישור להעלאה שלכם."
         ] }
       ] },
-      { id: "tools", icon: "atom", title: "כלים לפיזיקה", blocks: [
+      { id: "tools", icon: "timer", title: "כלי לימוד", blocks: [
         { ul: [
-          "**Physical constants**: קבועים פיזיקליים לפי CODATA 2022. כפתור ההעתקה מעתיק מספר מוכן למחשבון.",
-          "**Unit converter**: המרת יחידות של אנרגיה, אורך, מסה, זמן, טמפרטורה, לחץ, הספק, שדה מגנטי וזווית.",
-          "**Resources**: אתרים חינמיים שימושיים, כמו HyperPhysics, ‏PhET, ‏MIT OpenCourseWare, ‏NIST ו-arXiv."
+          "**Grade calculator**: מזינים כל רכיב בציון הקורס עם המשקל והציון שלכם, ורואים את הממוצע עד כה ואת הציון שעוד צריך כדי להגיע ליעד.",
+          "**Study timer**: מחזורי ריכוז והפסקה (פומודורו). ממשיך לרוץ בזמן גלישה באתר ומצפצף בסוף כל פרק זמן.",
+          "**Resources**: אתרים חינמיים לכל קורס, כמו OpenStax, ‏MIT OpenCourseWare, ‏Desmos ו-Overleaf, וכמה אתרי פיזיקה."
         ] }
       ] },
       { id: "look", icon: "sun", title: "מראה", blocks: [
         { ul: [
-          "בתחתית סרגל הצד: **Theme** (מערכת, בהיר או כהה) ו-**Accent** (כתום או אדום).",
+          "בתחתית סרגל הצד בוחרים משתי רשימות: **Theme** (System, Light, Dark, Paper, Sage, Newsprint או Midnight) ו-**Accent** (עשרה צבעים, כמו כתום, כחול, ירוק או סגול). אזהרות תמיד נשארות אדומות.",
           "האתר עובד גם בטלפון: הקישו על **☰** כדי לפתוח את סרגל הצד.",
           "את שפת המדריך בוחרים בכפתורים בראש העמוד."
         ] }
@@ -407,7 +407,7 @@ window.HELP = (function () {
           "`800012999`：文件所属学生的学号。",
           "空一格之后：简短的标题。"
         ] },
-        { p: "**ID system** 页面有五个标签页：**Look up**（解读或搜索编号）、**Build a name**（填写表单并复制文件名）、**Uploader IDs**（登记你的姓名）、**Reference**（全部代码说明）和 **Check files**（错误、重复、缺少许可证或未审核的文件）。" }
+        { p: "**ID system** 页面有五个标签页：**Uploader IDs**（登记你的姓名）、**Look up**（解读或搜索编号）、**Build a name**（填写表单并复制文件名）、**Reference**（全部代码说明）和 **Check files**（错误、重复、缺少许可证或未审核的文件）。" }
       ] },
       { id: "upload", icon: "upload", title: "上传文件", blocks: [
         { ol: [
@@ -472,16 +472,16 @@ window.HELP = (function () {
           "你有别人请求的文件？用上传表单上传，然后在该请求下留言并附上你的上传链接。"
         ] }
       ] },
-      { id: "tools", icon: "atom", title: "物理工具", blocks: [
+      { id: "tools", icon: "timer", title: "学习工具", blocks: [
         { ul: [
-          "**Physical constants**：CODATA 2022 物理常数。复制按钮会复制可直接用于计算器的数值。",
-          "**Unit converter**：能量、长度、质量、时间、温度、压强、功率、磁场和角度的单位换算。",
-          "**Resources**：实用的免费网站，例如 HyperPhysics、PhET、MIT OpenCourseWare、NIST 和 arXiv。"
+          "**Grade calculator**：输入课程成绩的每个组成部分、权重和你的分数，即可看到目前的平均分，以及要达到目标还需要多少分。",
+          "**Study timer**：专注与休息循环（番茄工作法）。浏览其他页面时也会继续计时，每段结束时会提示音。",
+          "**Resources**：适用于各门课程的免费网站，例如 OpenStax、MIT OpenCourseWare、Desmos 和 Overleaf，以及一些物理网站。"
         ] }
       ] },
       { id: "look", icon: "sun", title: "外观", blocks: [
         { ul: [
-          "侧边栏底部：**Theme**（跟随系统、浅色或深色）和 **Accent**（橙色或红色）。",
+          "在侧边栏底部的两个列表中选择：**Theme**（System、Light、Dark、Paper、Sage、Newsprint 或 Midnight）和 **Accent**（十种颜色，如橙、蓝、绿、紫）。警告始终保持红色。",
           "网站支持手机：点击 **☰** 打开侧边栏。",
           "本指南的语言可以用页面顶部的按钮切换。"
         ] }
@@ -579,7 +579,7 @@ window.HELP = (function () {
           "`800012999`: el número de estudiante de la persona a quien pertenece el archivo.",
           "Tras un espacio: un título corto."
         ] },
-        { p: "La página **ID system** tiene cinco pestañas: **Look up** (descifrar o buscar un ID), **Build a name** (rellenar un formulario y copiar el nombre del archivo), **Uploader IDs** (registrar tu nombre), **Reference** (todos los códigos) y **Check files** (errores, duplicados, archivos sin licencia o sin verificar)." }
+        { p: "La página **ID system** tiene cinco pestañas: **Uploader IDs** (registrar tu nombre), **Look up** (descifrar o buscar un ID), **Build a name** (rellenar un formulario y copiar el nombre del archivo), **Reference** (todos los códigos) y **Check files** (errores, duplicados, archivos sin licencia o sin verificar)." }
       ] },
       { id: "upload", icon: "upload", title: "Subir un archivo", blocks: [
         { ol: [
@@ -644,16 +644,16 @@ window.HELP = (function () {
           "¿Tienes un archivo que alguien pidió? Súbelo con el formulario y luego comenta en la solicitud con un enlace a tu subida."
         ] }
       ] },
-      { id: "tools", icon: "atom", title: "Herramientas de física", blocks: [
+      { id: "tools", icon: "timer", title: "Herramientas de estudio", blocks: [
         { ul: [
-          "**Physical constants**: constantes físicas CODATA 2022. El botón de copiar copia un número listo para la calculadora.",
-          "**Unit converter**: conversión de energía, longitud, masa, tiempo, temperatura, presión, potencia, campo magnético y ángulo.",
-          "**Resources**: sitios web gratuitos útiles, como HyperPhysics, PhET, MIT OpenCourseWare, NIST y arXiv."
+          "**Grade calculator**: escribe cada parte de la nota de un curso con su peso y tu nota. Muestra tu media hasta ahora y la nota que aún necesitas para un objetivo.",
+          "**Study timer**: ciclos de concentración y descanso (Pomodoro). Sigue en marcha mientras navegas y suena al terminar cada bloque.",
+          "**Resources**: sitios gratuitos para cualquier curso, como OpenStax, MIT OpenCourseWare, Desmos y Overleaf, y algunos de física."
         ] }
       ] },
       { id: "look", icon: "sun", title: "Apariencia", blocks: [
         { ul: [
-          "Abajo en la barra lateral: **Theme** (sistema, claro u oscuro) y **Accent** (naranja o rojo).",
+          "Abajo en la barra lateral, elige en dos listas: **Theme** (System, Light, Dark, Paper, Sage, Newsprint o Midnight) y **Accent** (diez colores, como naranja, azul, verde o morado). Los avisos siempre siguen en rojo.",
           "El sitio funciona en el móvil: toca **☰** para abrir la barra lateral.",
           "Elige el idioma de esta guía con los botones de la parte superior de esta página."
         ] }
@@ -751,7 +751,7 @@ window.HELP = (function () {
           "`800012999` : le numéro d’étudiant de la personne à qui appartient le fichier.",
           "Après une espace : un titre court."
         ] },
-        { p: "La page **ID system** comporte cinq onglets : **Look up** (décoder ou rechercher un identifiant), **Build a name** (remplir un formulaire et copier le nom du fichier), **Uploader IDs** (enregistrer votre nom), **Reference** (tous les codes) et **Check files** (erreurs, doublons, fichiers sans licence ou non vérifiés)." }
+        { p: "La page **ID system** comporte cinq onglets : **Uploader IDs** (enregistrer votre nom), **Look up** (décoder ou rechercher un identifiant), **Build a name** (remplir un formulaire et copier le nom du fichier), **Reference** (tous les codes) et **Check files** (erreurs, doublons, fichiers sans licence ou non vérifiés)." }
       ] },
       { id: "upload", icon: "upload", title: "Envoyer un fichier", blocks: [
         { ol: [
@@ -816,16 +816,16 @@ window.HELP = (function () {
           "Vous avez un fichier demandé ? Envoyez-le avec le formulaire, puis commentez la demande avec un lien vers votre envoi."
         ] }
       ] },
-      { id: "tools", icon: "atom", title: "Outils de physique", blocks: [
+      { id: "tools", icon: "timer", title: "Outils d’étude", blocks: [
         { ul: [
-          "**Physical constants** : les constantes physiques CODATA 2022. Le bouton de copie copie un nombre prêt pour la calculatrice.",
-          "**Unit converter** : conversion d’énergie, longueur, masse, temps, température, pression, puissance, champ magnétique et angle.",
-          "**Resources** : des sites gratuits utiles comme HyperPhysics, PhET, MIT OpenCourseWare, NIST et arXiv."
+          "**Grade calculator** : saisissez chaque partie de la note d’un cours avec son poids et votre note. Il affiche votre moyenne actuelle et la note qu’il vous faut encore pour atteindre un objectif.",
+          "**Study timer** : cycles de concentration et de pause (Pomodoro). Il continue pendant que vous naviguez et sonne à la fin de chaque bloc.",
+          "**Resources** : des sites gratuits pour tous les cours, comme OpenStax, MIT OpenCourseWare, Desmos et Overleaf, ainsi que quelques sites de physique."
         ] }
       ] },
       { id: "look", icon: "sun", title: "Apparence", blocks: [
         { ul: [
-          "En bas de la barre latérale : **Theme** (système, clair ou sombre) et **Accent** (orange ou rouge).",
+          "En bas de la barre latérale, choisissez dans deux listes : **Theme** (System, Light, Dark, Paper, Sage, Newsprint ou Midnight) et **Accent** (dix couleurs, comme orange, bleu, vert ou violet). Les avertissements restent toujours rouges.",
           "Le site fonctionne sur téléphone : touchez **☰** pour ouvrir la barre latérale.",
           "Choisissez la langue de ce guide avec les boutons en haut de cette page."
         ] }
@@ -923,7 +923,7 @@ window.HELP = (function () {
           "`800012999`: die Matrikelnummer der Person, der die Datei gehört.",
           "Nach einem Leerzeichen: ein kurzer Titel."
         ] },
-        { p: "Die Seite **ID system** hat fünf Reiter: **Look up** (eine ID entschlüsseln oder suchen), **Build a name** (Formular ausfüllen und Dateinamen kopieren), **Uploader IDs** (deinen Namen eintragen), **Reference** (alle Codes) und **Check files** (Fehler, Duplikate, Dateien ohne Lizenz oder Prüfung)." }
+        { p: "Die Seite **ID system** hat fünf Reiter: **Uploader IDs** (deinen Namen eintragen), **Look up** (eine ID entschlüsseln oder suchen), **Build a name** (Formular ausfüllen und Dateinamen kopieren), **Reference** (alle Codes) und **Check files** (Fehler, Duplikate, Dateien ohne Lizenz oder Prüfung)." }
       ] },
       { id: "upload", icon: "upload", title: "Eine Datei hochladen", blocks: [
         { ol: [
@@ -988,16 +988,16 @@ window.HELP = (function () {
           "Du hast eine gewünschte Datei? Lade sie mit dem Formular hoch und kommentiere die Anfrage mit einem Link zu deinem Upload."
         ] }
       ] },
-      { id: "tools", icon: "atom", title: "Physik-Werkzeuge", blocks: [
+      { id: "tools", icon: "timer", title: "Lernwerkzeuge", blocks: [
         { ul: [
-          "**Physical constants**: Naturkonstanten nach CODATA 2022. Der Kopierknopf kopiert eine taschenrechnerfertige Zahl.",
-          "**Unit converter**: Umrechnung von Energie, Länge, Masse, Zeit, Temperatur, Druck, Leistung, Magnetfeld und Winkel.",
-          "**Resources**: nützliche kostenlose Websites wie HyperPhysics, PhET, MIT OpenCourseWare, NIST und arXiv."
+          "**Grade calculator**: Trage jeden Teil der Kursnote mit Gewicht und deiner Punktzahl ein. Er zeigt deinen bisherigen Schnitt und was du für ein Ziel noch brauchst.",
+          "**Study timer**: Konzentrations- und Pausenzyklen (Pomodoro). Läuft weiter, während du surfst, und piept am Ende jedes Blocks.",
+          "**Resources**: kostenlose Websites für jeden Kurs, etwa OpenStax, MIT OpenCourseWare, Desmos und Overleaf, dazu einige Physik-Seiten."
         ] }
       ] },
       { id: "look", icon: "sun", title: "Darstellung", blocks: [
         { ul: [
-          "Unten in der Seitenleiste: **Theme** (System, hell oder dunkel) und **Accent** (Orange oder Rot).",
+          "Unten in der Seitenleiste wählst du aus zwei Listen: **Theme** (System, Light, Dark, Paper, Sage, Newsprint oder Midnight) und **Accent** (zehn Farben, etwa Orange, Blau, Grün oder Lila). Warnungen bleiben immer rot.",
           "Die Website funktioniert auf dem Handy: Tippe auf **☰**, um die Seitenleiste zu öffnen.",
           "Die Sprache dieser Anleitung wählst du mit den Schaltflächen oben auf dieser Seite."
         ] }

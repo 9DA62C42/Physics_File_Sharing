@@ -3,6 +3,17 @@
 // **bold** and `code` work as in the Help guide.
 window.CHANGELOG = [
   {
+    version: "1.6", date: "2026-10-21", title: "Themes and study tools",
+    changes: [
+      { type: "new", text: "**Themes and accents** are picked from lists: seven themes (System, Light, Dark, Paper, Sage, Newsprint, Midnight) and ten accent colours. Warnings stay red in every theme." },
+      { type: "new", text: "**Study tools** for any course: a **Grade calculator** and a **Study timer**. The physical constants and unit converter are gone; Resources now covers all courses." },
+      { type: "new", text: "The Courses page starts with a small chart of items per course." },
+      { type: "improved", text: "Home: \u201cNew here?\u201d and the copyright reminder sit side by side in one short row; copyright reminders are shorter everywhere." },
+      { type: "improved", text: "ID system tabs: Uploader IDs, Look up, Build a name, Reference, Check files." },
+      { type: "fixed", text: "File lists: list view rows line up and never wrap inside a word; details wrap between pieces; nothing sticks out of a card." }
+    ]
+  },
+  {
     version: "1.5", date: "2026-10-21", title: "Two guides",
     changes: [
       { type: "new", text: "Help is split into a **Student guide** and a **Maintainer guide** (owner and collaborators), with a direct **Maintainer guide** link in the sidebar." },

@@ -14,7 +14,7 @@ body:
 
         **Everything here is public.** Share only your own work or material you have permission to share, and remove personal information first.
 
-        **Copyright:** don't upload textbooks, solution manuals, official exams, homework sheets or lecture slides without the owner's permission, or solutions to assignments that are still open. Uploads that break this are refused or removed.
+        **Copyright:** only your own work or material you may share; no textbooks, official exams or solutions to open assignments.
   - type: textarea
     id: files
     attributes:

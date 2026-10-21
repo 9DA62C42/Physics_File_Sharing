@@ -1,6 +1,14 @@
 {
   "records": [
     {
+      "path": "files/Physical-Mathematics/Notes/01040215_LN_2627W_FULL_V4.1_800012999 Complex Functions A LN.pdf",
+      "sha256": "ced70d16ad67f4681d15f6be6fd2c58663cc293187a7b749ce46506a6412be51",
+      "by": "9DA62C42",
+      "date": "2026-10-21T12:26:04+00:00",
+      "issue": 16,
+      "note": "Shang Wu is responsible for all problems."
+    },
+    {
       "path": "files/Waves/Notes/01140086_LN_1617F_FULL_800015240 Vibrations and Waves Lecture Notes.pdf",
       "sha256": "42151d20a58d2fc9c9547fa5034e83d06471b9bb23ae42b52c05f02129bb59cb",
       "by": "9DA62C42",

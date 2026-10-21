@@ -89,6 +89,9 @@
     while (b >= 1024 && i < u.length - 1) { b /= 1024; i++; }
     return (i ? b.toFixed(b < 10 ? 1 : 0) : b) + " " + u[i];
   }
+  // A form label with a red * (required) or "(optional)"; leave req undefined for neither.
+  const fieldLabel = (text, req) => h("span", { class: "field-l" }, text,
+    req === true ? h("span", { class: "req", "aria-label": "required" }, " *") : req === false ? h("span", { class: "opt" }, " (optional)") : null);
   const fmtDate = (iso) => iso ? new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "";
   function timeAgo(iso) {
     const s = (Date.now() - new Date(iso)) / 1000;
@@ -1281,34 +1284,35 @@
     const types = N.raw.types;
     const now = new Date(), y = now.getFullYear() % 100 - (now.getMonth() < 8 ? 1 : 0);
     const years = []; for (let a = y + 1; a >= 15; a--) years.push(String(a).padStart(2, "0") + String((a + 1) % 100).padStart(2, "0"));
-    const lab = (text, el, hint) => h("label", { class: "field" }, h("span", { class: "field-l" }, text), el, hint ? h("span", { class: "field-h" }, hint) : null);
+    const lab = (text, el, hint, req) => h("label", { class: "field" }, fieldLabel(text, req), el, hint ? h("span", { class: "field-h" }, hint) : null);
+    const upload = !!opts.onChange;
     const saved = store.get("builder", {});
 
-    const course = h("input", { class: "input mono", value: saved.course || "", placeholder: "01140086", maxlength: "8", inputmode: "numeric" });
+    const course = h("input", { class: "input mono", value: saved.course || "", placeholder: "e.g. 01140086", maxlength: "8", inputmode: "numeric" });
     const type = h("select", { class: "input" }, CATEGORY_ORDER.map((c) => h("optgroup", { label: c },
       types.filter((t) => t.category === c).map((t) => h("option", { value: t.code, selected: t.code === (saved.type || "HWS") }, `${t.code} · ${t.name} (${t.by})`)))));
     const year = h("select", { class: "input" }, years.map((v) => h("option", { value: v, selected: v === (saved.year || years[1]) }, `${v} (20${v.slice(0, 2)}–${v.slice(2)})`)),
       N.raw.termPlaceholders.map((p) => h("option", { value: p.code, selected: p.code === saved.year }, p.code)));
     const season = h("select", { class: "input" }, N.raw.seasons.map((s) => h("option", { value: s.letter, selected: s.letter === (saved.season || "W") }, `${s.letter} · ${s.name}`)));
-    const item = h("input", { class: "input mono", value: saved.item || "01", placeholder: "01" });
-    const version = h("input", { class: "input mono", value: saved.version || "", placeholder: "e.g. V2 or V4.1 (optional)" });
+    const item = h("input", { class: "input mono", value: saved.item || "01", placeholder: "e.g. 01" });
+    const version = h("input", { class: "input mono", value: saved.version || "", placeholder: "e.g. V2 or V4.1" });
     const tagBoxes = N.raw.tags.map((t) => h("label", { class: "check" }, h("input", { type: "checkbox", value: t.code, checked: (saved.tags || []).includes(t.code) }), ` ${t.code} · ${t.name}`));
-    const licSel = h("select", { class: "input" }, h("option", { value: "" }, "— none (not stated) —"),
+    const licSel = h("select", { class: "input" }, h("option", { value: "" }, opts.onChange ? "— choose —" : "— none (not stated) —"),
       N.raw.licenses.map((l) => h("option", { value: l.code, selected: l.code === saved.license }, `${l.code} · ${l.short}`)));
-    const uploader = opts.uploader || h("input", { class: "input mono", value: saved.uploader || "", placeholder: "123456789", maxlength: "9", inputmode: "numeric" });
-    const title = h("input", { class: "input", value: saved.title || "", placeholder: "Waves Homework 1 Solution" });
-    const ext = h("input", { class: "input mono", value: saved.ext || "pdf", placeholder: "pdf" });
+    const uploader = opts.uploader || h("input", { class: "input mono", value: saved.uploader || "", placeholder: "e.g. 123456789", maxlength: "9", inputmode: "numeric" });
+    const title = h("input", { class: "input", value: saved.title || "", placeholder: "e.g. Waves Homework 1 Solution" });
+    const ext = h("input", { class: "input mono", value: saved.ext || "pdf", placeholder: "e.g. pdf" });
     // The course name appears as soon as a known course code is typed; a new course asks for its name.
     const courseHint = h("span", { class: "field-h" });
-    const courseNameIn = h("input", { class: "input", value: saved.courseName || "", placeholder: "Linear Algebra 1" });
-    const courseNameField = lab("Course name (new course)", courseNameIn, "Shown next to the code on the website");
+    const courseNameIn = h("input", { class: "input", value: saved.courseName || "", placeholder: "e.g. Linear Algebra 1" });
+    const courseNameField = lab("Course name (new course)", courseNameIn, "Shown next to the code on the website", false);
     // Contribute page only: the subject, picked from the course when files of that course already exist.
     const subjects = Object.keys(subjectCounts()).sort();
     const NEW = "__new__";
     const subjectSel = h("select", { class: "input" }, h("option", { value: "" }, "— choose —"), subjects.map((x) => h("option", { value: x, selected: x === saved.subject }, pretty(x))),
       h("option", { value: NEW, selected: saved.subject === NEW }, "New subject…"));
-    const newSubject = h("input", { class: "input", value: saved.newSubject || "", placeholder: "Linear Algebra" });
-    const newSubjectField = lab("New subject", newSubject, "Becomes a new subject on the website");
+    const newSubject = h("input", { class: "input", value: saved.newSubject || "", placeholder: "e.g. Linear Algebra" });
+    const newSubjectField = lab("New subject", newSubject, "Becomes a new subject on the website", true);
     const courseSubject = (code) => { const f = state.items.find((x) => x.idInfo && x.idInfo.course === code); return f ? f.subject : null; };
     let lastCourse = null;
     const result = h("div", { class: "build-out" });
@@ -1359,32 +1363,33 @@
     update();
     return h("div", { class: "builder" },
       h("div", { class: "build-grid" },
-        h("label", { class: "field" }, h("span", { class: "field-l" }, "Course code"), course, courseHint),
+        h("label", { class: "field" }, fieldLabel("Course code", true), course, courseHint),
         opts.onChange ? courseNameField : null,
-        opts.onChange ? lab("Subject", subjectSel, "Picked from the course when it already has files") : null,
+        opts.onChange ? lab("Subject", subjectSel, "Picked from the course when it already has files", true) : null,
         opts.onChange ? newSubjectField : null,
-        lab("Type", type),
-        lab("Academic year", year),
-        lab("Term", season),
-        lab("Item", item, "01, 01b, A, Q01, CA01, PS01, P02, C01, FULL or empty"),
-        lab("Version", version),
-        opts.uploader ? null : lab("Student number", uploader, h("span", null, "9 digits, will be public. ", h("a", { href: "#/ids?tab=codes" }, "More"))),
-        lab("Title", title, "Short English title"),
-        opts.onChange ? null : lab("Extension", ext)),
-      h("div", { class: "field" }, h("span", { class: "field-l" }, "Tags"), h("div", { class: "row" }, tagBoxes)),
+        lab("Type", type, null, true),
+        lab("Academic year", year, null, true),
+        lab("Term", season, null, true),
+        lab("Item", item, upload ? "01, 01b, A, Q01, CA01, PS01, P02, C01 or FULL" : "01, 01b, A, Q01, CA01, PS01, P02, C01, FULL or empty", upload),
+        lab("Version", version, "Any numbering: V1, V02, V4.1", false),
+        opts.uploader ? null : lab("Student number", uploader, h("span", null, "9 digits, will be public. ", h("a", { href: "#/ids?tab=codes" }, "More")), true),
+        lab("Title", title, "Short English title", upload ? true : false),
+        upload ? null : lab("Extension", ext, null, false)),
+      h("div", { class: "field" }, fieldLabel("Tags", false), h("div", { class: "row" }, tagBoxes)),
       result,
       h("div", { class: "id-format" },
-        h("h3", null, opts.onChange ? "Licence (not part of the name)" : "Licence (optional, not part of the name)"),
-        h("label", { class: "field" }, h("span", { class: "field-l" }, "How may others reuse this file?"), licSel,
+        h("h3", null, "Licence (not part of the name)"),
+        h("label", { class: "field" }, fieldLabel("How may others reuse this file?", upload), licSel,
           h("span", { class: "field-h" }, h("a", { href: "#/ids?tab=rules" }, "Compare licences"))),
         licOut));
   };
 
   ID_TABS.codes = () => {
     const regs = [...state.uploaders.values()].sort((a, b) => a.code.localeCompare(b.code));
-    const num = h("input", { class: "input mono", placeholder: "Student number (9 digits)", maxlength: "9", inputmode: "numeric" });
-    const name = h("input", { class: "input", placeholder: "Name to show, e.g. Alice Wang" });
-    const gh = h("input", { class: "input mono", placeholder: "GitHub username (optional)" });
+    const num = h("input", { class: "input mono", placeholder: "e.g. 123456789", maxlength: "9", inputmode: "numeric" });
+    const name = h("input", { class: "input", placeholder: "e.g. Alice Wang" });
+    const gh = h("input", { class: "input mono", placeholder: "e.g. alicewang" });
+    const regField = (text, el, req, hint) => h("label", { class: "field" }, fieldLabel(text, req), el, hint ? h("span", { class: "field-h" }, hint) : null);
     const out = h("div", { class: "build-out" });
     function update() {
       const id = num.value.trim(), nm = name.value.trim().replace(/"/g, ""), g = gh.value.trim().replace(/^@/, "");
@@ -1416,7 +1421,8 @@
             h("li", null, "Most useful on your own work (", N.raw.types.filter((t) => t.by === "Student").map((t) => t.code).join(", "), "). Optional on school material."))),
         h("div", { class: "id-format" },
           h("h3", null, "Register your name (optional)"),
-          h("div", { class: "stack" }, num, name, gh), out)),
+          h("div", { class: "stack" }, regField("Student number", num, true, "9 digits"), regField("Name to show", name, true),
+            regField("GitHub username", gh, false, "Links your uploads from that account")), out)),
       h("h2", { class: "small-head section" }, `Registered students (${regs.length})`),
       regs.length ? h("div", { class: "table-wrap" }, h("table", { class: "table" },
         h("thead", null, h("tr", null, h("th", null, "Student no."), h("th", null, "Name"), h("th", null, "GitHub"))),
@@ -1648,7 +1654,7 @@
     const step = (n, title, ...body) => h("li", { class: "step" }, h("span", { class: "step-n" }, String(n)), h("div", null, h("h3", null, title), ...body));
 
     // Step 1: the student number, shared with the name builder in step 2.
-    const number = h("input", { class: "input mono", value: store.get("builder", {}).uploader || "", placeholder: "123456789", maxlength: "9", inputmode: "numeric", "aria-label": "Student number" });
+    const number = h("input", { class: "input mono", value: store.get("builder", {}).uploader || "", placeholder: "e.g. 123456789", maxlength: "9", inputmode: "numeric", "aria-label": "Student number" });
     const numberNote = h("p", { class: "field-h" });
     // Step 3: what's still missing, and the pre-filled form link.
     const checks = h("ul", { class: "perm checklist" });
@@ -1680,7 +1686,7 @@
       copyrightNotice(),
       h("ol", { class: "steps" },
         step(1, "Your uploader ID", h("p", null, "Your uploader ID is your ", h("strong", null, "9-digit student number"), ". Enter it here; the next step uses it."),
-          h("label", { class: "field uploader-field" }, h("span", { class: "field-l" }, "Student number"), number, numberNote)),
+          h("label", { class: "field uploader-field" }, fieldLabel("Student number", true), number, numberNote)),
         step(2, "Build the file's ID", h("p", null, "Fill in the course code (its name appears by itself), subject, kind of material, term, item, a short title and the licence. The builder shows the file's ID; ",
           h("a", { href: "#/ids" }, "the ID system"), " explains each part. You don't need to rename your file: the upload form does it."), builder),
         step(3, "Upload", h("p", null, "When everything below is ticked, open the upload form. It opens on GitHub with all your answers filled in."),
@@ -1691,7 +1697,8 @@
           h("div", { class: "notice notice-legal", role: "note" }, icon("alert"), h("div", null,
             h("p", null, h("strong", null, "In the form, the only thing you need to do is attach your file. "), "Drag it into the ", h("strong", null, "Files"), " box, wait until it shows as a link, then click ", h("strong", null, "Create"), ". ",
               "The title and the other answers are filled in from this page; leave them as they are."),
-            h("p", null, "PDF is best; put LaTeX or other sources in one ", h("code", null, ".zip"), "; up to 25 MB."))),
+            h("p", null, "PDF is best; put LaTeX or other sources in one ", h("code", null, ".zip"), "; up to 25 MB."),
+            h("p", null, "GitHub may suggest \u201csimilar\u201d or possibly duplicate issues while you create it. Ignore them and click ", h("strong", null, "Create"), "; the bot checks for real duplicates."))),
           h("p", { class: "muted small" }, "No file ID possible, for example for material from outside the university? ", h("a", { href: uploadUrl(), target: "_blank", rel: "noopener" }, "Upload without an ID"), ".")),
         step(4, "Review", h("p", null, "A bot checks the form within a minute and replies on the issue. If something is wrong, it says what; edit the issue to fix it. Otherwise it opens a pull request, and a maintainer reviews it.")),
         step(5, "It appears on the site", h("p", null, "Once the pull request is merged, your file shows up within a few minutes, credited to your student number and GitHub account."))),

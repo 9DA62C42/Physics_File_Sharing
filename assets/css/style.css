@@ -802,3 +802,7 @@ code.ex { display: block; width: fit-content; margin: var(--s1) 0; }
 .notice-danger > .icon { flex: none; width: 22px; height: 22px; color: #fff; }
 .notice-danger p { margin: 0; color: #fff; }
 .notice-danger strong { text-transform: uppercase; letter-spacing: .03em; }
+
+/* Required / optional marks on form labels. */
+.field-l .req { color: #d92d20; font-weight: 800; }
+.field-l .opt { color: var(--muted); font-weight: 400; text-transform: none; letter-spacing: 0; }

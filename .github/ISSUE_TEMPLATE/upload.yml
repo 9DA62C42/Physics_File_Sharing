@@ -8,6 +8,7 @@ body:
       value: |
         ### ⚠️ Only attach your file. Do not change the title.
         Came from the website's **Open the upload form** button? Everything is already filled in. **The only thing you need to do is attach your file** in the **Files** box below, then click **Create**. **Do not change the title** or the other answers.
+        GitHub may suggest "similar" or possibly duplicate issues while you create this one: **ignore them** and click **Create**. The bot checks for real duplicates.
 
         Opened this form directly? Fill in every box and attach your file. A bot checks it and opens a pull request; a maintainer reviews it, and once it's merged the file appears on the website.
 
@@ -63,31 +64,31 @@ body:
     id: course
     attributes:
       label: Course code
-      description: 8 digits.
+      description: (optional) 8 digits.
       placeholder: e.g. 01140086
   - type: input
     id: course_name
     attributes:
       label: Course name
-      description: Only needed if the course isn't on the website yet, so it shows as "01140086 · Waves".
+      description: (optional) Only needed if the course isn't on the website yet, so it shows as "01140086 · Waves".
       placeholder: e.g. Linear Algebra 1 (leave empty for a known course)
   - type: input
     id: term
     attributes:
       label: Term
-      description: e.g. 2627W (Winter 2026–27), 2526S (Spring 2026), LEGACY or Undated.
+      description: (optional) e.g. 2627W (Winter 2026–27), 2526S (Spring 2026), LEGACY or Undated.
       placeholder: e.g. 2627W
   - type: input
     id: item
     attributes:
       label: Item
-      description: "e.g. 01, 01b, A, Q01, PS01, C01 or FULL. You can add a version (any numbering: V1, V02, V4.1) or tags after it, e.g. FULL_V4.1 or 01_AN."
+      description: "(optional) e.g. 01, 01b, A, Q01, PS01, C01 or FULL. You can add a version (any numbering: V1, V02, V4.1) or tags after it, e.g. FULL_V4.1 or 01_AN."
       placeholder: e.g. 01
   - type: input
     id: student
     attributes:
       label: Student number
-      description: Your 9-digit student number. It is public and credits the file to you.
+      description: (optional) Your 9-digit student number. It is public and credits the file to you.
       placeholder: e.g. 123456789
   - type: checkboxes
     id: confirm

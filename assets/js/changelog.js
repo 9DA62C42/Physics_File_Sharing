@@ -3,6 +3,15 @@
 // **bold** and `code` work as in the Help guide.
 window.CHANGELOG = [
   {
+    version: "1.4", date: "2026-10-21", title: "Clearer forms",
+    changes: [
+      { type: "improved", text: "Every form field is marked: a red asterisk (*) when it's required, **(optional)** when it isn't. Tags and version are optional." },
+      { type: "improved", text: "Example text in boxes starts with “e.g.”, so an empty box no longer looks filled in." },
+      { type: "improved", text: "The upload page and form say to ignore GitHub's “similar issues” suggestions." },
+      { type: "improved", text: "The registration form has labelled boxes." }
+    ]
+  },
+  {
     version: "1.3", date: "2026-10-21", title: "Free version numbers",
     changes: [
       { type: "improved", text: "Version numbers in IDs can be anything after `V`: `V1`, `V02`, `V4.1`, `V2.0.3`." },

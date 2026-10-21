@@ -15,6 +15,7 @@ body:
       options:
         - Waves
         - Physical Mathematics
+        - Mathematics
         - Something else (say which below)
     validations:
       required: true

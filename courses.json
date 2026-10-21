@@ -1,6 +1,7 @@
 {
   "_about": "Optional course names shown next to 8-digit course codes, e.g. \"01140086\": \"Waves\". Add a line when a new course appears.",
   "courses": {
+    "01040215": "Complex Functions",
     "01140086": "Waves"
   }
 }

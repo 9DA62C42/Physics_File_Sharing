@@ -4,6 +4,22 @@ A simple website where physics students share notes, problem-set solutions, form
 
 **Website:** `https://9da62c42.github.io/physics_file_sharing/` (live once GitHub Pages is turned on, see [For maintainers](#for-maintainers))
 
+### What's on the site
+
+| | |
+| --- | --- |
+| 📚 **Library** | Sidebar navigation by subject, search (press <kbd>/</kbd>), filter by file type, sort by name, date or size, grid or list view |
+| 👁️ **Preview** | Read PDFs, images, text, LaTeX and code right on the site. Word, PowerPoint and Excel files open in an Office viewer, and notebooks open in nbviewer or Colab |
+| ⭐ **Favorites** | Star files to find them again later (saved in your browser) |
+| 🕒 **Recently added** | Newest uploads, with upload date and uploader name |
+| 🔗 **Share links** | Copy a link that opens a specific file directly |
+| 🏆 **Contributors** | Leaderboard of who has shared the most |
+| 📨 **File requests** | Ask for files you need; requests are GitHub Issues |
+| ⚛️ **Physical constants** | CODATA 2022 values with one-click copy |
+| 🔁 **Unit converter** | Energy (J, eV, cm⁻¹, Hz, K, nm…), length, mass, time, temperature, pressure, power, magnetic field and angle |
+| 🔭 **Resources** | Hand-picked links: HyperPhysics, PhET, MIT OCW, NIST, arXiv and more |
+| 🌙 **Dark mode** | Follows your system, or pick light or dark at the bottom of the sidebar |
+
 ---
 
 ## Contents
@@ -14,6 +30,7 @@ A simple website where physics students share notes, problem-set solutions, form
 - [Naming your files](#naming-your-files)
 - [Rules for sharing](#rules-for-sharing)
 - [Updating or removing a file](#updating-or-removing-a-file)
+- [Requesting a file](#requesting-a-file)
 - [FAQ](#faq)
 - [For maintainers](#for-maintainers)
 
@@ -33,8 +50,9 @@ files/
 └── Other/
 ```
 
-- Each folder inside `files/` is a **subject**. It becomes a filter button on the website.
+- Each folder inside `files/` is a **subject**. It appears in the left sidebar of the website.
 - You can make sub-folders for a course or topic, e.g. `files/Quantum-Mechanics/PHYS301-Spring-2026/`. The sub-folder name is shown on the file's card.
+- The upload date and your name (from your GitHub account) are shown on each file, and you'll appear on the **Contributors** page.
 - In folder and file names, `-` and `_` are shown as spaces, so `Hydrogen_Atom-Notes.pdf` is displayed as "Hydrogen Atom Notes".
 - When a change reaches the `main` branch, GitHub rebuilds the site. The new file usually shows up within 1–5 minutes.
 
@@ -45,7 +63,7 @@ files/
 You only need a free [GitHub account](https://github.com/signup).
 
 1. **Open the subject folder.** Go to the repository, click `files/`, then open your subject (e.g. `Electromagnetism`).
-   Or use the **Upload a file** button on the website.
+   Or use the **Upload** button on the website. The **How to contribute** page has a subject picker that takes you straight to the right folder.
 2. **Upload.** Click **Add file → Upload files**, then drag your file(s) into the page.
    - **New subject?** Upload from inside `files/` and drag in a whole folder (e.g. `Astrophysics/` containing your files). The folder becomes a new subject.
 3. **Describe your change.** At the bottom, under *Commit changes*, write a short message such as
@@ -82,12 +100,12 @@ git push -u origin add-em-notes
 
 Then open your fork on GitHub and click **Compare & pull request**.
 
-**Preview the site on your own computer (optional):**
+**Preview the site on your own computer (optional, needs Python 3):**
 
 ```bash
-gem install jekyll
-jekyll serve
-# open http://localhost:4000
+python3 scripts/build_index.py   # writes files.json
+python3 -m http.server 8000
+# open http://localhost:8000
 ```
 
 ---
@@ -132,20 +150,33 @@ Tips:
 
 ---
 
+## Requesting a file
+
+Looking for something that isn't here yet?
+
+1. On the website, open **File requests** and click **Request a file**. Or go to the repository's **Issues → New issue → 📄 File request**.
+2. Pick the subject and describe what you need.
+3. Your request shows up on the **File requests** page. When someone uploads it, they mention the request number (e.g. `Add ch. 5 solutions, closes #12`) and the request is closed automatically when the change is merged.
+
+---
+
 ## FAQ
 
 **My file isn't showing up on the website.**
 - Was your pull request **merged**? Files only appear once they're on `main`.
 - Wait up to ~5 minutes, then do a hard refresh (`Ctrl+Shift+R` / `Cmd+Shift+R`).
 - Is the file inside `files/`? Files outside it are not listed.
-- File names starting with `.` or `_` are hidden by GitHub Pages. Rename the file.
+- File names starting with `.` or `_` are hidden from the website. Rename the file.
 - Maintainers: check the **Actions** tab to see if the Pages build failed.
 
 **My file is larger than 25 MB.**
 Upload it with Git (see above). GitHub rejects single files over **100 MB**. For very large files, compress them, split them, or upload them to a cloud drive and share a `.txt` file containing the link.
 
 **Can I upload Word / PowerPoint / Jupyter files?**
-Yes, any file type works. Browsers can't preview them, so the **Open** button will download them instead.
+Yes, any file type works. Word, PowerPoint and Excel files are previewed with Microsoft's online viewer. Notebooks get **Open in nbviewer** and **Open in Colab** buttons. Everything else can be downloaded.
+
+**Where are my favorites stored?**
+In your browser only. They are not shared, and you won't see them on another device or after clearing site data.
 
 **Do I need to know how to code?**
 No. The browser upload method only takes clicking and dragging.
@@ -156,10 +187,18 @@ No. The browser upload method only takes clicking and dragging.
 
 ### Turn on GitHub Pages (one time)
 
-1. Merge this branch into **`main`**.
-2. In the repository, go to **Settings → Pages**.
-3. Under **Build and deployment**, set **Source** to **Deploy from a branch**, choose **`main`** and **`/ (root)`**, then click **Save**.
-4. After about a minute the site is live at `https://<owner>.github.io/<repo>/`. Put that link in the **About** box of the repository so students can find it.
+1. In the repository, go to **Settings → Pages**.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Go to the **Actions** tab, open **Deploy website**, and click **Run workflow** (or just push any change to `main`).
+4. After about a minute the site is live at `https://<owner>.github.io/<repo>/`. Put that link in the repository's **About** box so students can find it.
+
+From then on, every push to `main` runs `.github/workflows/pages.yml`. It builds `files.json` (file sizes, upload dates and contributors from git history) and deploys the site.
+
+> If Pages is left on **Deploy from a branch**, the site still works. It lists files through the GitHub API instead, but upload dates, **Recently added** and the **Contributors** page are not available.
+
+### Set up file requests
+
+Create a label named **`file-request`** (**Issues → Labels → New label**). The 📄 File request issue form adds it automatically, and the website lists open issues that have it (or whose title starts with `[Request]`).
 
 ### Let students upload directly (optional)
 
@@ -168,16 +207,27 @@ No. The browser upload method only takes clicking and dragging.
 
 ### Add or rename a subject
 
-Create a new folder under `files/` (it needs at least one file in it, e.g. an empty `.gitkeep`). Empty subjects don't appear on the website until they contain a real file.
+Create a new folder under `files/`. Git can't store empty folders, so put at least one file in it (an empty `.gitkeep` is fine). Empty subjects show in the sidebar with a count of 0.
+
+### Customise
+
+| To change… | Edit |
+| --- | --- |
+| Site title, description, repository, branch | `assets/js/config.js` |
+| Constants, units in the converter, resource links | `assets/js/data.js` |
+| Colours, layout, dark mode | `assets/css/style.css` |
+| Pages, sidebar, search, preview | `assets/js/app.js` |
 
 ### Project structure
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | The website page. Jekyll puts the list of everything in `files/` into it at build time. |
-| `assets/app.js` | Search, subject filters and file cards. |
-| `assets/style.css` | Styling (light and dark mode). |
-| `_config.yml` | Site title, description, repository link and branch name. |
-| `files/` | All shared files, organised by subject. |
-
-If you rename the repository or change the default branch, update `repository_url` and `branch` in `_config.yml`.
+| `index.html` | Page shell: sidebar, top bar and the main view |
+| `assets/js/app.js` | The app: routing, file library, preview, favorites and every page |
+| `assets/js/data.js` | Physical constants, unit definitions and the resources list |
+| `assets/js/config.js` | Site settings |
+| `assets/css/style.css` | Styling (light and dark) |
+| `scripts/build_index.py` | Builds `files.json` from the `files/` folder and git history |
+| `.github/workflows/pages.yml` | Builds and deploys the site on every push to `main` |
+| `.github/ISSUE_TEMPLATE/file-request.yml` | The "File request" issue form |
+| `files/` | All shared files, organised by subject |

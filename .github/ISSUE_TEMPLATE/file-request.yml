@@ -1,0 +1,37 @@
+name: 📄 File request
+description: Ask other students for notes, solutions or other files you are looking for.
+title: "[Request] "
+labels: ["file-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Open requests are listed on the website under **File requests**.
+        If you have the file someone asked for, upload it and mention this issue number in your commit message or pull request.
+  - type: dropdown
+    id: subject
+    attributes:
+      label: Subject
+      options:
+        - Classical Mechanics
+        - Electromagnetism
+        - Quantum Mechanics
+        - Thermodynamics and Statistical Physics
+        - Waves and Optics
+        - Mathematical Methods
+        - Lab Reports
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What are you looking for?
+      placeholder: e.g. Worked solutions for Griffiths QM chapter 3, or a formula sheet for Maxwell's equations
+    validations:
+      required: true
+  - type: input
+    id: course
+    attributes:
+      label: Course or textbook (optional)
+      placeholder: e.g. PHYS 301, Griffiths 3rd edition

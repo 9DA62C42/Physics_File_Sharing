@@ -48,7 +48,7 @@ files/
 ├── Electromagnetism/
 ├── Quantum-Mechanics/
 ├── Thermodynamics-and-Statistical-Physics/
-├── Waves-and-Optics/
+├── Waves/
 ├── Mathematical-Methods/
 ├── Lab-Reports/
 └── Other/
@@ -95,7 +95,7 @@ cd physics_file_sharing
 git checkout -b add-em-notes
 
 # 3. Copy your files into the right subject folder
-cp "01140086_HWS_2627W_01_123456789 Waves Homework 1 Solution.pdf" files/Waves-and-Optics/
+cp "01140086_HWS_2627W_01_123456789 Waves Homework 1 Solution.pdf" files/Waves/
 
 # 4. Commit and push
 git add files/

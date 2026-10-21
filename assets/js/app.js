@@ -1230,7 +1230,8 @@
     for (const f of state.files) if (f.sha256) groups.set(f.sha256, [...(groups.get(f.sha256) || []), f]);
     const dups = [...groups.values()].filter((g) => g.length > 1);
     const idGroups = new Map();
-    for (const f of full) idGroups.set(f.idInfo.idPart, [...(idGroups.get(f.idInfo.idPart) || []), f]);
+    // A .tex/.zip source and its .pdf may share an ID; only the same ID in the same format clashes.
+    for (const f of full) { const k = f.idInfo.idPart + "." + f.ext; idGroups.set(k, [...(idGroups.get(k) || []), f]); }
     const sameId = [...idGroups.values()].filter((g) => g.length > 1);
 
     const fileRow = (f, note) => h("li", null, h("button", { class: "linkish", type: "button", onclick: () => openPreview(f) }, f.name), note ? h("span", { class: "muted small" }, " · " + note) : null);
@@ -1252,7 +1253,7 @@
         block("Identical files", dups, (g) => h("li", null, g.map((f, i) => [i ? h("span", { class: "muted" }, "  =  ") : null, h("button", { class: "linkish", type: "button", onclick: () => openPreview(f) }, f.name)])),
           state.source === "index" ? "Same content (SHA-256), whatever the name." : "Content hashes are only available on the deployed site."),
         block("Same ID used more than once", sameId, (g) => h("li", null, h("code", null, g[0].idInfo.idPart), h("span", { class: "muted small" }, ` · ${g.length} files: ${g.map((f) => f.subject).join(", ")}`)),
-          "Two different files with exactly the same ID. Add a student number, version or tag to tell them apart."),
+          "Two files of the same format with exactly the same ID. Add a student number, version or tag to tell them apart."),
         block("Files without a stated licence", state.files.filter((f) => !f.lic.lic), (f) => fileRow(f, pretty(f.subject)),
           "Nobody may reuse these beyond reading them here. Add a rule for them in licenses.json."),
         block("Files without an ID", none, (f) => fileRow(f, pretty(f.subject)), "Perfectly fine. Add an ID next time you update one of these.")));

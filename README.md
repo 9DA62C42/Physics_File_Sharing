@@ -283,7 +283,15 @@ Add course names to [`courses.json`](courses.json) so the sidebar shows `0114008
 
 ### How uploaders are identified
 
-The Actions build looks at the commit that **added** each file (renames are followed, copies are not). It records that commit's author and asks the GitHub API for their username. The website compares that username with the GitHub account registered for the student number in the file name, when there is one. Without a registered GitHub account, the student number is shown as given: it can't be checked, which is the trade-off for not requiring GitHub details. Email addresses are never published.
+Two people can be involved in a file: the **student it belongs to** (the student number in its ID) and the **person who uploaded it**.
+
+- **Normally** the uploader is the GitHub account that added the file. If that account is registered with the student number in the ID, the file shows **✔ verified**.
+- **Uploading for someone else?** Record it in [`uploads.json`](uploads.json), keyed by file ID (or path / folder), with the uploader's student number. The site then shows "Uploaded by Xiangjun Liu on behalf of Shang Wu":
+  ```json
+  { "rules": [ { "id": "01140086_LN_2627W_FULL_800012999", "uploadedBy": "800015240" } ] }
+  ```
+- **Automation accounts are never credited.** Commits by the AI assistant that helps maintain the site, and by GitHub bots, don't count as an uploader or editor. Files they add on someone's behalf need an `uploads.json` entry.
+- The Actions build looks at the commit that **added** each file (renames are followed, copies are not) and asks the GitHub API for the author's username. Email addresses are never published.
 
 ### Let students upload directly (optional)
 
@@ -303,6 +311,7 @@ Create a new folder under `files/`. Git can't store empty folders, so put at lea
 | ID rules: type codes, terms, tags, item patterns, licence codes | `assets/naming.json` |
 | Licence of each shared file | `licenses.json` |
 | Registered students (number, name, optional GitHub) | `uploaders.json` |
+| Uploads made on someone else's behalf | `uploads.json` |
 | Course names | `courses.json` |
 | Colours, layout, dark mode | `assets/css/style.css` |
 | Pages, sidebar, search, preview | `assets/js/app.js` |
@@ -315,6 +324,7 @@ Create a new folder under `files/`. Git can't store empty folders, so put at lea
 | `assets/js/app.js` | The app: routing, file library, ID parsing, preview, favorites and every page |
 | `assets/naming.json` | The ID rules |
 | `uploaders.json` | Registered student numbers → names (and optional GitHub accounts) |
+| `uploads.json` | Who uploaded a file on another student's behalf |
 | `courses.json` | Optional course names |
 | `assets/js/data.js` | Physical constants, unit definitions and the resources list |
 | `assets/js/config.js` | Site settings |

@@ -497,6 +497,16 @@
     document.getElementById("theme-toggle").replaceChildren(icon(ic), h("span", { class: "nav-label" }, label));
   }
 
+  // Accent colour: orange (default) or gray + red.
+  const ACCENTS = [["orange", "Accent: orange", "#c2410c"], ["red", "Accent: red", "#b91c1c"]];
+  function applyAccent(a) {
+    if (a === "orange") delete document.documentElement.dataset.accent;
+    else document.documentElement.dataset.accent = a;
+    const [, label, swatch] = ACCENTS.find((x) => x[0] === a) || ACCENTS[0];
+    document.getElementById("accent-toggle").replaceChildren(
+      h("span", { class: "swatch", style: `background:${swatch}`, "aria-hidden": "true" }), h("span", { class: "nav-label" }, label));
+  }
+
   // ---------- file cards and lists ----------
 
   function matchesQuery(f) {
@@ -1301,6 +1311,15 @@
       theme = THEMES[(i + 1) % THEMES.length][0];
       store.set("theme", theme);
       applyTheme(theme);
+    });
+
+    let accent = store.get("accent", "orange");
+    if (!ACCENTS.some((x) => x[0] === accent)) accent = "orange";
+    applyAccent(accent);
+    document.getElementById("accent-toggle").addEventListener("click", () => {
+      accent = ACCENTS[(ACCENTS.findIndex((x) => x[0] === accent) + 1) % ACCENTS.length][0];
+      store.set("accent", accent);
+      applyAccent(accent);
     });
 
     document.getElementById("menu-btn").addEventListener("click", () => sidebar().classList.contains("open") ? closeSidebar() : openSidebar());

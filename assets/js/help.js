@@ -149,6 +149,24 @@ window.HELP = (function () {
           "Remove personal information such as phone numbers and grades. Everything here is public, and Git keeps old versions."
         ] }
       ] },
+      { id: "delete", icon: "close", title: "Removing or replacing a file", blocks: [
+        { p: "**Students** can't delete files. To have a file removed, open it and click **Report this file** (or **Report a file** at the bottom of any page). To replace it, upload the new version with the upload form, with a version after the item (e.g. `01_V02`), and ask in your upload for the old one to be removed." },
+        { p: "**Maintainers** (owner and collaborators):" },
+        { ol: [
+          "Open the repository on GitHub and go to the file, e.g. `files/Waves/Notes/`.",
+          "Click the file, then the **⋯** menu at the top right, then **Delete file**.",
+          "Write a short message (e.g. `Remove Waves HW1 (copyright request)`), choose **Commit directly to the main branch** (tick the bypass-rules box if it appears) and click **Commit changes**.",
+          "About a minute later the deploy finishes and the file is gone from the site."
+        ] },
+        { p: "**Then tidy up:**" },
+        { ul: [
+          "**The rest of the item**: a PDF and its source zip are one item; delete the zip too if the whole item should go.",
+          "`licenses.json` and `uploads.json`: remove the file's rule (matched by `id` or `path`), keeping the commas between entries right.",
+          "**Folders**: GitHub can't delete a folder in one step. Delete the files in it and the folder disappears; keep a `.gitkeep` file if the subject should stay with 0 files.",
+          "**Verification** needs nothing: a deleted file simply stops showing."
+        ] },
+        { tip: "Deleting removes the file from the website and the current repository, but old copies stay in the Git history. If a file must vanish completely (for example personal information), the history has to be rewritten; ask a maintainer." }
+      ] },
       { id: "setup", icon: "github", title: "Repository setup (owner)", blocks: [
         { ol: [
           "**Pages**: **Settings → Pages → Source** must be **GitHub Actions**. Otherwise the site shows no upload dates, uploaders or verification.",
@@ -302,6 +320,24 @@ window.HELP = (function () {
           "הקפידו על כללי היושר האקדמי של האוניברסיטה: בלי פתרונות לתרגילים פתוחים ובלי מבחנים פרטיים.",
           "הסירו מידע אישי כמו מספרי טלפון וציונים. כל מה שכאן גלוי לכולם, ו-Git שומר גרסאות קודמות."
         ] }
+      ] },
+      { id: "delete", icon: "close", title: "הסרה או החלפה של קובץ", blocks: [
+        { p: "**סטודנטים** לא יכולים למחוק קבצים. כדי שקובץ יוסר, פתחו אותו ולחצו על **Report this file** (או **Report a file** בתחתית כל עמוד). כדי להחליף אותו, העלו את הגרסה החדשה בטופס ההעלאה עם גרסה אחרי הפריט (למשל `01_V02`), ובקשו בהעלאה שהישנה תוסר." },
+        { p: "**מתחזקים** (בעלים ומשתפי פעולה):" },
+        { ol: [
+          "פתחו את המאגר ב-GitHub ועברו לקובץ, למשל `files/Waves/Notes/`.",
+          "לחצו על הקובץ, אחר כך על התפריט **⋯** למעלה מימין, ואז **Delete file**.",
+          "כתבו הודעה קצרה (למשל `Remove Waves HW1 (copyright request)`), בחרו **Commit directly to the main branch** (סמנו את תיבת עקיפת הכללים אם היא מופיעה) ולחצו **Commit changes**.",
+          "כעבור כדקה הפריסה מסתיימת והקובץ נעלם מהאתר."
+        ] },
+        { p: "**אחר כך סדרו:**" },
+        { ul: [
+          "**שאר הפריט**: PDF וקובץ ה-zip של המקור הם פריט אחד; מחקו גם את ה-zip אם כל הפריט צריך לרדת.",
+          "`licenses.json` ו-`uploads.json`: הסירו את הכלל של הקובץ (לפי `id` או `path`), ושמרו על הפסיקים בין הרשומות.",
+          "**תיקיות**: ‏GitHub לא מוחק תיקייה בצעד אחד. מחקו את הקבצים שבה והתיקייה תיעלם; השאירו קובץ `.gitkeep` אם המקצוע צריך להישאר עם 0 קבצים.",
+          "**אימות** לא דורש דבר: קובץ שנמחק פשוט מפסיק להופיע."
+        ] },
+        { tip: "המחיקה מסירה את הקובץ מהאתר ומהמאגר הנוכחי, אבל עותקים ישנים נשארים בהיסטוריית Git. אם קובץ חייב להיעלם לגמרי (למשל מידע אישי), צריך לשכתב את ההיסטוריה; פנו למתחזק." }
       ] },
       { id: "setup", icon: "github", title: "הגדרת המאגר (בעלים)", blocks: [
         { ol: [
@@ -457,6 +493,24 @@ window.HELP = (function () {
           "删除个人信息，例如电话号码和成绩。这里的一切都是公开的，而且 Git 会保留旧版本。"
         ] }
       ] },
+      { id: "delete", icon: "close", title: "删除或替换文件", blocks: [
+        { p: "**学生**不能删除文件。如需删除某个文件，请打开它并点击 **Report this file**（或每页底部的 **Report a file**）。如需替换，请用上传表单上传新版本，并在条目后加上版本号（例如 `01_V02`），同时在上传中说明需要删除旧版本。" },
+        { p: "**维护者**（所有者和协作者）：" },
+        { ol: [
+          "在 GitHub 上打开仓库，进入文件所在位置，例如 `files/Waves/Notes/`。",
+          "点击该文件，再点右上角的 **⋯** 菜单，选择 **Delete file**。",
+          "写一句简短说明（例如 `Remove Waves HW1 (copyright request)`），选择 **Commit directly to the main branch**（如出现绕过规则的勾选框请勾选），然后点击 **Commit changes**。",
+          "大约一分钟后部署完成，文件就会从网站上消失。"
+        ] },
+        { p: "**然后整理：**" },
+        { ul: [
+          "**同一条目的其他文件**：PDF 和它的源文件 zip 是同一个条目；如果整个条目都要删除，也请删除 zip。",
+          "`licenses.json` 和 `uploads.json`：删除该文件的规则（按 `id` 或 `path` 匹配），注意条目之间的逗号。",
+          "**文件夹**：GitHub 不能一步删除文件夹。删除其中的文件后文件夹会自动消失；如果学科需要保留（显示 0 个文件），请保留一个 `.gitkeep` 文件。",
+          "**审核**无需处理：被删除的文件会自动不再显示。"
+        ] },
+        { tip: "删除会把文件从网站和当前仓库中移除，但旧副本仍保留在 Git 历史中。如果文件必须彻底消失（例如含有个人信息），需要重写历史；请联系维护者。" }
+      ] },
       { id: "setup", icon: "github", title: "仓库设置（所有者）", blocks: [
         { ol: [
           "**Pages**：**Settings → Pages → Source** 必须设为 **GitHub Actions**，否则网站不会显示上传日期、上传者和审核信息。",
@@ -610,6 +664,24 @@ window.HELP = (function () {
           "Respeta las normas de integridad académica de tu universidad: nada de soluciones de tareas abiertas ni exámenes privados.",
           "Elimina datos personales como números de teléfono y notas. Todo aquí es público y Git guarda las versiones anteriores."
         ] }
+      ] },
+      { id: "delete", icon: "close", title: "Retirar o sustituir un archivo", blocks: [
+        { p: "**Los estudiantes** no pueden borrar archivos. Para que se retire un archivo, ábrelo y haz clic en **Report this file** (o en **Report a file** al pie de cada página). Para sustituirlo, sube la nueva versión con el formulario de subida, con una versión tras el elemento (por ejemplo `01_V02`), y pide en tu subida que se retire la antigua." },
+        { p: "**Responsables** (propietario y colaboradores):" },
+        { ol: [
+          "Abre el repositorio en GitHub y ve al archivo, por ejemplo `files/Waves/Notes/`.",
+          "Haz clic en el archivo, luego en el menú **⋯** arriba a la derecha y después en **Delete file**.",
+          "Escribe un mensaje corto (por ejemplo `Remove Waves HW1 (copyright request)`), elige **Commit directly to the main branch** (marca la casilla para saltar las reglas si aparece) y haz clic en **Commit changes**.",
+          "Un minuto después termina la publicación y el archivo desaparece del sitio."
+        ] },
+        { p: "**Después, ordena:**" },
+        { ul: [
+          "**El resto del elemento**: un PDF y su zip de fuentes son un solo elemento; borra también el zip si debe desaparecer todo.",
+          "`licenses.json` y `uploads.json`: elimina la regla del archivo (por `id` o `path`) y revisa las comas entre entradas.",
+          "**Carpetas**: GitHub no borra una carpeta de una vez. Borra sus archivos y la carpeta desaparece; deja un archivo `.gitkeep` si la asignatura debe seguir con 0 archivos.",
+          "**La verificación** no requiere nada: un archivo borrado simplemente deja de mostrarse."
+        ] },
+        { tip: "Borrar retira el archivo del sitio y del repositorio actual, pero las copias antiguas quedan en el historial de Git. Si un archivo debe desaparecer por completo (por ejemplo, datos personales), hay que reescribir el historial; pídeselo a un responsable." }
       ] },
       { id: "setup", icon: "github", title: "Configuración del repositorio (propietario)", blocks: [
         { ol: [
@@ -765,6 +837,24 @@ window.HELP = (function () {
           "Retirez les informations personnelles comme les numéros de téléphone et les notes. Tout ici est public, et Git conserve les anciennes versions."
         ] }
       ] },
+      { id: "delete", icon: "close", title: "Retirer ou remplacer un fichier", blocks: [
+        { p: "**Les étudiants** ne peuvent pas supprimer de fichiers. Pour faire retirer un fichier, ouvrez-le et cliquez sur **Report this file** (ou sur **Report a file** en bas de chaque page). Pour le remplacer, envoyez la nouvelle version avec le formulaire d’envoi, avec une version après l’élément (par exemple `01_V02`), et demandez dans votre envoi que l’ancienne soit retirée." },
+        { p: "**Responsables** (propriétaire et collaborateurs) :" },
+        { ol: [
+          "Ouvrez le dépôt sur GitHub et allez au fichier, par exemple `files/Waves/Notes/`.",
+          "Cliquez sur le fichier, puis sur le menu **⋯** en haut à droite, puis sur **Delete file**.",
+          "Écrivez un court message (par exemple `Remove Waves HW1 (copyright request)`), choisissez **Commit directly to the main branch** (cochez la case de contournement des règles si elle apparaît) et cliquez sur **Commit changes**.",
+          "Environ une minute plus tard, la publication est terminée et le fichier a disparu du site."
+        ] },
+        { p: "**Ensuite, faites le ménage :**" },
+        { ul: [
+          "**Le reste de l’élément** : un PDF et son zip source forment un seul élément ; supprimez aussi le zip si tout l’élément doit partir.",
+          "`licenses.json` et `uploads.json` : retirez la règle du fichier (par `id` ou `path`) en gardant des virgules correctes entre les entrées.",
+          "**Dossiers** : GitHub ne supprime pas un dossier en une fois. Supprimez ses fichiers et le dossier disparaît ; gardez un fichier `.gitkeep` si la matière doit rester avec 0 fichier.",
+          "**La vérification** ne demande rien : un fichier supprimé cesse simplement de s’afficher."
+        ] },
+        { tip: "La suppression retire le fichier du site et du dépôt actuel, mais d’anciennes copies restent dans l’historique Git. Si un fichier doit disparaître complètement (par exemple des données personnelles), il faut réécrire l’historique ; demandez à un responsable." }
+      ] },
       { id: "setup", icon: "github", title: "Configuration du dépôt (propriétaire)", blocks: [
         { ol: [
           "**Pages** : dans **Settings → Pages → Source**, choisissez **GitHub Actions**. Sinon, le site n’affiche ni les dates d’envoi, ni les auteurs des envois, ni la vérification.",
@@ -918,6 +1008,24 @@ window.HELP = (function () {
           "Halte dich an die Regeln deiner Universität zur wissenschaftlichen Redlichkeit: keine Lösungen zu laufenden Aufgaben, keine nicht öffentlichen Prüfungen.",
           "Entferne persönliche Daten wie Telefonnummern und Noten. Alles hier ist öffentlich, und Git behält alte Versionen."
         ] }
+      ] },
+      { id: "delete", icon: "close", title: "Dateien entfernen oder ersetzen", blocks: [
+        { p: "**Studierende** können keine Dateien löschen. Um eine Datei entfernen zu lassen, öffne sie und klicke auf **Report this file** (oder **Report a file** unten auf jeder Seite). Zum Ersetzen lade die neue Version mit dem Upload-Formular hoch, mit einer Version hinter dem Eintrag (z. B. `01_V02`), und bitte in deinem Upload darum, die alte zu entfernen." },
+        { p: "**Betreuer** (Eigentümer und Mitwirkende):" },
+        { ol: [
+          "Öffne das Repository auf GitHub und gehe zur Datei, z. B. `files/Waves/Notes/`.",
+          "Klicke auf die Datei, dann oben rechts auf das Menü **⋯** und dann auf **Delete file**.",
+          "Schreibe eine kurze Nachricht (z. B. `Remove Waves HW1 (copyright request)`), wähle **Commit directly to the main branch** (setze das Häkchen zum Umgehen der Regeln, falls es erscheint) und klicke auf **Commit changes**.",
+          "Etwa eine Minute später ist die Veröffentlichung fertig und die Datei ist von der Website verschwunden."
+        ] },
+        { p: "**Danach aufräumen:**" },
+        { ul: [
+          "**Der Rest des Eintrags**: Ein PDF und seine Quell-ZIP sind ein Eintrag; lösche auch die ZIP, wenn der ganze Eintrag weg soll.",
+          "`licenses.json` und `uploads.json`: Entferne die Regel der Datei (über `id` oder `path`) und achte auf die Kommas zwischen den Einträgen.",
+          "**Ordner**: GitHub kann einen Ordner nicht in einem Schritt löschen. Lösche die Dateien darin, dann verschwindet der Ordner; behalte eine `.gitkeep`-Datei, wenn das Fach mit 0 Dateien bleiben soll.",
+          "**Prüfung** braucht nichts: Eine gelöschte Datei wird einfach nicht mehr angezeigt."
+        ] },
+        { tip: "Löschen entfernt die Datei von der Website und aus dem aktuellen Repository, alte Kopien bleiben aber im Git-Verlauf. Muss eine Datei ganz verschwinden (z. B. persönliche Daten), muss der Verlauf umgeschrieben werden; wende dich an einen Betreuer." }
       ] },
       { id: "setup", icon: "github", title: "Repository einrichten (Eigentümer)", blocks: [
         { ol: [

@@ -8,6 +8,7 @@ window.CHANGELOG = [
       { type: "new", text: "Typing a known course code shows the **course name** and picks the **subject**. A new course or subject asks for its name." },
       { type: "improved", text: "The upload form arrives completely filled in, including subject, kind of material and licence: only the file is left to attach." },
       { type: "improved", text: "Text pages (How to contribute, Help, Changelog) use the full page width." },
+      { type: "new", text: "Help: **Removing or replacing a file**, for students and maintainers." },
       { type: "fixed", text: "**Kind of material** is now filled in the upload form too (GitHub used the old link name for its own setting)." },
       { type: "fixed", text: "Drop-downs and text boxes have the same height in every browser, including Safari." }
     ]

@@ -226,9 +226,24 @@ Full details: [CONTENT-LICENSE.md](CONTENT-LICENSE.md). This is a plain-language
 
 ## Updating or removing a file
 
-- **Update:** upload a file with *exactly the same name* into the same folder. GitHub will replace the old version.
-- **Remove:** open the file on GitHub, click the **⋯** menu (or the 🗑️ icon), choose **Delete file**, and commit or open a pull request.
-- **Rename / move:** open the file, click ✏️ **Edit**, and change the name in the box at the top. Typing a `/` creates a folder; pressing Backspace at the start of the box moves the file up one folder. (This works for text files. For PDFs and other binary files, upload the file again under the new name and delete the old one.)
+**Students** can't delete files. To have one removed, click **Report this file** in its preview on the website. To replace one, upload the new version with the upload form, adding a version after the item (e.g. `01_V02`), and say in the upload that the old one should go.
+
+**Maintainers** (owner and collaborators) delete files on GitHub:
+
+1. Open the file in the repository (e.g. `files/Waves/Notes/…`).
+2. Click the **⋯** menu at the top right, then **Delete file**.
+3. Write a short message (e.g. `Remove Waves HW1 (copyright request)`), choose **Commit directly to the main branch** (tick the bypass-rules box if it appears) and click **Commit changes**. About a minute later the file is gone from the site.
+
+Then tidy up:
+
+- **The rest of the item:** a PDF and its source zip are one item; delete the zip too if the whole item should go.
+- **`licenses.json` and `uploads.json`:** remove the file's rule (matched by `id` or `path`), keeping the commas between entries right.
+- **Folders:** GitHub can't delete a folder in one step. Delete the files in it and the folder disappears; keep a `.gitkeep` if the subject should stay with 0 files.
+- **Verification** needs nothing: a deleted file simply stops showing.
+
+> Deleting removes the file from the website and the current repository, but old copies stay in the Git history. If a file must vanish completely (for example personal information), the history has to be rewritten.
+
+**Rename / move:** for text files, open the file, click ✏️ **Edit**, and change the name in the box at the top (a `/` creates a folder). For PDFs and other binary files, upload the file again under the new name and delete the old one.
 
 ---
 

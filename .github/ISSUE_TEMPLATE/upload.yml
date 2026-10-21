@@ -9,6 +9,8 @@ body:
         Fill in the form and drag your file into the box below. A bot checks it and opens a pull request; a maintainer reviews it, and once it's merged the file appears on the website.
 
         **Everything here is public.** Share only your own work or material you have permission to share, and remove personal information first.
+
+        **Copyright:** don't upload textbooks, solution manuals, official exams, homework sheets or lecture slides without the owner's permission, or solutions to assignments that are still open. Uploads that break this are refused or removed.
   - type: textarea
     id: files
     attributes:

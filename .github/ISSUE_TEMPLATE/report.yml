@@ -1,0 +1,39 @@
+name: 🚩 Report a file
+description: Ask for a file to be removed or fixed (copyright, personal information, course rules, mistakes).
+title: "[Report] "
+labels: ["report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this if you own the copyright of a file shared here, if a file contains personal information, if it breaks course or university rules, or if its details (licence, uploader, course) are wrong.
+        A maintainer reviews every report, usually within a few days, and removes or fixes the file if needed.
+
+        **This issue is public.** Don't paste personal information here. If you need to share private details, ask for a maintainer's contact in the issue instead.
+  - type: input
+    id: file
+    attributes:
+      label: File
+      description: The file's name, ID or link. The website's "Report" button fills this in.
+      placeholder: files/Waves/Notes/01140086_LN_2627W_FULL_800012999 Waves Complete Learning Notes V4.1 Shang Wu.pdf
+    validations:
+      required: true
+  - type: dropdown
+    id: reason
+    attributes:
+      label: Reason
+      options:
+        - I own the copyright and didn't allow it to be shared
+        - It contains personal information
+        - It breaks course or university rules (e.g. a solution to an open assignment, a private exam)
+        - Its licence, uploader or course is wrong
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: What should change? For copyright, say what the original work is and how you're connected to it.
+    validations:
+      required: true

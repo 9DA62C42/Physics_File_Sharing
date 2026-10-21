@@ -103,6 +103,16 @@ window.HELP = (function () {
         { p: "All licence codes:" },
         { licences: { head: ["Code", "Licence", "Meaning", "Share", "Adapt", "Commercial"], meaning: {"CC0": "No conditions: use it for anything.", "PD": "Public domain: no longer under copyright.", "CCBY": "Share and adapt, even commercially, with credit.", "CCBYSA": "As CC BY; adaptations must use the same licence.", "CCBYNC": "Share and adapt with credit, but not commercially.", "CCBYNCSA": "Non-commercial, with credit; adaptations use the same licence.", "CCBYND": "Share unchanged copies with credit; no adaptations.", "CCBYNCND": "Share unchanged copies with credit, non-commercially.", "MIT": "Software licence: reuse freely, keep the copyright notice.", "GPL3": "Software licence: changed versions must also be GPL.", "STUDY": "Course material shared with permission: read it here for study only.", "ARR": "All rights reserved: read it here; ask the author for anything else."} } }
       ] },
+      { id: "copyright", icon: "alert", title: "Copyright and what you may upload", blocks: [
+        { ul: [
+          "**OK to upload**: your own notes, summaries and solutions; material under a licence that allows sharing (for example CC BY or CC BY-NC-SA, like MIT OpenCourseWare); course files the lecturer allowed you to share.",
+          "**Don't upload** without the owner's permission: textbooks, solution manuals, official exams, homework sheets or lecture slides. Never upload solutions to assignments that are still open.",
+          "**Mixed work** (notes written on a printout): your notes are yours, but the page underneath belongs to its owner.",
+          "**Using files**: everything here is for study. A file's licence says what else you may do; with no licence, ask the author before copying, adapting or resharing.",
+          "**Removal**: if you own something posted here, or a file contains personal information, open the file and click **Report this file** (or **Report a file** at the bottom of every page). A maintainer reviews it, usually within a few days."
+        ] },
+        { tip: "Uploading confirms that you wrote the file or have permission to share it under the licence you chose. Maintainers can refuse or remove any file." }
+      ] },
       { id: "verify", icon: "shield", title: "Verification (owner and collaborators)", blocks: [
         { tip: "**What it means:** a maintainer checked that the course code, the uploader (student number) and the file name are correct. It does **not** check or guarantee the content: notes may still contain mistakes, and verification is not a promise or endorsement." },
         { ol: [
@@ -142,7 +152,7 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "Repository setup (owner)", blocks: [
         { ol: [
           "**Pages**: **Settings → Pages → Source** must be **GitHub Actions**. Otherwise the site shows no upload dates, uploaders or verification.",
-          "**Labels**: create `file-request`, `uploader-code` and `upload` under **Issues → Labels**. The request, registration and upload forms add them automatically.",
+          "**Labels**: create `file-request`, `uploader-code`, `upload` and `report` under **Issues → Labels**. The request, registration, upload and report forms add them automatically. Handle reports quickly: remove the file first, then reply.",
           "**Upload form**: under **Settings → Actions → General → Workflow permissions**, tick **Allow GitHub Actions to create and approve pull requests**. Merge uploads with **Create a merge commit** or **Rebase and merge**, not squash, so the student stays credited. New subjects and course names from the form arrive in the same pull request; check their spelling before merging.",
           "**Rules** (**Settings → Rules → Rulesets**): target **Include default branch** only, not **All branches**. Turn on **Restrict deletions**, **Block force pushes** and **Require a pull request before merging** (0 or 1 approvals). Keep **Repository admin** in the bypass list, and do not add **Write**, so collaborators also send pull requests.",
           "**Verification and rules**: the Verify button saves its records on a separate `verifications` branch, so rules on `main` don't block it. Don't target **All branches** or that branch, and don't delete it.",
@@ -247,6 +257,16 @@ window.HELP = (function () {
         { p: "כל קודי הרישיונות:" },
         { licences: { head: ["קוד", "רישיון", "משמעות", "שיתוף", "עיבוד", "מסחרי"], meaning: {"CC0": "ללא תנאים: מותר כל שימוש.", "PD": "נחלת הכלל: כבר לא מוגן בזכויות יוצרים.", "CCBY": "מותר לשתף ולעבד, גם מסחרית, עם ייחוס.", "CCBYSA": "כמו CC BY; עיבודים חייבים להיות תחת אותו רישיון.", "CCBYNC": "מותר לשתף ולעבד עם ייחוס, אבל לא מסחרית.", "CCBYNCSA": "לא מסחרי, עם ייחוס; עיבודים תחת אותו רישיון.", "CCBYND": "מותר לשתף עותקים ללא שינוי, עם ייחוס; בלי עיבודים.", "CCBYNCND": "מותר לשתף עותקים ללא שינוי, עם ייחוס, לא מסחרית.", "MIT": "רישיון תוכנה: שימוש חופשי, יש לשמור את הודעת זכויות היוצרים.", "GPL3": "רישיון תוכנה: גרסאות משונות חייבות להיות גם הן GPL.", "STUDY": "חומר קורס ששותף ברשות: לקריאה כאן לצורכי לימוד בלבד.", "ARR": "כל הזכויות שמורות: אפשר לקרוא כאן; לכל דבר אחר יש לבקש מהמחבר."} } }
       ] },
+      { id: "copyright", icon: "alert", title: "זכויות יוצרים ומה מותר להעלות", blocks: [
+        { ul: [
+          "**מותר להעלות**: סיכומים, הערות ופתרונות שכתבתם בעצמכם; חומר ברישיון שמתיר שיתוף (למשל CC BY או CC BY-NC-SA, כמו MIT OpenCourseWare); קבצי קורס שהמרצה התיר לשתף.",
+          "**אין להעלות** בלי אישור הבעלים: ספרי לימוד, פתרונונים, מבחנים רשמיים, דפי תרגילים או מצגות הרצאה. לעולם אל תעלו פתרונות למטלות שעדיין פתוחות.",
+          "**עבודה משולבת** (הערות על דף מודפס): ההערות שלכם, אבל הדף עצמו שייך לבעליו.",
+          "**שימוש בקבצים**: הכול כאן לצורכי לימוד. הרישיון של קובץ קובע מה עוד מותר; בלי רישיון, בקשו רשות מהמחבר לפני העתקה, עיבוד או שיתוף מחדש.",
+          "**הסרה**: אם יש לכם זכויות על משהו שפורסם כאן, או שקובץ מכיל מידע אישי, פתחו את הקובץ ולחצו על **Report this file** (או **Report a file** בתחתית כל עמוד). מתחזק בודק את הדיווח, בדרך כלל תוך כמה ימים."
+        ] },
+        { tip: "העלאה מאשרת שכתבתם את הקובץ או שיש לכם רשות לשתף אותו ברישיון שבחרתם. המתחזקים רשאים לסרב לכל קובץ או להסיר אותו." }
+      ] },
       { id: "verify", icon: "shield", title: "אימות (בעלים ומשתפי פעולה)", blocks: [
         { tip: "**מה זה אומר:** מתחזק בדק שקוד הקורס, המעלה (מספר הסטודנט) ושם הקובץ נכונים. האימות **אינו** בודק את התוכן ואינו מבטיח אותו: ייתכנו טעויות בחומר, והאימות אינו התחייבות או המלצה." },
         { ol: [
@@ -286,7 +306,7 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "הגדרת המאגר (בעלים)", blocks: [
         { ol: [
           "**Pages**: ב-**Settings → Pages → Source** יש לבחור **GitHub Actions**. אחרת האתר לא יציג תאריכי העלאה, מעלים ואימות.",
-          "**תוויות**: צרו `file-request`, `uploader-code` ו-`upload` תחת **Issues → Labels**. טופסי הבקשה, ההרשמה וההעלאה מוסיפים אותן אוטומטית.",
+          "**תוויות**: צרו `file-request`, `uploader-code`, `upload` ו-`report` תחת **Issues → Labels**. טופסי הבקשה, ההרשמה, ההעלאה והדיווח מוסיפים אותן אוטומטית. טפלו בדיווחים מהר: קודם הסירו את הקובץ, אחר כך ענו.",
           "**טופס ההעלאה**: ב-**Settings → Actions → General → Workflow permissions** סמנו **Allow GitHub Actions to create and approve pull requests**. מזגו העלאות עם **Create a merge commit** או **Rebase and merge**, לא squash, כדי שהסטודנט יישאר מקבל הקרדיט. מקצועות ושמות קורסים חדשים מהטופס מגיעים באותו pull request; בדקו את האיות לפני המיזוג.",
           "**כללים** (**Settings → Rules → Rulesets**): בחרו יעד **Include default branch** בלבד, לא **All branches**. הפעילו **Restrict deletions**, **Block force pushes** ו-**Require a pull request before merging** (0 או 1 אישורים). השאירו **Repository admin** ברשימת העקיפה, ואל תוסיפו **Write**, כדי שגם משתפי פעולה ישלחו pull request.",
           "**אימות וכללים**: כפתור האימות שומר את הרשומות בענף נפרד בשם `verifications`, כך שכללים על `main` לא חוסמים אותו. אל תכוונו כללים ל-**All branches** או לענף הזה, ואל תמחקו אותו.",
@@ -391,6 +411,16 @@ window.HELP = (function () {
         { p: "全部许可证代码：" },
         { licences: { head: ["代码", "许可证", "含义", "分享", "改编", "商用"], meaning: {"CC0": "无任何条件：可用于任何用途。", "PD": "公有领域：已不受版权保护。", "CCBY": "可分享和改编，包括商用，但须署名。", "CCBYSA": "同 CC BY；改编作品须使用相同许可证。", "CCBYNC": "可分享和改编，须署名，但不得商用。", "CCBYNCSA": "非商业、须署名；改编作品使用相同许可证。", "CCBYND": "可分享未经修改的副本，须署名；不得改编。", "CCBYNCND": "可分享未经修改的副本，须署名，不得商用。", "MIT": "软件许可证：可自由使用，须保留版权声明。", "GPL3": "软件许可证：修改后的版本也必须使用 GPL。", "STUDY": "经许可分享的课程资料：仅限在此阅读学习。", "ARR": "保留所有权利：可在此阅读；其他用途须征得作者同意。"} } }
       ] },
+      { id: "copyright", icon: "alert", title: "版权与可上传内容", blocks: [
+        { ul: [
+          "**可以上传**：你自己写的笔记、总结和解答；许可证允许分享的资料（例如 CC BY 或 CC BY-NC-SA，如 MIT OpenCourseWare）；任课老师允许分享的课程文件。",
+          "**未经所有者许可不要上传**：教科书、习题解答手册、正式考试、作业题或课件。绝不要上传仍在进行中的作业的解答。",
+          "**混合作品**（在打印件上写的笔记）：笔记归你，但底下的页面归原作者所有。",
+          "**使用文件**：这里的一切仅供学习。文件的许可证说明你还能做什么；没有许可证时，复制、改编或再次分享前请先征得作者同意。",
+          "**删除**：如果你拥有这里某个文件的版权，或文件中含有个人信息，请打开该文件并点击 **Report this file**（或每页底部的 **Report a file**）。维护者会审核，通常在几天内处理。"
+        ] },
+        { tip: "上传即表示你确认文件是你写的，或你有权以所选许可证分享它。维护者可以拒绝或删除任何文件。" }
+      ] },
       { id: "verify", icon: "shield", title: "审核（所有者和协作者）", blocks: [
         { tip: "**含义：**维护者核对了课程代码、上传者（学号）和文件名是否正确。审核**不**检查也不保证内容：资料中仍可能有错误，审核不代表任何承诺或认可。" },
         { ol: [
@@ -430,7 +460,7 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "仓库设置（所有者）", blocks: [
         { ol: [
           "**Pages**：**Settings → Pages → Source** 必须设为 **GitHub Actions**，否则网站不会显示上传日期、上传者和审核信息。",
-          "**标签**：在 **Issues → Labels** 中创建 `file-request`、`uploader-code` 和 `upload`。请求、注册和上传表单会自动添加这些标签。",
+          "**标签**：在 **Issues → Labels** 中创建 `file-request`、`uploader-code`、`upload` 和 `report`。请求、注册、上传和举报表单会自动添加这些标签。请尽快处理举报：先删除文件，再回复。",
           "**上传表单**：在 **Settings → Actions → General → Workflow permissions** 中勾选 **Allow GitHub Actions to create and approve pull requests**。合并上传时用 **Create a merge commit** 或 **Rebase and merge**，不要用 squash，这样上传者的署名才会保留。表单中新增的学科和课程名称会包含在同一个拉取请求里；合并前请检查拼写。",
           "**规则**（**Settings → Rules → Rulesets**）：目标只选 **Include default branch**，不要选 **All branches**。开启 **Restrict deletions**、**Block force pushes** 和 **Require a pull request before merging**（0 或 1 个批准）。绕过列表保留 **Repository admin**，不要添加 **Write**，这样协作者也要通过 pull request 提交。",
           "**审核与规则**：审核按钮把记录保存在单独的 `verifications` 分支上，因此 `main` 上的规则不会阻止它。规则不要以 **All branches** 或该分支为目标，也不要删除该分支。",
@@ -535,6 +565,16 @@ window.HELP = (function () {
         { p: "Todos los códigos de licencia:" },
         { licences: { head: ["Código", "Licencia", "Significado", "Compartir", "Adaptar", "Uso comercial"], meaning: {"CC0": "Sin condiciones: se puede usar para cualquier fin.", "PD": "Dominio público: ya no tiene derechos de autor.", "CCBY": "Compartir y adaptar, incluso comercialmente, citando al autor.", "CCBYSA": "Como CC BY; las adaptaciones deben usar la misma licencia.", "CCBYNC": "Compartir y adaptar citando al autor, pero sin uso comercial.", "CCBYNCSA": "Sin uso comercial y citando al autor; las adaptaciones usan la misma licencia.", "CCBYND": "Compartir copias sin cambios citando al autor; sin adaptaciones.", "CCBYNCND": "Compartir copias sin cambios citando al autor, sin uso comercial.", "MIT": "Licencia de software: uso libre manteniendo el aviso de copyright.", "GPL3": "Licencia de software: las versiones modificadas también deben ser GPL.", "STUDY": "Material del curso compartido con permiso: solo para leer y estudiar aquí.", "ARR": "Todos los derechos reservados: se puede leer aquí; para lo demás, pide permiso al autor."} } }
       ] },
+      { id: "copyright", icon: "alert", title: "Derechos de autor y qué puedes subir", blocks: [
+        { ul: [
+          "**Se puede subir**: tus propios apuntes, resúmenes y soluciones; material con una licencia que permita compartirlo (por ejemplo CC BY o CC BY-NC-SA, como MIT OpenCourseWare); archivos del curso que el profesor te permitió compartir.",
+          "**No subas** sin permiso del propietario: libros de texto, solucionarios, exámenes oficiales, hojas de ejercicios ni diapositivas de clase. Nunca subas soluciones de tareas que siguen abiertas.",
+          "**Trabajo mixto** (apuntes sobre una copia impresa): tus apuntes son tuyos, pero la página de debajo pertenece a su propietario.",
+          "**Uso de los archivos**: todo aquí es para estudiar. La licencia de cada archivo indica qué más puedes hacer; si no tiene, pide permiso al autor antes de copiarlo, adaptarlo o volver a compartirlo.",
+          "**Retirada**: si eres propietario de algo publicado aquí, o un archivo contiene datos personales, abre el archivo y haz clic en **Report this file** (o en **Report a file** al pie de cada página). Un responsable lo revisa, normalmente en pocos días."
+        ] },
+        { tip: "Al subir un archivo confirmas que lo escribiste o que tienes permiso para compartirlo con la licencia elegida. Los responsables pueden rechazar o retirar cualquier archivo." }
+      ] },
       { id: "verify", icon: "shield", title: "Verificación (propietario y colaboradores)", blocks: [
         { tip: "**Qué significa:** un responsable comprobó que el código del curso, quien lo subió (número de estudiante) y el nombre del archivo son correctos. **No** revisa ni garantiza el contenido: puede haber errores, y la verificación no es una promesa ni un aval." },
         { ol: [
@@ -574,7 +614,7 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "Configuración del repositorio (propietario)", blocks: [
         { ol: [
           "**Pages**: en **Settings → Pages → Source** elige **GitHub Actions**. Si no, el sitio no muestra fechas de subida, quién subió los archivos ni la verificación.",
-          "**Etiquetas**: crea `file-request`, `uploader-code` y `upload` en **Issues → Labels**. Los formularios de solicitud, registro y subida las añaden automáticamente.",
+          "**Etiquetas**: crea `file-request`, `uploader-code`, `upload` y `report` en **Issues → Labels**. Los formularios de solicitud, registro, subida y denuncia las añaden automáticamente. Atiende las denuncias rápido: primero retira el archivo y luego responde.",
           "**Formulario de subida**: en **Settings → Actions → General → Workflow permissions**, marca **Allow GitHub Actions to create and approve pull requests**. Fusiona las subidas con **Create a merge commit** o **Rebase and merge**, no con squash, para que el estudiante siga figurando como autor de la subida. Las asignaturas y nombres de curso nuevos del formulario llegan en la misma solicitud; revisa la ortografía antes de fusionar.",
           "**Reglas** (**Settings → Rules → Rulesets**): como destino elige solo **Include default branch**, no **All branches**. Activa **Restrict deletions**, **Block force pushes** y **Require a pull request before merging** (0 o 1 aprobaciones). Deja **Repository admin** en la lista de excepciones y no añadas **Write**, para que los colaboradores también envíen pull requests.",
           "**Verificación y reglas**: el botón de verificar guarda los registros en una rama aparte, `verifications`, así que las reglas de `main` no lo bloquean. No apliques reglas a **All branches** ni a esa rama, y no la borres.",
@@ -679,6 +719,16 @@ window.HELP = (function () {
         { p: "Tous les codes de licence :" },
         { licences: { head: ["Code", "Licence", "Signification", "Partager", "Adapter", "Usage commercial"], meaning: {"CC0": "Aucune condition : utilisable pour tout.", "PD": "Domaine public : n’est plus protégé par le droit d’auteur.", "CCBY": "Partager et adapter, même commercialement, en citant l’auteur.", "CCBYSA": "Comme CC BY ; les adaptations doivent utiliser la même licence.", "CCBYNC": "Partager et adapter en citant l’auteur, mais pas commercialement.", "CCBYNCSA": "Non commercial, en citant l’auteur ; les adaptations utilisent la même licence.", "CCBYND": "Partager des copies inchangées en citant l’auteur ; pas d’adaptation.", "CCBYNCND": "Partager des copies inchangées en citant l’auteur, sans usage commercial.", "MIT": "Licence logicielle : réutilisation libre en conservant la mention de copyright.", "GPL3": "Licence logicielle : les versions modifiées doivent aussi être sous GPL.", "STUDY": "Document de cours partagé avec autorisation : à lire ici, pour étudier uniquement.", "ARR": "Tous droits réservés : lecture ici ; pour le reste, demandez à l’auteur."} } }
       ] },
+      { id: "copyright", icon: "alert", title: "Droit d’auteur et ce que vous pouvez envoyer", blocks: [
+        { ul: [
+          "**Autorisé** : vos propres notes, résumés et solutions ; les documents sous une licence qui permet le partage (par exemple CC BY ou CC BY-NC-SA, comme MIT OpenCourseWare) ; les fichiers de cours que l’enseignant vous a permis de partager.",
+          "**À ne pas envoyer** sans l’accord du titulaire : manuels, recueils de corrigés, examens officiels, feuilles d’exercices ou diapositives de cours. N’envoyez jamais de solutions à des devoirs encore en cours.",
+          "**Travail mixte** (notes sur un document imprimé) : vos notes vous appartiennent, mais la page en dessous appartient à son titulaire.",
+          "**Utiliser les fichiers** : tout ici sert à étudier. La licence d’un fichier indique ce que vous pouvez faire d’autre ; sans licence, demandez à l’auteur avant de copier, d’adapter ou de repartager.",
+          "**Retrait** : si vous êtes titulaire des droits sur un fichier publié ici, ou si un fichier contient des données personnelles, ouvrez-le et cliquez sur **Report this file** (ou sur **Report a file** en bas de chaque page). Un responsable l’examine, généralement en quelques jours."
+        ] },
+        { tip: "Envoyer un fichier confirme que vous l’avez écrit ou que vous avez le droit de le partager sous la licence choisie. Les responsables peuvent refuser ou retirer n’importe quel fichier." }
+      ] },
       { id: "verify", icon: "shield", title: "Vérification (propriétaire et collaborateurs)", blocks: [
         { tip: "**Ce que cela signifie :** un responsable a vérifié que le code du cours, l’auteur de l’envoi (numéro d’étudiant) et le nom du fichier sont corrects. Cela ne vérifie **pas** et ne garantit pas le contenu : il peut contenir des erreurs, et la vérification n’est ni une promesse ni une approbation." },
         { ol: [
@@ -718,7 +768,7 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "Configuration du dépôt (propriétaire)", blocks: [
         { ol: [
           "**Pages** : dans **Settings → Pages → Source**, choisissez **GitHub Actions**. Sinon, le site n’affiche ni les dates d’envoi, ni les auteurs des envois, ni la vérification.",
-          "**Étiquettes** : créez `file-request`, `uploader-code` et `upload` dans **Issues → Labels**. Les formulaires de demande, d’inscription et d’envoi les ajoutent automatiquement.",
+          "**Étiquettes** : créez `file-request`, `uploader-code`, `upload` et `report` dans **Issues → Labels**. Les formulaires de demande, d’inscription, d’envoi et de signalement les ajoutent automatiquement. Traitez vite les signalements : retirez d’abord le fichier, puis répondez.",
           "**Formulaire d’envoi** : dans **Settings → Actions → General → Workflow permissions**, cochez **Allow GitHub Actions to create and approve pull requests**. Fusionnez les envois avec **Create a merge commit** ou **Rebase and merge**, pas squash, pour que l’étudiant reste crédité. Les nouvelles matières et les noms de cours du formulaire arrivent dans la même demande ; vérifiez l’orthographe avant de fusionner.",
           "**Règles** (**Settings → Rules → Rulesets**) : comme cible, choisissez seulement **Include default branch**, pas **All branches**. Activez **Restrict deletions**, **Block force pushes** et **Require a pull request before merging** (0 ou 1 approbation). Gardez **Repository admin** dans la liste de contournement et n’ajoutez pas **Write**, pour que les collaborateurs passent aussi par des pull requests.",
           "**Vérification et règles** : le bouton de vérification enregistre les données sur une branche à part, `verifications`, donc les règles de `main` ne le bloquent pas. Ne ciblez ni **All branches** ni cette branche, et ne la supprimez pas.",
@@ -823,6 +873,16 @@ window.HELP = (function () {
         { p: "Alle Lizenzcodes:" },
         { licences: { head: ["Code", "Lizenz", "Bedeutung", "Teilen", "Bearbeiten", "Kommerziell"], meaning: {"CC0": "Keine Bedingungen: für alles nutzbar.", "PD": "Gemeinfrei: nicht mehr urheberrechtlich geschützt.", "CCBY": "Teilen und bearbeiten, auch kommerziell, mit Namensnennung.", "CCBYSA": "Wie CC BY; Bearbeitungen müssen dieselbe Lizenz verwenden.", "CCBYNC": "Teilen und bearbeiten mit Namensnennung, aber nicht kommerziell.", "CCBYNCSA": "Nicht kommerziell, mit Namensnennung; Bearbeitungen unter derselben Lizenz.", "CCBYND": "Unveränderte Kopien mit Namensnennung teilen; keine Bearbeitungen.", "CCBYNCND": "Unveränderte Kopien mit Namensnennung teilen, nicht kommerziell.", "MIT": "Softwarelizenz: freie Nutzung, Copyright-Hinweis behalten.", "GPL3": "Softwarelizenz: geänderte Versionen müssen ebenfalls GPL sein.", "STUDY": "Kursmaterial, mit Erlaubnis geteilt: nur hier lesen und damit lernen.", "ARR": "Alle Rechte vorbehalten: hier lesen; für alles andere den Autor fragen."} } }
       ] },
+      { id: "copyright", icon: "alert", title: "Urheberrecht und was du hochladen darfst", blocks: [
+        { ul: [
+          "**Erlaubt**: eigene Mitschriften, Zusammenfassungen und Lösungen; Material unter einer Lizenz, die das Teilen erlaubt (z. B. CC BY oder CC BY-NC-SA, wie MIT OpenCourseWare); Kursdateien, deren Weitergabe die Lehrperson erlaubt hat.",
+          "**Nicht hochladen** ohne Erlaubnis der Rechteinhaber: Lehrbücher, Lösungsbücher, offizielle Prüfungen, Übungsblätter oder Vorlesungsfolien. Lade nie Lösungen zu Aufgaben hoch, die noch laufen.",
+          "**Gemischte Werke** (Notizen auf einem Ausdruck): Deine Notizen gehören dir, die Seite darunter gehört ihren Rechteinhabern.",
+          "**Dateien nutzen**: Alles hier dient dem Lernen. Die Lizenz einer Datei sagt, was du sonst noch darfst; ohne Lizenz frag die Autorin oder den Autor, bevor du kopierst, bearbeitest oder weitergibst.",
+          "**Entfernen**: Gehört dir etwas, das hier veröffentlicht ist, oder enthält eine Datei persönliche Daten, öffne die Datei und klicke auf **Report this file** (oder **Report a file** unten auf jeder Seite). Ein Betreuer prüft die Meldung, meist innerhalb weniger Tage."
+        ] },
+        { tip: "Mit dem Hochladen bestätigst du, dass du die Datei geschrieben hast oder sie unter der gewählten Lizenz teilen darfst. Betreuer können jede Datei ablehnen oder entfernen." }
+      ] },
       { id: "verify", icon: "shield", title: "Prüfung (Eigentümer und Mitwirkende)", blocks: [
         { tip: "**Was das bedeutet:** Ein Betreuer hat geprüft, dass Kurscode, Hochladende(r) (Matrikelnummer) und Dateiname stimmen. Der **Inhalt** wird dabei **nicht** geprüft oder garantiert: Er kann Fehler enthalten, und die Prüfung ist kein Versprechen und keine Empfehlung." },
         { ol: [
@@ -862,7 +922,7 @@ window.HELP = (function () {
       { id: "setup", icon: "github", title: "Repository einrichten (Eigentümer)", blocks: [
         { ol: [
           "**Pages**: Unter **Settings → Pages → Source** muss **GitHub Actions** stehen. Sonst zeigt die Seite keine Upload-Daten, Hochladenden und Prüfungen.",
-          "**Labels**: Lege unter **Issues → Labels** `file-request`, `uploader-code` und `upload` an. Die Anfrage-, Registrierungs- und Upload-Formulare setzen sie automatisch.",
+          "**Labels**: Lege unter **Issues → Labels** `file-request`, `uploader-code`, `upload` und `report` an. Die Anfrage-, Registrierungs-, Upload- und Meldeformulare setzen sie automatisch. Bearbeite Meldungen schnell: zuerst die Datei entfernen, dann antworten.",
           "**Upload-Formular**: Unter **Settings → Actions → General → Workflow permissions** **Allow GitHub Actions to create and approve pull requests** anhaken. Uploads mit **Create a merge commit** oder **Rebase and merge** zusammenführen, nicht mit Squash, damit die Studierenden als Hochladende genannt bleiben. Neue Fächer und Kursnamen aus dem Formular kommen im selben Pull Request; prüfe die Schreibweise vor dem Zusammenführen.",
           "**Regeln** (**Settings → Rules → Rulesets**): Als Ziel nur **Include default branch** wählen, nicht **All branches**. Aktiviere **Restrict deletions**, **Block force pushes** und **Require a pull request before merging** (0 oder 1 Freigaben). Behalte **Repository admin** in der Bypass-Liste und füge **Write** nicht hinzu, damit auch Mitwirkende Pull Requests stellen.",
           "**Prüfung und Regeln**: Der Prüfen-Button speichert die Einträge auf einem eigenen Branch `verifications`, daher blockieren Regeln für `main` ihn nicht. Ziele nicht auf **All branches** oder diesen Branch und lösche ihn nicht.",

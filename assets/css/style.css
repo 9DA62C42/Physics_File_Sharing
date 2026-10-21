@@ -300,6 +300,10 @@ kbd {
 
 .notice { margin: var(--s4) 0 0; padding: var(--s3) var(--s4); border-radius: 10px; background: var(--b-code-bg); color: var(--b-code); }
 .notice-info { background: var(--accent-soft); color: var(--accent); }
+.notice-legal { display: flex; gap: var(--s3); align-items: flex-start; margin: var(--s5) 0 0; padding: var(--s4); background: var(--surface); color: var(--text); border: 1px solid var(--border); border-left: 3px solid var(--accent); font-size: .9rem; }
+.notice-legal > .icon { flex: none; margin-top: 2px; color: var(--accent); }
+.notice-legal p { margin: 0; }
+.notice-legal p + p { margin-top: var(--s2); color: var(--muted); }
 
 /* ---------- home ---------- */
 

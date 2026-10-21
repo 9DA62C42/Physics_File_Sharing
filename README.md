@@ -177,6 +177,8 @@ To register, open **ID system → Uploader IDs** on the website, fill in your nu
 5. **Choose a licence for each file.** Every document can have its own; without one, others can only read it here. See [Licence](#licence).
 6. Be kind and helpful in pull-request discussions. 🙂
 
+> **Copyright and takedown:** if you own something shared here, or a file contains personal information, click **Report this file** in its preview on the website (or **Report a file** at the bottom of any page). A maintainer reviews every report and removes or fixes the file, usually within a few days. See [CONTENT-LICENSE.md](CONTENT-LICENSE.md#taking-material-down).
+
 ---
 
 ## Licence
@@ -276,7 +278,7 @@ From then on, every push to `main` runs `.github/workflows/pages.yml`. It builds
 
 ### Set up file requests and student registrations
 
-Create three labels (**Issues → Labels → New label**): **`file-request`**, **`uploader-code`** and **`upload`**. The issue forms add them automatically. The website lists open issues labelled `file-request` (or whose title starts with `[Request]`).
+Create four labels (**Issues → Labels → New label**): **`file-request`**, **`uploader-code`**, **`upload`** and **`report`**. The issue forms add them automatically. The website lists open issues labelled `file-request` (or whose title starts with `[Request]`).
 
 When a student registers with the issue form, check the number has 9 digits and isn't listed yet, then add `{ "id": "…", "name": "…" }` to `uploaders.json`. If they chose to link their GitHub account, add `"github": "<the issue author's username>"`. Only link the account that opened the issue, so nobody can claim someone else's number.
 
@@ -311,6 +313,10 @@ Maintainers can mark files as checked. Verified items get a **🛡 Verified** ba
 3. **Unverify** works the same way (`[Unverify] …`).
 
 If a verified file's content changes later, the site shows **Changed** instead of Verified, and lists it under *ID system → Check files* for re-checking. A verification stays valid if a file is only renamed or moved.
+
+### Handle reports
+
+Reports from the **Report a file** form are labelled `report`. For a copyright claim or personal information, remove the file first (delete it on GitHub, and its rule in `licenses.json`), then reply and close the issue. Deleted files stay in Git history; if the owner needs them gone entirely, the history has to be rewritten.
 
 ### Set up the upload form (one time)
 
@@ -371,6 +377,7 @@ Students can add one with the upload form (**New subject**). To do it yourself, 
 | `scripts/build_index.py` | Builds `files.json` from the `files/` folder and git history: sizes, dates, uploaders, content hashes |
 | `.github/workflows/pages.yml` | Builds and deploys the site on every push to `main` |
 | `.github/ISSUE_TEMPLATE/upload.yml` | The "Upload a file" issue form |
+| `.github/ISSUE_TEMPLATE/report.yml` | The "Report a file" issue form (copyright, privacy, mistakes) |
 | `.github/ISSUE_TEMPLATE/file-request.yml` | The "File request" issue form |
 | `.github/ISSUE_TEMPLATE/uploader-code.yml` | The "Register your student number" issue form |
 | `files/` | All shared files, organised by subject |

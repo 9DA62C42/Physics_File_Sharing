@@ -57,7 +57,7 @@ Once you've shared something under an open licence (CC, MIT, GPL), copies people
 
 If you own something shared here and want it removed or relicensed, or you find personal information in a file:
 
-1. [Open an issue](../../issues/new), or contact a maintainer, with the file's name or ID.
+1. Click **Report this file** in the file's preview on the website, or [open a report](https://github.com/9DA62C42/Physics_File_Sharing/issues/new?template=report.yml), or contact a maintainer. Give the file's name or ID.
 2. A maintainer updates or removes the file promptly, usually within a few days.
 
 Removed files disappear from the website and the current repository. Old copies remain in Git history unless a maintainer rewrites it.

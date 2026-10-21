@@ -731,6 +731,17 @@
 
   const licensesUrl = () => `${REPO}/blob/${C.branch}/licenses.json`;
   const contentLicenseUrl = () => `${REPO}/blob/${C.branch}/CONTENT-LICENSE.md`;
+  // The "Report a file" issue form, pre-filled with the file when there is one.
+  const reportUrl = (f) => `${REPO}/issues/new?template=report.yml` + (f ? `&title=${enc("[Report] " + f.name)}&file=${enc(f.path)}` : "");
+
+  // Copyright reminder shown on Home, the contribute page and in Help.
+  const copyrightNotice = () => h("div", { class: "notice notice-legal", role: "note" }, icon("alert"),
+    h("div", null,
+      h("p", null, h("strong", null, "Copyright. "), "Share only your own work, or material you have permission to share. Don't upload textbooks, solution manuals, official exams, homework sheets or lecture slides without the owner's permission, or solutions to assignments that are still open."),
+      h("p", null, "Files here are for study. Each file's licence says what else you may do with it; without one, ask the author before copying or resharing. ",
+        "Own something posted here, or found personal information? ", h("a", { href: reportUrl(), target: "_blank", rel: "noopener" }, "Report it"),
+        " and a maintainer removes it. ", h("a", { class: "nowrap", href: contentLicenseUrl(), target: "_blank", rel: "noopener" }, "Copyright and takedown →"))));
+
 
   // Most specific rule for a file from licenses.json / uploads.json: exact ID > exact path > ID prefix > folder.
   function ruleFor(rules, f) {
@@ -978,6 +989,9 @@
             idPanel(f),
             uploaderPanel(f),
             licensePanel(f),
+            h("div", { class: "side-block" }, h("p", { class: "side-title" }, "Problem with this file?"),
+              h("p", { class: "side-note muted small" }, "Copyright, personal information, course rules or wrong details: report it and a maintainer reviews it."),
+              h("a", { class: "btn small", href: reportUrl(f), target: "_blank", rel: "noopener" }, icon("alert"), "Report this file")),
             fileList("Same item", related, "Question, solution and answer files that share this course, term and item number."),
             fileList("Identical copies", dups, "These files have exactly the same content."),
             h("div", { class: "side-block" }, h("p", { class: "side-title" }, "File"),
@@ -1019,6 +1033,8 @@
         stat(withId, "with an ID", "#/ids"),
         stat(people.length || "—", "uploaders", "#/uploaders"),
         stat(Object.keys(countBy("course")).length || Object.keys(counts).length, Object.keys(countBy("course")).length ? "courses" : "subjects")),
+
+      copyrightNotice(),
 
       recent.length ? h("section", { class: "section" },
         h("div", { class: "section-head" }, h("h2", null, "Recently added"), h("a", { href: "#/recent" }, "See all →")),
@@ -1594,6 +1610,7 @@
     return h("div", { class: "prose" },
       h("div", { class: "page-head" }, h("div", null, h("h1", null, "How to contribute"),
         h("p", { class: "muted" }, "You only need a free GitHub account. No Git or coding required."))),
+      copyrightNotice(),
       h("div", { class: "callout" }, h("p", null, h("strong", null, "Upload form: "), "fill in a short form, drag your file in, and submit. A maintainer reviews it before it goes on the site."),
         h("div", { class: "row" }, h("a", { class: "btn primary", href: uploadUrl(), target: "_blank", rel: "noopener" }, icon("upload"), "Open the upload form"))),
       h("ol", { class: "steps" },
@@ -1684,7 +1701,8 @@
     document.getElementById("brand-name").textContent = C.title;
     fill(document.querySelector(".footer p"), "Built by students with GitHub Pages · Site code: ",
       h("a", { href: `${REPO}/blob/${C.branch}/LICENSE`, target: "_blank", rel: "noopener" }, "MIT"),
-      " · Shared files: each has its own licence, shown in its preview (", h("a", { href: contentLicenseUrl(), target: "_blank", rel: "noopener" }, "details"), ")");
+      " · Shared files: each has its own licence, shown in its preview · ", h("a", { href: contentLicenseUrl(), target: "_blank", rel: "noopener" }, "Copyright and takedown"),
+      " · ", h("a", { href: reportUrl(), target: "_blank", rel: "noopener" }, "Report a file"));
     document.getElementById("upload-btn").href = uploadUrl();
     fill(document.getElementById("upload-btn"), icon("upload"), h("span", null, "Upload"));
     fill(document.getElementById("menu-btn"), icon("menu"));

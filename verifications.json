@@ -1,6 +1,14 @@
 {
   "records": [
     {
+      "path": "files/Physical-Mathematics/Notes/01040034_LN_2627W_FULL_V4.1_800012999 Introduction to Probability H.pdf",
+      "sha256": "2ea00bbb5545d20d79383f7f40ed86c9d239256c41ea3acae7b5b5b578f9997f",
+      "by": "9DA62C42",
+      "date": "2026-10-21T12:46:39+00:00",
+      "issue": 23,
+      "note": "Shang Wu is responsible for all problems."
+    },
+    {
       "path": "files/Physical-Mathematics/Notes/01040215_LN_2627W_FULL_V4.1_800012999 Complex Functions A LN.pdf",
       "sha256": "ced70d16ad67f4681d15f6be6fd2c58663cc293187a7b749ce46506a6412be51",
       "by": "9DA62C42",

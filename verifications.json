@@ -1,6 +1,13 @@
 {
   "records": [
     {
+      "path": "files/Mathematics/Notes/01040016_LN_2526W_FULL_V1_800015240 Mono-color Note for Algebra 1E.pdf",
+      "sha256": "427d1572d154e02701580cb61c987273fbd728d74eddb1361552315ee275629a",
+      "by": "9DA62C42",
+      "date": "2026-10-21T12:58:14+00:00",
+      "issue": 27
+    },
+    {
       "path": "files/Physical-Mathematics/Notes/01040034_LN_2627W_FULL_V4.1_800012999 Introduction to Probability H.pdf",
       "sha256": "2ea00bbb5545d20d79383f7f40ed86c9d239256c41ea3acae7b5b5b578f9997f",
       "by": "9DA62C42",

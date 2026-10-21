@@ -1,6 +1,6 @@
 {
   "_about": "ID naming system for shared files, based on the GTIIT course-file convention. Used by the website (assets/js/app.js). IDs are recommended, not required.",
-  "template": "<course code>_<TYPE>_<term>_<item>_<TAG>_<uploader code> <human-readable title>.ext",
+  "template": "<course code>_<TYPE>_<term>_<item>_<TAG>_<student number> <human-readable title>.ext",
   "types": [
     {
       "code": "HWQ",
@@ -264,9 +264,9 @@
     "note": "Versions of the same item (LBP_2627W_01_V01 old, _V02 new)."
   },
   "uploader": {
-    "pattern": "^[A-Z]{2,3}[1-9]$",
-    "example": "AW1",
-    "note": "2–3 capital letters (usually your initials) and one digit 1–9. Register it once in uploaders.json."
+    "pattern": "^\\d{9}$",
+    "example": "123456789",
+    "note": "Your 9-digit student number. It works without registering; register it in uploaders.json to show your name, and add a GitHub username (optional) for a verified badge. It is public."
   },
   "byNotes": {
     "School": "Official course material. The uploader only shares it.",

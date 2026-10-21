@@ -8,7 +8,7 @@ clone (the GitHub Actions workflow does this for you).
 For each file it records who uploaded it (the author of the commit that
 added it). In GitHub Actions the commit is looked up through the GitHub API
 to get the uploader's GitHub username, which the website compares with the
-uploader code in the file name. It also stores a SHA-256 hash so the site
+GitHub account registered for the student number in the file name (if any). It also stores a SHA-256 hash so the site
 can spot duplicate files.
 """
 import hashlib

@@ -2,7 +2,7 @@
 // Files come from files.json (built by scripts/build_index.py in GitHub Actions);
 // if that is missing, the GitHub API is used to list the files/ folder instead.
 // File IDs (recommended, not required) are read from file names; the rules are
-// in assets/naming.json, uploader codes in uploaders.json, course names in courses.json.
+// in assets/naming.json, registered student numbers in uploaders.json, course names in courses.json.
 (() => {
   "use strict";
 
@@ -72,6 +72,9 @@
   const icon = (name) => h("span", { class: "icon", "aria-hidden": "true",
     svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON_PATHS[name]}</svg>` });
 
+  // replaceChildren() would print null/false as text; drop them instead.
+  const fill = (el, ...kids) => el.replaceChildren(...kids.flat(Infinity).filter((k) => k != null && k !== false));
+
   const pretty = (s) => s.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
   const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
   const enc = encodeURIComponent;
@@ -139,7 +142,7 @@
   // ---------- ID system ----------
   // <course>_<TYPE>_<term>_<item>[_V..][_TAG]_<uploader> <title>.ext
 
-  const N = { raw: null, types: {}, seasons: {}, placeholders: {}, tags: {}, serials: [], version: /^V\d{2,}$/, uploader: /^[A-Z]{2,3}[1-9]$/ };
+  const N = { raw: null, types: {}, seasons: {}, placeholders: {}, tags: {}, serials: [], version: /^V\d{2,}$/, uploader: /^\d{9}$/ };
   function setNaming(d) {
     if (!d) return;
     N.raw = d;
@@ -201,7 +204,7 @@
       r.problems.push("Add a term code after the type, e.g. 2627W (Winter 2026–27).");
     }
 
-    const s = tokens[i] && N.serials.find((x) => x.re.test(tokens[i]));
+    const s = tokens[i] && !N.uploader.test(tokens[i]) && N.serials.find((x) => x.re.test(tokens[i]));
     if (s) { r.item = { code: tokens[i], kind: s.kind }; field(tokens[i], "Item", s.kind, s.note, "f-item"); i++; }
 
     for (; i < tokens.length; i++) {
@@ -211,16 +214,15 @@
       else if (N.uploader.test(x)) {
         r.uploader = x;
         const reg = state.uploaders.get(x);
-        field(x, "Uploader", reg ? reg.name : "Unregistered code", reg ? "@" + reg.github : "Not in uploaders.json yet", "f-up");
+        field(x, "Uploader", reg ? reg.name : "Student number", reg ? (reg.github ? "Registered · @" + reg.github : "Registered") : "Not registered, so no name is shown", "f-up");
       }
       else if (x === "") r.problems.push("Remove the empty field (double underscore).");
-      else r.problems.push(`"${x}" isn't a known item number, version, tag or uploader code.`);
+      else r.problems.push(`"${x}" isn't a known item number, version, tag or student number.`);
     }
 
     if (/-/.test(idPart)) r.problems.push("Use _ between ID fields, never -.");
     if (!title) r.hints.push("Add a short English title after one space.");
-    if (r.type && r.type.by === "Student" && !r.uploader) r.hints.push("Student work: add your uploader code at the end of the ID so people know whose work it is.");
-    if (r.uploader && !state.uploaders.has(r.uploader)) r.hints.push(`Uploader code ${r.uploader} isn't registered yet.`);
+    if (r.type && r.type.by === "Student" && !r.uploader) r.hints.push("Student work: add your 9-digit student number at the end of the ID so people know whose work it is.");
     r.status = r.problems.length ? "partial" : "full";
     return r;
   }
@@ -237,20 +239,22 @@
     return h("span", { class: "id-code" + (big ? " big" : "") }, parts);
   }
 
-  // Who uploaded a file, and does it match the uploader code in its ID?
+  // Who uploaded a file, and does it match the student number in its ID?
+  // Verification needs the student to have registered a GitHub username (optional).
   function uploaderInfo(f) {
     const code = f.idInfo ? f.idInfo.uploader : null;
     const reg = code ? state.uploaders.get(code) : null;
     const login = f.uploadedBy && f.uploadedBy.login;
     const accountCode = login ? state.loginToCode.get(login.toLowerCase()) : null;
     let status = "unknown";
-    if (code && reg) status = !login ? "claimed" : reg.github.toLowerCase() === login.toLowerCase() ? "verified" : "behalf";
-    else if (code) status = "unregistered";
+    if (code && reg && reg.github) status = !login ? "claimed" : reg.github.toLowerCase() === login.toLowerCase() ? "verified" : "behalf";
+    else if (code && reg) status = "registered";
+    else if (code) status = "student";
     else if (f.uploadedBy) status = "account";
     return { code, reg, login, accountCode, status, name: f.uploadedBy ? f.uploadedBy.name : null };
   }
 
-  // People are keyed by registered code, else GitHub login, else commit name.
+  // People are keyed by student number, else GitHub login, else commit name.
   function accountKey(f) {
     const u = f.up;
     if (u.accountCode) return u.accountCode;
@@ -261,7 +265,8 @@
     if (!key) return "";
     if (state.uploaders.has(key)) return state.uploaders.get(key).name;
     if (key.startsWith("@")) return key;
-    return key.startsWith("~") ? key.slice(1) : key; // "~" marks a commit name, else an unregistered code
+    if (N.uploader.test(key)) return "Student " + key;
+    return key.startsWith("~") ? key.slice(1) : key; // "~" marks a commit name
   }
   const personHref = (key) => "#/u/" + enc(key);
 
@@ -270,8 +275,9 @@
     switch (u.status) {
       case "verified": return h("span", { class: "up up-ok", title: `Verified: uploaded by GitHub user @${u.login}` }, icon("check"), `${u.reg.name} · ${u.code}`);
       case "behalf": return h("span", { class: "up up-warn", title: `ID says ${u.code} (${u.reg.name}), uploaded by @${u.login}` }, `${u.code} · via @${u.login}`);
-      case "claimed": return h("span", { class: "up" }, `${u.reg.name} · ${u.code}`);
-      case "unregistered": return h("span", { class: "up up-warn", title: "This uploader code is not registered" }, `${u.code} (unregistered)`);
+      case "claimed":
+      case "registered": return h("span", { class: "up" }, `${u.reg.name} · ${u.code}`);
+      case "student": return h("span", { class: "up", title: "Student number from the file's ID" }, `Student ${u.code}`);
       case "account": return h("span", { class: "up" }, personLabel(key));
       default: return null;
     }
@@ -357,13 +363,13 @@
     return counts;
   }
 
-  // Everyone who registered a code or uploaded something.
+  // Everyone who registered, put their student number in an ID, or uploaded something.
   function peopleStats() {
     const map = new Map();
     const get = (key) => {
       if (!map.has(key)) {
         const reg = state.uploaders.get(key);
-        map.set(key, { key, reg, name: personLabel(key), login: reg ? reg.github : key.startsWith("@") ? key.slice(1) : null,
+        map.set(key, { key, reg, name: personLabel(key), login: reg ? reg.github : key.startsWith("@") ? key.slice(1) : null, isNumber: N.uploader.test(key),
           uploads: 0, authored: 0, subjects: new Set(), last: null });
       }
       return map.get(key);
@@ -372,7 +378,7 @@
     for (const f of state.files) {
       const a = accountKey(f);
       if (a) { const p = get(a); p.uploads++; p.subjects.add(f.subject); if (f.added && (!p.last || f.added > p.last)) p.last = f.added; }
-      if (f.up.reg) get(f.up.code).authored++;
+      if (f.up.code) get(f.up.code).authored++;
     }
     return [...map.values()].sort((x, y) => (y.uploads + y.authored) - (x.uploads + x.authored) || x.name.localeCompare(y.name));
   }
@@ -399,7 +405,7 @@
     const r = parseRoute();
     const view = VIEWS[r.name] || VIEWS.notfound;
     state.refresh = null;
-    document.getElementById("view").replaceChildren(view(r));
+    fill(document.getElementById("view"), view(r));
     highlightNav();
     closeSidebar();
     window.scrollTo(0, 0);
@@ -421,7 +427,7 @@
     const counts = subjectCounts();
     const courses = countBy("course"), cats = countBy("category");
     const nav = document.getElementById("nav");
-    nav.replaceChildren(
+    fill(nav, 
       h("div", { class: "nav-section" },
         h("p", { class: "nav-heading" }, "Library"),
         navLink("#/", "home", "Home"),
@@ -494,7 +500,7 @@
     if (t === "auto") delete document.documentElement.dataset.theme;
     else document.documentElement.dataset.theme = t;
     const [, ic, label] = THEMES.find((x) => x[0] === t);
-    document.getElementById("theme-toggle").replaceChildren(icon(ic), h("span", { class: "nav-label" }, label));
+    fill(document.getElementById("theme-toggle"), icon(ic), h("span", { class: "nav-label" }, label));
   }
 
   // Accent colour: orange (default) or gray + red.
@@ -503,7 +509,7 @@
     if (a === "orange") delete document.documentElement.dataset.accent;
     else document.documentElement.dataset.accent = a;
     const [, label, swatch] = ACCENTS.find((x) => x[0] === a) || ACCENTS[0];
-    document.getElementById("accent-toggle").replaceChildren(
+    fill(document.getElementById("accent-toggle"), 
       h("span", { class: "swatch", style: `background:${swatch}`, "aria-hidden": "true" }), h("span", { class: "nav-label" }, label));
   }
 
@@ -613,10 +619,10 @@
         && (state.material === "All" || f.material === state.material)
         && (state.term === "All" || (f.idInfo && f.idInfo.term && f.idInfo.term.code === state.term))).sort(SORTS[sortKey][1]);
       count.textContent = `${list.length} ${list.length === 1 ? "file" : "files"}` + (list.length !== base.length ? ` of ${base.length}` : "");
-      if (!base.length) results.replaceChildren(empty);
-      else if (!list.length) results.replaceChildren(emptyState("Nothing matches", "Try a different search or filter.",
+      if (!base.length) fill(results, empty);
+      else if (!list.length) fill(results, emptyState("Nothing matches", "Try a different search or filter.",
         h("button", { class: "btn", type: "button", onclick: clearFilters }, "Clear filters")));
-      else results.replaceChildren(h("div", { class: "files " + state.layout }, list.map(card)));
+      else fill(results, h("div", { class: "files " + state.layout }, list.map(card)));
     }
     function clearFilters() {
       state.q = ""; state.type = state.material = state.term = "All";
@@ -656,14 +662,15 @@
     const rows = [];
     const who = (k) => k ? h("a", { href: personHref(k) }, personLabel(k)) : null;
     const msg = {
-      verified: [h("span", { class: "up up-ok" }, icon("check"), "Verified"), ` The ID's uploader code ${u.code} belongs to @${u.login}, who uploaded this file.`],
+      verified: [h("span", { class: "up up-ok" }, icon("check"), "Verified"), ` Student number ${u.code} is registered to @${u.login}, who uploaded this file.`],
       behalf: [h("span", { class: "up up-warn" }, "Uploaded on behalf"), ` The ID says ${u.code} (${u.reg && u.reg.name}), but @${u.login} uploaded it.`],
-      claimed: [h("span", { class: "up" }, "Not checked"), " Upload history isn't available, so the uploader code can't be checked."],
-      unregistered: [h("span", { class: "up up-warn" }, "Unregistered code"), ` ${u.code} isn't in uploaders.json yet.`],
-      account: [h("span", { class: "up" }, "No uploader code"), " Uploader taken from GitHub."],
+      claimed: [h("span", { class: "up" }, "Not checked"), " Upload history isn't available here, so the student number can't be checked against the uploader."],
+      registered: [h("span", { class: "up" }, "Registered"), ` ${u.code} is registered as ${u.reg && u.reg.name}. Adding a GitHub username to the registration gives a verified badge.`],
+      student: [h("span", { class: "up" }, "Student number"), ` ${u.code} isn't registered, so no name is shown. Registering is optional.`],
+      account: [h("span", { class: "up" }, "No student number"), " Uploader taken from GitHub."],
       unknown: [h("span", { class: "up" }, "Unknown"), " Upload history isn't available on this copy of the site."]
     }[u.status];
-    if (u.code) rows.push(["Code", u.reg ? h("a", { href: personHref(u.code) }, `${u.code} · ${u.reg.name}`) : u.code]);
+    if (u.code) rows.push(["Student no.", h("a", { href: personHref(u.code) }, u.reg ? `${u.code} · ${u.reg.name}` : u.code)]);
     if (key) rows.push(["Uploaded by", [who(key), u.login && !key.startsWith("@") ? h("span", { class: "muted" }, " @" + u.login) : null]]);
     return h("div", { class: "side-block" },
       h("p", { class: "side-title" }, "Uploader"),
@@ -860,18 +867,18 @@
   VIEWS.uploaders = () => {
     const people = peopleStats();
     const head = h("div", { class: "page-head" }, h("div", null, h("h1", null, "Uploaders"),
-      h("p", { class: "muted" }, "Everyone who shares files here. Registered uploaders have a code (like AW1) that goes in file IDs, so their work is credited and verified.")),
-      h("a", { class: "btn", href: "#/ids?tab=codes" }, icon("id"), "Get an uploader code"));
-    if (!people.length) return h("div", null, head, emptyState("No uploaders yet", "Upload a file or register a code to appear here."));
+      h("p", { class: "muted" }, "Everyone who shares files here. Students put their 9-digit student number at the end of file IDs so their work is credited. Registering a name is optional.")),
+      h("a", { class: "btn", href: "#/ids?tab=codes" }, icon("id"), "Register your name"));
+    if (!people.length) return h("div", null, head, emptyState("No uploaders yet", "Upload a file to appear here."));
     return h("div", null, head,
       h("div", { class: "table-wrap" }, h("table", { class: "table" },
-        h("thead", null, h("tr", null, h("th", null, "Code"), h("th", null, "Name"), h("th", null, "GitHub"), h("th", { class: "num" }, "Uploaded"), h("th", { class: "num" }, "Credited"), h("th", null, "Last upload"))),
+        h("thead", null, h("tr", null, h("th", null, "Student no."), h("th", null, "Name"), h("th", null, "GitHub"), h("th", { class: "num" }, "Uploaded"), h("th", { class: "num" }, "Credited"), h("th", null, "Last upload"))),
         h("tbody", null, people.map((p) => h("tr", null,
-          h("td", null, p.reg ? h("code", { class: "f-up" }, p.key) : h("span", { class: "muted" }, "—")),
+          h("td", null, p.isNumber ? h("code", { class: "f-up" }, p.key) : h("span", { class: "muted" }, "—")),
           h("td", null, h("a", { href: personHref(p.key) }, p.name)),
           h("td", null, p.login ? h("a", { href: "https://github.com/" + enc(p.login), target: "_blank", rel: "noopener" }, "@" + p.login) : ""),
           h("td", { class: "num" }, String(p.uploads)),
-          h("td", { class: "num", title: "Files whose ID carries this uploader code" }, p.reg ? String(p.authored) : ""),
+          h("td", { class: "num", title: "Files whose ID carries this student number" }, p.isNumber ? String(p.authored) : ""),
           h("td", null, p.last ? timeAgo(p.last) : "")))))));
   };
 
@@ -881,12 +888,13 @@
     const login = reg ? reg.github : key.startsWith("@") ? key.slice(1) : null;
     return fileListView({
       title: personLabel(key) || key,
-      desc: reg ? `Uploader code ${key} · files uploaded by @${reg.github} or carrying ${key} in their ID.` : "Files uploaded from this account. No uploader code registered yet.",
+      desc: reg ? `Student number ${key}` + (reg.github ? ` · GitHub @${reg.github}` : "") + ` · files carrying ${key} in their ID${reg.github ? " or uploaded from that account" : ""}.`
+        : N.uploader.test(key) ? `Student number ${key} · not registered.` : "Files uploaded from this GitHub account.",
       filter: (f) => f.people.includes(key) || (login && f.up.login && f.up.login.toLowerCase() === login.toLowerCase()),
       sort: "id",
       empty: emptyState("No files yet", null),
       extra: h("div", { class: "row" },
-        reg ? h("code", { class: "id-code big f-up" }, key) : null,
+        N.uploader.test(key) ? h("code", { class: "id-code big f-up" }, key) : null,
         login ? h("a", { class: "btn", href: "https://github.com/" + enc(login), target: "_blank", rel: "noopener" }, icon("github"), "@" + login) : null)
     });
   };
@@ -895,14 +903,14 @@
 
   VIEWS.ids = (r) => {
     if (!N.raw) return emptyState("ID rules couldn't be loaded", "assets/naming.json is missing.");
-    const tabs = [["lookup", "Look up"], ["build", "Build a name"], ["codes", "Uploader codes"], ["rules", "Reference"], ["check", "Check files"]];
+    const tabs = [["lookup", "Look up"], ["build", "Build a name"], ["codes", "Uploader IDs"], ["rules", "Reference"], ["check", "Check files"]];
     let tab = tabs.some(([k]) => k === r.params.get("tab")) ? r.params.get("tab") : "lookup";
     const tabBar = h("div", { class: "tabs", role: "tablist" });
     const panel = h("div", { class: "id-panel" });
     const draw = () => {
-      tabBar.replaceChildren(...tabs.map(([k, label]) => h("button", { type: "button", role: "tab", class: "tab" + (k === tab ? " on" : ""), "aria-selected": String(k === tab),
+      fill(tabBar, ...tabs.map(([k, label]) => h("button", { type: "button", role: "tab", class: "tab" + (k === tab ? " on" : ""), "aria-selected": String(k === tab),
         onclick: () => { tab = k; history.replaceState(null, "", "#/ids?tab=" + k); draw(); } }, label)));
-      panel.replaceChildren(ID_TABS[tab](r));
+      fill(panel, ID_TABS[tab](r));
     };
     draw();
     return h("div", null,
@@ -911,7 +919,7 @@
           h("strong", null, "recommended, not required"), ": files without one are welcome too."))),
       h("div", { class: "id-hero" },
         h("p", { class: "id-anatomy" },
-          ...[["01140086", "f-course", "course"], ["HWS", "f-type", "type"], ["2627W", "f-term", "term"], ["01", "f-item", "item"], ["AN", "f-tag", "tag"], ["AW1", "f-up", "uploader"]]
+          ...[["01140086", "f-course", "course"], ["HWS", "f-type", "type"], ["2627W", "f-term", "term"], ["01", "f-item", "item"], ["AN", "f-tag", "tag"], ["123456789", "f-up", "student no."]]
             .flatMap(([t, cls, label], i) => [i ? h("span", { class: "id-sep" }, "_") : null, h("span", { class: "anat " + cls }, h("span", { class: "anat-t" }, t), h("span", { class: "anat-l" }, label))]),
           h("span", { class: "anat title" }, h("span", { class: "anat-t" }, "Waves Homework 1 Solution.pdf"), h("span", { class: "anat-l" }, "title")))),
       tabBar, panel);
@@ -922,13 +930,13 @@
   ID_TABS.lookup = (r) => {
     const out = h("div");
     const input = h("input", { type: "search", class: "input big mono", value: r.params.get("q") || "", autocomplete: "off", spellcheck: "false",
-      placeholder: "Paste an ID or file name, or type part of one: 01140086_HWS, 104131, 2627W, AW1", "aria-label": "Look up an ID", oninput: () => update() });
+      placeholder: "Paste an ID or file name, or type part of one: 01140086_HWS, 104131, 2627W, 123456789", "aria-label": "Look up an ID", oninput: () => update() });
 
     function update() {
       let q = input.value.trim();
       if (!q) {
         const withId = state.files.filter((f) => f.idInfo);
-        out.replaceChildren(h("p", { class: "muted" }, `${withId.length} of ${state.files.length} files have an ID. Start typing to search them, or paste a full name to decode it.`));
+        fill(out, h("p", { class: "muted" }, `${withId.length} of ${state.files.length} files have an ID. Start typing to search them, or paste a full name to decode it.`));
         return;
       }
       const shorthand = /^\d{6}(?=_|$)/.test(q);
@@ -943,7 +951,7 @@
         const parts = id.split("_");
         return toks.every((t) => parts.includes(t) || (t.length > 3 && id.includes(t)));
       }).sort(SORTS.id[1]);
-      out.replaceChildren(
+      fill(out, 
         shorthand ? h("p", { class: "notice info" }, `6-digit course shorthand expanded to ${padCourse(input.value.trim().slice(0, 6))}.`) : null,
         info ? h("div", { class: "decode" },
           h("p", null, idNode(info, true)),
@@ -975,7 +983,7 @@
     const item = h("input", { class: "input mono", value: saved.item || "01", placeholder: "01" });
     const version = h("input", { class: "input mono", value: saved.version || "", placeholder: "V02 (optional)" });
     const tagBoxes = N.raw.tags.map((t) => h("label", { class: "check" }, h("input", { type: "checkbox", value: t.code, checked: (saved.tags || []).includes(t.code) }), ` ${t.code} · ${t.name}`));
-    const uploader = h("input", { class: "input mono", value: saved.uploader || "", placeholder: "AW1", maxlength: "4" });
+    const uploader = h("input", { class: "input mono", value: saved.uploader || "", placeholder: "123456789", maxlength: "9", inputmode: "numeric" });
     const title = h("input", { class: "input", value: saved.title || "", placeholder: "Waves Homework 1 Solution" });
     const ext = h("input", { class: "input mono", value: saved.ext || "pdf", placeholder: "pdf" });
     const result = h("div", { class: "build-out" });
@@ -987,13 +995,13 @@
       season.disabled = isXT || N.placeholders[year.value] != null;
       const term = isXT ? null : N.placeholders[year.value] ? year.value : year.value + season.value;
       const tags = tagBoxes.map((l) => l.firstChild).filter((b) => b.checked).map((b) => b.value);
-      const fields = [c || "00000000", type.value, term, item.value.trim(), version.value.trim().toUpperCase(), ...tags, uploader.value.trim().toUpperCase()].filter(Boolean);
+      const fields = [c || "00000000", type.value, term, item.value.trim(), version.value.trim().toUpperCase(), ...tags, uploader.value.trim()].filter(Boolean);
       const idPart = fields.join("_");
       const name = idPart + (title.value.trim() ? " " + title.value.trim() : "") + (ext.value.trim() ? "." + ext.value.trim().replace(/^\./, "") : "");
       store.set("builder", { course: course.value, type: type.value, year: year.value, season: season.value, item: item.value, version: version.value, tags, uploader: uploader.value, title: title.value, ext: ext.value });
       const info = parseId(name.replace(/\.[^.]*$/, ""));
       const cat = N.types[type.value].category;
-      result.replaceChildren(
+      fill(result, 
         h("p", { class: "field-l" }, "Your file name"),
         h("div", { class: "build-name" }, h("code", null, name), h("button", { class: "btn primary small", type: "button", onclick: (e) => copyText(name, e.currentTarget) }, icon("copy"), "Copy")),
         info ? idNode(info, true) : null,
@@ -1012,7 +1020,7 @@
         lab("Term", season),
         lab("Item", item, "01, 01b, A, Q01, CA01, PS01, P02, C01, FULL or empty"),
         lab("Version", version),
-        lab("Uploader code", uploader, h("a", { href: "#/ids?tab=codes" }, "Don't have one?")),
+        lab("Student number", uploader, h("span", null, "9 digits, will be public. ", h("a", { href: "#/ids?tab=codes" }, "More"))),
         lab("Title", title, "Short English title"),
         lab("Extension", ext)),
       h("div", { class: "field" }, h("span", { class: "field-l" }, "Tags"), h("div", { class: "row" }, tagBoxes)),
@@ -1021,49 +1029,47 @@
 
   ID_TABS.codes = () => {
     const regs = [...state.uploaders.values()].sort((a, b) => a.code.localeCompare(b.code));
-    const name = h("input", { class: "input", placeholder: "Your name, e.g. Alice Wang" });
-    const gh = h("input", { class: "input mono", placeholder: "Your GitHub username" });
+    const num = h("input", { class: "input mono", placeholder: "Student number (9 digits)", maxlength: "9", inputmode: "numeric" });
+    const name = h("input", { class: "input", placeholder: "Name to show, e.g. Alice Wang" });
+    const gh = h("input", { class: "input mono", placeholder: "GitHub username (optional)" });
     const out = h("div", { class: "build-out" });
-    function suggest() {
-      const words = name.value.trim().split(/\s+/).filter((w) => /[A-Za-z]/.test(w));
-      let base = words.map((w) => w.replace(/[^A-Za-z]/g, "")[0] || "").join("").toUpperCase().slice(0, 3);
-      if (base.length < 2) base = (words[0] || "").replace(/[^A-Za-z]/g, "").slice(0, 2).toUpperCase();
-      if (base.length < 2) { out.replaceChildren(h("p", { class: "muted" }, "Type your name to get a suggested code.")); return; }
-      let code = null;
-      for (let d = 1; d <= 9 && !code; d++) if (!state.uploaders.has(base + d)) code = base + d;
-      if (!code) code = base.slice(0, 2) + "X1";
-      const line = `    { "code": "${code}", "github": "${gh.value.trim() || "your-github-name"}", "name": "${name.value.trim().replace(/"/g, "")}" }`;
-      out.replaceChildren(
-        h("p", null, "Suggested code: ", h("code", { class: "id-code big f-up" }, code), state.uploaders.has(base + "1") ? h("span", { class: "muted" }, ` (${base}1 is taken)`) : null),
-        h("p", { class: "field-l" }, "Register it in one of two ways:"),
+    function update() {
+      const id = num.value.trim(), nm = name.value.trim().replace(/"/g, ""), g = gh.value.trim().replace(/^@/, "");
+      if (!N.uploader.test(id)) { fill(out, h("p", { class: "muted" }, "Enter your 9-digit student number to get your registration line.")); return; }
+      const taken = state.uploaders.get(id);
+      const line = `{ "id": "${id}", "name": "${nm || "Your Name"}"${g ? `, "github": "${g}"` : ""} }`;
+      fill(out, 
+        taken ? h("p", { class: "notice info" }, `${id} is already registered as ${taken.name}. To change it, edit that line instead.`) : null,
+        h("p", { class: "field-l" }, "Register in one of two ways:"),
         h("ol", { class: "steps-mini" },
-          h("li", null, h("a", { class: "btn primary small", href: `${REPO}/issues/new?template=uploader-code.yml&title=${enc("[Uploader code] " + code)}`, target: "_blank", rel: "noopener" }, icon("inbox"), "Ask with the issue form"),
+          h("li", null, h("a", { class: "btn primary small", href: `${REPO}/issues/new?template=uploader-code.yml&title=${enc("[Register] " + id)}`, target: "_blank", rel: "noopener" }, icon("inbox"), "Use the issue form"),
             " and a maintainer adds you."),
           h("li", null, h("a", { class: "btn small", href: `${REPO}/edit/${C.branch}/uploaders.json`, target: "_blank", rel: "noopener" }, icon("external"), "Edit uploaders.json"),
-            " yourself and add this line inside ", h("code", null, "\"uploaders\": [ … ]"), " (put a comma between entries), then propose the change:",
-            h("div", { class: "build-name" }, h("code", null, line.trim()), h("button", { class: "btn small", type: "button", onclick: (e) => copyText(line.trim(), e.currentTarget) }, icon("copy"), "Copy")))));
+            " yourself: add this line inside ", h("code", null, "\"uploaders\": [ … ]"), " (comma between entries), then propose the change:",
+            h("div", { class: "build-name" }, h("code", null, line), h("button", { class: "btn small", type: "button", onclick: (e) => copyText(line, e.currentTarget) }, icon("copy"), "Copy")))));
     }
-    name.addEventListener("input", suggest); gh.addEventListener("input", suggest);
-    suggest();
+    [num, name, gh].forEach((el) => el.addEventListener("input", update));
+    update();
     return h("div", null,
       h("div", { class: "id-formats" },
         h("div", { class: "id-format" },
-          h("h3", null, "What's an uploader code?"),
-          h("p", null, "2–3 capital letters (usually your initials) and one digit 1–9, like ", h("code", null, "AW1"), ". It goes at the end of the ID. Each code is linked to one GitHub account in ", h("code", null, "uploaders.json"), "."),
+          h("h3", null, "Your uploader ID is your student number"),
+          h("p", null, "Put your 9-digit student number at the end of the ID, e.g. ", h("code", null, "01140086_HWS_2627W_01_123456789 Waves Homework 1 Solution.pdf"), ". No GitHub account details are needed."),
+          h("p", { class: "notice" }, h("strong", null, "It will be public. "), "Anyone can see your student number in file names and on this site, and Git keeps it even after a file is deleted. Leave it out if you'd rather not share it."),
           h("ul", { class: "rules" },
-            h("li", null, h("strong", null, "Verified"), " when the code's account is the one that uploaded the file."),
-            h("li", null, h("strong", null, "Uploaded on behalf"), " when someone else uploaded it for you. That's allowed, just shown."),
-            h("li", null, h("strong", null, "Permanent:"), " once a code is used, it isn't given to anyone else."),
+            h("li", null, h("strong", null, "Not registered:"), " the number works as is; files show “Student 123456789”."),
+            h("li", null, h("strong", null, "Registered:"), " add your number and name to ", h("code", null, "uploaders.json"), " and your name is shown."),
+            h("li", null, h("strong", null, "Verified (optional):"), " also add your GitHub username. Files you upload from that account get a ✔ badge."),
             h("li", null, "Most useful on your own work (", N.raw.types.filter((t) => t.by === "Student").map((t) => t.code).join(", "), "). Optional on school material."))),
         h("div", { class: "id-format" },
-          h("h3", null, "Get your code"),
-          h("div", { class: "stack" }, name, gh), out)),
-      h("h2", { class: "small-head section" }, `Registered codes (${regs.length})`),
+          h("h3", null, "Register your name (optional)"),
+          h("div", { class: "stack" }, num, name, gh), out)),
+      h("h2", { class: "small-head section" }, `Registered students (${regs.length})`),
       regs.length ? h("div", { class: "table-wrap" }, h("table", { class: "table" },
-        h("thead", null, h("tr", null, h("th", null, "Code"), h("th", null, "Name"), h("th", null, "GitHub"))),
+        h("thead", null, h("tr", null, h("th", null, "Student no."), h("th", null, "Name"), h("th", null, "GitHub"))),
         h("tbody", null, regs.map((u) => h("tr", null, h("td", null, h("a", { href: personHref(u.code) }, h("code", { class: "f-up" }, u.code))), h("td", null, u.name),
-          h("td", null, h("a", { href: "https://github.com/" + enc(u.github), target: "_blank", rel: "noopener" }, "@" + u.github)))))))
-        : h("p", { class: "muted" }, "No codes registered yet. Be the first!"));
+          h("td", null, u.github ? h("a", { href: "https://github.com/" + enc(u.github), target: "_blank", rel: "noopener" }, "@" + u.github) : h("span", { class: "muted" }, "—")))))))
+        : h("p", { class: "muted" }, "Nobody has registered yet."));
   };
 
   ID_TABS.rules = () => {
@@ -1080,7 +1086,7 @@
         tr(h("code", { class: "f-term" }, "term"), "Academic-year term code (section 2). Past exams keep the term printed on them. Left out for XT."),
         tr(h("code", { class: "f-item" }, "item"), "Serial number, at least two digits, or another pattern from section 5. Optional when the item has no natural number (handouts, syllabus, readings)."),
         tr(h("code", { class: "f-tag" }, "TAG"), "Optional, from section 4."),
-        tr(h("code", { class: "f-up" }, "uploader"), "Your registered uploader code (section 6). Recommended for your own work."),
+        tr(h("code", { class: "f-up" }, "uploader"), "Your 9-digit student number (section 6). Recommended for your own work. It will be public."),
         tr("title", "Short English title after one space. Fields before it are joined with _, never -.")]),
       h("p", { class: "muted" }, "A .tex and its .pdf (or a .pdf and .pptx of the same item) share one base name."),
 
@@ -1104,8 +1110,8 @@
         tr(h("code", { class: "f-ver" }, "V01, V02"), "Version", N.raw.version.note),
         tr("Ranges", "", "Use the first number; the range goes in the title: LP_2526A_08 Lectures 8-10. No hyphens inside an ID.")]),
 
-      h("h2", null, "6  Uploader codes"),
-      h("p", null, N.raw.uploader.note, " ", h("a", { href: "#/ids?tab=codes" }, "Register or look up codes →")),
+      h("h2", null, "6  Uploader: student number"),
+      h("p", null, N.raw.uploader.note, " ", h("a", { href: "#/ids?tab=codes" }, "Register your name →")),
 
       h("h2", null, "7  House rules"),
       h("ul", null,
@@ -1113,14 +1119,14 @@
         h("li", null, h("strong", null, "Published IDs stay fixed."), " Once a file is on the site, don't change its ID part; links and references depend on it. Fix only real mistakes."),
         h("li", null, h("strong", null, "Unsure about the course or type?"), " Ask in your pull request or open an issue. Don't guess."),
         h("li", null, h("strong", null, "Duplicates are found by content,"), " not by name. The site flags identical files (see Check files)."),
-        h("li", null, h("strong", null, "Worked example: "), ["01140086_HWQ_2627W_01 question (School)", "…_HWQ_2627W_01_AN_AW1 your marked-up printout", "…_HWS_2627W_01_DR_AW1 your draft", "…_HWS_2627W_01_AW1 your clean solution", "…_HWA_2627W_01 official answer"].map((x) => h("code", { class: "ex" }, x)))));
+        h("li", null, h("strong", null, "Worked example: "), ["01140086_HWQ_2627W_01 question (School)", "…_HWQ_2627W_01_AN_123456789 your marked-up printout", "…_HWS_2627W_01_DR_123456789 your draft", "…_HWS_2627W_01_123456789 your clean solution", "…_HWA_2627W_01 official answer"].map((x) => h("code", { class: "ex" }, x)))));
   };
 
   ID_TABS.check = () => {
     const full = state.files.filter((f) => f.idInfo && f.idInfo.status === "full");
     const partial = state.files.filter((f) => f.idInfo && f.idInfo.status === "partial");
     const none = state.files.filter((f) => !f.idInfo);
-    const upIssues = state.files.filter((f) => ["behalf", "unregistered"].includes(f.up.status));
+    const upIssues = state.files.filter((f) => f.up.status === "behalf");
     const groups = new Map();
     for (const f of state.files) if (f.sha256) groups.set(f.sha256, [...(groups.get(f.sha256) || []), f]);
     const dups = [...groups.values()].filter((g) => g.length > 1);
@@ -1143,11 +1149,11 @@
         h("div", { class: "stat" }, h("span", { class: "stat-n" }, String(dups.length)), h("span", { class: "stat-l" }, "duplicate groups"))),
       h("div", { class: "section stack" },
         block("IDs with problems", partial, (f) => fileRow(f, f.idInfo.problems.join(" ")), "These start like an ID but break a rule. Renaming them makes them easier to find.", true),
-        block("Uploader codes to check", upIssues, (f) => fileRow(f, f.up.status === "behalf" ? `${f.up.code} uploaded by @${f.up.login}` : `${f.up.code} not registered`)),
+        block("Uploaded on someone else's behalf", upIssues, (f) => fileRow(f, `ID says ${f.up.code}, uploaded by @${f.up.login}`), "Allowed; listed so the student can check it's theirs."),
         block("Identical files", dups, (g) => h("li", null, g.map((f, i) => [i ? h("span", { class: "muted" }, "  =  ") : null, h("button", { class: "linkish", type: "button", onclick: () => openPreview(f) }, f.name)])),
           state.source === "index" ? "Same content (SHA-256), whatever the name." : "Content hashes are only available on the deployed site."),
         block("Same ID used more than once", sameId, (g) => h("li", null, h("code", null, g[0].idInfo.idPart), h("span", { class: "muted small" }, ` · ${g.length} files: ${g.map((f) => f.subject).join(", ")}`)),
-          "Two different files with exactly the same ID. Add an uploader code, version or tag to tell them apart."),
+          "Two different files with exactly the same ID. Add a student number, version or tag to tell them apart."),
         block("Files without an ID", none, (f) => fileRow(f, pretty(f.subject)), "Perfectly fine. Add an ID next time you update one of these.")));
   };
 
@@ -1161,13 +1167,13 @@
       .then((issues) => {
         const reqs = issues.filter((i) => !i.pull_request &&
           (i.labels.some((l) => l.name === "file-request") || /^\[request\]/i.test(i.title)));
-        if (!reqs.length) { list.replaceChildren(emptyState("No open requests", "Looking for something? Ask for it!")); return; }
-        list.replaceChildren(...reqs.map((i) => h("a", { class: "request", href: i.html_url, target: "_blank", rel: "noopener" },
+        if (!reqs.length) { fill(list, emptyState("No open requests", "Looking for something? Ask for it!")); return; }
+        fill(list, ...reqs.map((i) => h("a", { class: "request", href: i.html_url, target: "_blank", rel: "noopener" },
           h("span", { class: "request-title" }, i.title.replace(/^\[request\]\s*/i, "")),
           h("span", { class: "request-meta" }, `#${i.number} · opened ${timeAgo(i.created_at)} by ${i.user.login}` +
             (i.comments ? ` · ${i.comments} comment${i.comments > 1 ? "s" : ""}` : "")))));
       })
-      .catch(() => list.replaceChildren(emptyState("Couldn't load requests", "GitHub may be rate-limiting this browser. You can still see them on GitHub.",
+      .catch(() => fill(list, emptyState("Couldn't load requests", "GitHub may be rate-limiting this browser. You can still see them on GitHub.",
         h("a", { class: "btn", href: `${REPO}/issues?q=is%3Aopen+label%3Afile-request`, target: "_blank", rel: "noopener" }, "Open on GitHub"))));
 
     return h("div", null,
@@ -1214,7 +1220,7 @@
 
     function draw() {
       store.set("conv-cat", cat);
-      tabs.replaceChildren(...cats.map((c) => h("button", { type: "button", role: "tab", class: "tab" + (c === cat ? " on" : ""), "aria-selected": String(c === cat),
+      fill(tabs, ...cats.map((c) => h("button", { type: "button", role: "tab", class: "tab" + (c === cat ? " on" : ""), "aria-selected": String(c === cat),
         onclick: () => { cat = c; draw(); } }, c)));
       const units = D.units[cat].units;
       const saved = store.get("conv:" + cat, null);
@@ -1228,10 +1234,10 @@
         const x = parseFloat(input.value);
         const fu = units[from.value], tu = units[to.value];
         store.set("conv:" + cat, { v: input.value, from: Number(from.value), to: Number(to.value) });
-        if (!isFinite(x)) { out.replaceChildren("Enter a number"); tbody.replaceChildren(); return; }
+        if (!isFinite(x)) { fill(out, "Enter a number"); fill(tbody, ); return; }
         const b = toBase(fu, x);
-        out.replaceChildren(h("span", { class: "muted" }, `${input.value} ${fu[0]} = `), sciNode(fromBase(tu, b), 7), " ", tu[0]);
-        tbody.replaceChildren(...units.map((u) => {
+        fill(out, h("span", { class: "muted" }, `${input.value} ${fu[0]} = `), sciNode(fromBase(tu, b), 7), " ", tu[0]);
+        fill(tbody, ...units.map((u) => {
           const val = fromBase(u, b);
           return h("tr", null, h("td", { class: "value" }, sciNode(val, 7)), h("td", null, h("strong", null, u[0])), h("td", { class: "muted" }, u[1]),
             h("td", null, h("button", { class: "icon-btn", type: "button", title: "Copy", onclick: (e) => copyText(String(Number(val.toPrecision(10))), e.currentTarget) }, icon("copy"))));
@@ -1240,7 +1246,7 @@
       const swap = h("button", { class: "icon-btn", type: "button", title: "Swap units", "aria-label": "Swap units",
         onclick: () => { const t = from.value; from.value = to.value; to.value = t; calc(); } }, icon("swap"));
       [input, from, to].forEach((el) => el.addEventListener("input", calc));
-      panel.replaceChildren(
+      fill(panel, 
         h("div", { class: "converter" }, input, from, swap, to),
         h("p", { class: "result-line" }, out),
         h("h2", { class: "small-head" }, "In all units"),
@@ -1278,8 +1284,8 @@
       h("div", { class: "callout" }, h("p", null, h("strong", null, "Quick upload: "), "pick a subject and you'll go straight to GitHub's upload page."),
         h("div", { class: "row" }, subjectSel, go)),
       h("ol", { class: "steps" },
-        step(1, "Name your file (recommended)", h("p", null, "Give it an ID with the ", h("a", { href: "#/ids?tab=build" }, "name builder"), ", e.g. ", h("code", null, "01140086_HWS_2627W_01_AW1 Waves Homework 1 Solution.pdf"),
-          ". Register your ", h("a", { href: "#/ids?tab=codes" }, "uploader code"), " once so your work is credited. No ID? Upload it anyway.")),
+        step(1, "Name your file (recommended)", h("p", null, "Give it an ID with the ", h("a", { href: "#/ids?tab=build" }, "name builder"), ", e.g. ", h("code", null, "01140086_HWS_2627W_01_123456789 Waves Homework 1 Solution.pdf"),
+          ". The last part is your student number, so your work is credited (it will be public). No ID? Upload it anyway.")),
         step(2, "Open the subject folder", h("p", null, "Use the button above, or open the ", h("a", { href: `${REPO}/tree/${C.branch}/files`, target: "_blank", rel: "noopener" }, "files/ folder"), " on GitHub and choose a subject.")),
         step(3, "Upload your file", h("p", null, "Click ", h("strong", null, "Add file → Upload files"), " and drag your file in. Up to 25 MB per file in the browser.")),
         step(4, "Describe and submit", h("p", null, "Write a short message like ", h("code", null, "Add Waves HW1 solution"), ". Without write access, GitHub opens a ", h("strong", null, "pull request"), " for you. Click ", h("strong", null, "Propose changes"), " and then ", h("strong", null, "Create pull request"), ".")),
@@ -1288,7 +1294,7 @@
       h("ul", null,
         h("li", null, "Share your own work, or material that is clearly free to share."),
         h("li", null, "Follow your university's academic-integrity rules. No solutions to open assignments or private exams."),
-        h("li", null, "Remove personal information such as student IDs."),
+        h("li", null, "Remove other personal information (phone numbers, grades). Your student number appears only if you put it in the ID."),
         h("li", null, "Everything here is public, and Git keeps old versions.")),
       h("p", null, h("a", { href: `${REPO}#readme`, target: "_blank", rel: "noopener" }, "Read the full guide in the README →")));
   };
@@ -1300,8 +1306,8 @@
   async function init() {
     document.getElementById("brand-name").textContent = C.title;
     document.getElementById("upload-btn").href = uploadUrl();
-    document.getElementById("upload-btn").replaceChildren(icon("upload"), h("span", null, "Upload"));
-    document.getElementById("menu-btn").replaceChildren(icon("menu"));
+    fill(document.getElementById("upload-btn"), icon("upload"), h("span", null, "Upload"));
+    fill(document.getElementById("menu-btn"), icon("menu"));
     document.querySelector(".search-icon").replaceWith(icon("search"));
 
     let theme = store.get("theme", "auto");
@@ -1336,13 +1342,15 @@
       if (e.key === "Escape") closeSidebar();
     });
 
-    document.getElementById("view").replaceChildren(h("p", { class: "muted loading" }, "Loading files…"));
+    fill(document.getElementById("view"), h("p", { class: "muted loading" }, "Loading files…"));
     const [data, naming, ups, courses] = await Promise.all([loadFiles(), getJson("assets/naming.json"), getJson("uploaders.json"), getJson("courses.json")]);
     setNaming(naming);
     for (const u of (ups && ups.uploaders) || []) {
-      if (!u.code || !u.github || !N.uploader.test(u.code)) continue;
-      state.uploaders.set(u.code, { code: u.code, github: u.github, name: u.name || u.github });
-      state.loginToCode.set(u.github.toLowerCase(), u.code);
+      const id = String(u.id || u.code || "").trim();
+      if (!N.uploader.test(id)) continue;
+      const github = u.github ? String(u.github).replace(/^@/, "") : null;
+      state.uploaders.set(id, { code: id, github, name: u.name || "Student " + id });
+      if (github) state.loginToCode.set(github.toLowerCase(), id);
     }
     state.courses = (courses && courses.courses) || {};
     state.files = data.files.filter((f) => !isHidden(f.path)).map(parseFile);

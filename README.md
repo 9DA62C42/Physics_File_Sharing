@@ -8,8 +8,8 @@ A simple website where physics students share notes, problem-set solutions, form
 
 | | |
 | --- | --- |
-| 🆔 **ID system** | Optional file IDs like `01140086_HWS_2627W_01_AW1` that say the course, type, term, item and uploader. Decode, search and build them on the **ID system** page |
-| 👤 **Uploader codes** | Register a code like `AW1` once. Your files are credited to you and **verified** against your GitHub account |
+| 🆔 **ID system** | Optional file IDs like `01140086_HWS_2627W_01_123456789` that say the course, type, term, item and uploader. Decode, search and build them on the **ID system** page |
+| 👤 **Student numbers** | Your 9-digit student number is your uploader ID. No GitHub details needed; register your name (optional) to have it shown |
 | 📚 **Library** | Sidebar navigation by subject, course and material type, search (press <kbd>/</kbd>), filter by file type, sort by name, date or size, grid or list view |
 | 👁️ **Preview** | Read PDFs, images, text, LaTeX and code right on the site. Word, PowerPoint and Excel files open in an Office viewer, and notebooks open in nbviewer or Colab |
 | ⭐ **Favorites** | Star files to find them again later (saved in your browser) |
@@ -30,7 +30,7 @@ A simple website where physics students share notes, problem-set solutions, form
 - [Add a file from your browser (easiest)](#add-a-file-from-your-browser-easiest)
 - [Add files with Git (for many files)](#add-files-with-git-for-many-files)
 - [File IDs (recommended)](#file-ids-recommended)
-- [Get an uploader code](#get-an-uploader-code)
+- [Your student number as uploader ID](#your-student-number-as-uploader-id)
 - [Rules for sharing](#rules-for-sharing)
 - [Updating or removing a file](#updating-or-removing-a-file)
 - [Requesting a file](#requesting-a-file)
@@ -94,7 +94,7 @@ cd physics_file_sharing
 git checkout -b add-em-notes
 
 # 3. Copy your files into the right subject folder
-cp "01140086_HWS_2627W_01_AW1 Waves Homework 1 Solution.pdf" files/Waves-and-Optics/
+cp "01140086_HWS_2627W_01_123456789 Waves Homework 1 Solution.pdf" files/Waves-and-Optics/
 
 # 4. Commit and push
 git add files/
@@ -119,11 +119,11 @@ python3 -m http.server 8000
 A file's **ID** is the start of its name. IDs are **recommended, not required**: a file without one is still published and shown normally. With an ID, the site can sort your file into the right course and material type, link question, solution and answer files together, and credit you.
 
 ```
-<course>_<TYPE>_<term>_<item>_<TAG>_<uploader> <title>.ext
+<course>_<TYPE>_<term>_<item>_<TAG>_<student number> <title>.ext
 
-01140086_HWS_2627W_01_AW1 Waves Homework 1 Solution.pdf
-└──┬───┘ └┬┘ └─┬─┘ └┤ └┬┘ └──────────┬───────────────┘
- course  type term item uploader     title (after one space)
+01140086_HWS_2627W_01_123456789 Waves Homework 1 Solution.pdf
+└──┬───┘ └┬┘ └─┬─┘ └┤ └───┬───┘ └──────────┬───────────────┘
+ course  type term item student no.    title (after one space)
 ```
 
 | Field | Rule | Examples |
@@ -134,7 +134,7 @@ A file's **ID** is the start of its name. IDs are **recommended, not required**:
 | **item** | Serial (at least 2 digits) or a pattern. Optional for handouts and readings | `01` · `01b` supplement · `A` exam paper · `Q01` quiz · `PS01` problem set · `C01` chapter · `FULL` |
 | **version** | Optional | `V01`, `V02` |
 | **TAG** | Optional | `AN` annotated · `DR` draft · `GR` graded |
-| **uploader** | Your registered uploader code. Recommended for your own work | `AW1` |
+| **student number** | Your 9-digit student number. Recommended for your own work. **It will be public** | `123456789` |
 | **title** | Short English title after **one space**. Use `_` between ID fields, never `-` | `Waves Homework 1 Solution` |
 
 The **ID system** page on the website has the full reference (all type codes and patterns), a **lookup** that decodes any ID, a **name builder** that writes the file name for you, and a **check** that lists IDs with mistakes and identical files.
@@ -147,20 +147,25 @@ Tips:
 
 ---
 
-## Get an uploader code
+## Your student number as uploader ID
 
-An uploader code is 2–3 capital letters (usually your initials) plus one digit, e.g. `AW1`. Each code is linked to one GitHub account in [`uploaders.json`](uploaders.json). When the account that uploads a file matches the code in its ID, the site shows it as **✔ verified**. If a friend uploads it for you, it shows **uploaded on behalf**, which is allowed.
+The last part of an ID is your **9-digit student number**. It tells everyone whose work the file is. You don't need to give any GitHub details, and you don't need to register first: the number works as soon as you put it in the ID.
 
-1. On the website, open **ID system → Uploader codes** and type your name. It suggests a free code.
-2. Register it, either way:
-   - open the **🆔 Register an uploader code** issue form, and a maintainer adds you, or
-   - edit [`uploaders.json`](uploaders.json) on GitHub, add your line, and propose the change:
-     ```json
-     { "code": "AW1", "github": "your-github-username", "name": "Alice Wang" }
-     ```
-3. Put the code at the end of your IDs.
+> ⚠️ **Your student number will be public.** Anyone can see it in file names and on the website, and Git keeps it even after a file is deleted. If you'd rather not share it, leave it out; the ID still works without it.
 
-Codes are permanent: once used, a code isn't given to anyone else.
+| | What you do | What the site shows |
+| --- | --- | --- |
+| **Not registered** | Just put your number in the ID | "Student 123456789" |
+| **Registered** (optional) | Add your number and name to [`uploaders.json`](uploaders.json) | Your name |
+| **Verified** (optional) | Also add your GitHub username | Your name with ✔, on files you upload from that account |
+
+To register, open **ID system → Uploader IDs** on the website, fill in your number and name, then either:
+- use the **🆔 Register your student number** issue form, and a maintainer adds you, or
+- edit [`uploaders.json`](uploaders.json) on GitHub, add your line, and propose the change:
+  ```json
+  { "id": "123456789", "name": "Alice Wang" }
+  ```
+  or, for the verified badge, `{ "id": "123456789", "name": "Alice Wang", "github": "your-github-username" }`.
 
 ---
 
@@ -168,7 +173,7 @@ Codes are permanent: once used, a code isn't given to anyone else.
 
 1. **Share your own work**, or material that is clearly free to share (e.g. Creative Commons). Don't upload textbooks, paid content, or lecture slides your instructor hasn't allowed you to share.
 2. **Follow your university's academic-integrity rules.** Don't upload solutions to assignments that are still open, or exam papers that aren't meant to be public.
-3. **No personal information.** Remove student ID numbers, phone numbers, grades, etc. before uploading.
+3. **No other personal information.** Remove phone numbers, grades, ID photos, etc. before uploading. Your student number appears only if you choose to put it in a file's ID.
 4. **Everything here is public.** Anyone on the internet can see and download it, and Git keeps old versions even after a file is deleted.
 5. Be kind and helpful in pull-request discussions. 🙂
 
@@ -228,11 +233,11 @@ From then on, every push to `main` runs `.github/workflows/pages.yml`. It builds
 
 > If Pages is left on **Deploy from a branch**, the site still works. It lists files through the GitHub API instead, and IDs still work, but upload dates, uploader verification, duplicate detection and **Recently added** are not available.
 
-### Set up file requests and uploader codes
+### Set up file requests and student registrations
 
 Create two labels (**Issues → Labels → New label**): **`file-request`** and **`uploader-code`**. The issue forms add them automatically. The website lists open issues labelled `file-request` (or whose title starts with `[Request]`).
 
-When someone asks for an uploader code, check the code isn't taken and matches the format (2–3 capital letters + one digit), then add `{ "code": "…", "github": "<the issue author's username>", "name": "…" }` to `uploaders.json`. Never reassign a code once files use it.
+When a student registers with the issue form, check the number has 9 digits and isn't listed yet, then add `{ "id": "…", "name": "…" }` to `uploaders.json`. If they chose to link their GitHub account, add `"github": "<the issue author's username>"`. Only link the account that opened the issue, so nobody can claim someone else's number.
 
 ### Course names
 
@@ -244,7 +249,7 @@ Add course names to [`courses.json`](courses.json) so the sidebar shows `0114008
 
 ### How uploaders are identified
 
-The Actions build looks at the commit that **added** each file (renames are followed, copies are not). It records that commit's author and asks the GitHub API for their username. The website then compares that username with the uploader code in the file name. Email addresses are never published. If someone commits with an email that isn't linked to their GitHub account, the site shows their commit name instead.
+The Actions build looks at the commit that **added** each file (renames are followed, copies are not). It records that commit's author and asks the GitHub API for their username. The website compares that username with the GitHub account registered for the student number in the file name, when there is one. Without a registered GitHub account, the student number is shown as given: it can't be checked, which is the trade-off for not requiring GitHub details. Email addresses are never published.
 
 ### Let students upload directly (optional)
 
@@ -262,7 +267,7 @@ Create a new folder under `files/`. Git can't store empty folders, so put at lea
 | Site title, description, repository, branch | `assets/js/config.js` |
 | Constants, units in the converter, resource links | `assets/js/data.js` |
 | ID rules: type codes, terms, tags, item patterns | `assets/naming.json` |
-| Uploader codes | `uploaders.json` |
+| Registered students (number, name, optional GitHub) | `uploaders.json` |
 | Course names | `courses.json` |
 | Colours, layout, dark mode | `assets/css/style.css` |
 | Pages, sidebar, search, preview | `assets/js/app.js` |
@@ -274,7 +279,7 @@ Create a new folder under `files/`. Git can't store empty folders, so put at lea
 | `index.html` | Page shell: sidebar, top bar and the main view |
 | `assets/js/app.js` | The app: routing, file library, ID parsing, preview, favorites and every page |
 | `assets/naming.json` | The ID rules |
-| `uploaders.json` | Registered uploader codes → GitHub accounts |
+| `uploaders.json` | Registered student numbers → names (and optional GitHub accounts) |
 | `courses.json` | Optional course names |
 | `assets/js/data.js` | Physical constants, unit definitions and the resources list |
 | `assets/js/config.js` | Site settings |
@@ -282,5 +287,5 @@ Create a new folder under `files/`. Git can't store empty folders, so put at lea
 | `scripts/build_index.py` | Builds `files.json` from the `files/` folder and git history: sizes, dates, uploaders, content hashes |
 | `.github/workflows/pages.yml` | Builds and deploys the site on every push to `main` |
 | `.github/ISSUE_TEMPLATE/file-request.yml` | The "File request" issue form |
-| `.github/ISSUE_TEMPLATE/uploader-code.yml` | The "Register an uploader code" issue form |
+| `.github/ISSUE_TEMPLATE/uploader-code.yml` | The "Register your student number" issue form |
 | `files/` | All shared files, organised by subject |

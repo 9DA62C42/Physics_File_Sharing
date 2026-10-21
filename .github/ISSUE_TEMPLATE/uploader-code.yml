@@ -1,20 +1,21 @@
-name: 🆔 Register an uploader code
-description: Get your personal uploader code (e.g. AW1) for file IDs.
-title: "[Uploader code] "
+name: 🆔 Register your student number
+description: Show your name on files that carry your student number (optional).
+title: "[Register] "
 labels: ["uploader-code"]
 body:
   - type: markdown
     attributes:
       value: |
-        Your uploader code goes at the end of a file's ID, e.g. `01140086_HWS_2627W_01_AW1 Waves Homework 1 Solution.pdf`.
-        The website checks it against your GitHub account, so files you upload show as **verified**.
-        A maintainer will add you to `uploaders.json`. (You can also add yourself directly with a pull request.)
+        Your student number goes at the end of a file's ID, e.g. `01140086_HWS_2627W_01_123456789 Waves Homework 1 Solution.pdf`.
+        It already works without registering; registering just shows your name instead of "Student 123456789".
+
+        **This issue is public, and so is your student number on the website.**
   - type: input
-    id: code
+    id: number
     attributes:
-      label: Code you'd like
-      description: 2–3 capital letters (usually your initials) and one digit 1–9. Check the website's ID page to see which codes are taken.
-      placeholder: AW1
+      label: Student number
+      description: 9 digits.
+      placeholder: "123456789"
     validations:
       required: true
   - type: input
@@ -24,6 +25,13 @@ body:
       placeholder: Alice Wang
     validations:
       required: true
-  - type: markdown
+  - type: dropdown
+    id: github
     attributes:
-      value: The code will be linked to the GitHub account that opens this issue.
+      label: Link this GitHub account for a verified badge?
+      description: Optional. If yes, files you upload from the account that opens this issue are shown as verified.
+      options:
+        - "No"
+        - "Yes, link the account opening this issue"
+    validations:
+      required: true

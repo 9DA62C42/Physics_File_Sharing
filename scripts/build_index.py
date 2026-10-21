@@ -27,6 +27,16 @@ SPDX = re.compile(rb"SPDX-License-Identifier:\s*([A-Za-z0-9.+-]+)")
 TEXT_EXT = {".txt", ".md", ".tex", ".bib", ".py", ".m", ".jl", ".c", ".cpp", ".h", ".f90", ".js", ".r", ".sh", ".csv", ".dat", ".json", ".ipynb"}
 NOREPLY = re.compile(r"^(?:\d+\+)?([A-Za-z0-9-]+)@users\.noreply\.github\.com$", re.I)
 
+# Commits by automation (the AI assistant that maintains the site, GitHub bots) are never
+# credited as an uploader or editor. Files they add on someone's behalf are attributed
+# in uploads.json instead.
+BOT_EMAILS = {"noreply@anthropic.com"}
+
+
+def is_bot(name, email):
+    return email.lower() in BOT_EMAILS or name.endswith("[bot]") or email.lower().endswith("[bot]@users.noreply.github.com")
+
+
 REPO = os.environ.get("GITHUB_REPOSITORY")
 TOKEN = os.environ.get("GITHUB_TOKEN")
 _login_cache = {}
@@ -124,16 +134,17 @@ def main():
             history = git_history(rel)
             if history:
                 contributors = []
-                for _, author, _, _ in reversed(history):  # first uploader first
-                    if author not in contributors:
+                for _, author, email, _ in reversed(history):  # first uploader first
+                    if author not in contributors and not is_bot(author, email):
                         contributors.append(author)
                 first_sha, first_name, first_email, added = history[-1]
-                uploader = {"name": first_name}
-                login = github_login(first_sha, first_email)
-                if login:
-                    uploader["login"] = login
-                entry.update(added=added, updated=history[0][3],
-                             contributors=contributors, uploader=uploader)
+                entry.update(added=added, updated=history[0][3], contributors=contributors)
+                if not is_bot(first_name, first_email):
+                    uploader = {"name": first_name}
+                    login = github_login(first_sha, first_email)
+                    if login:
+                        uploader["login"] = login
+                    entry["uploader"] = uploader
             files.append(entry)
 
     data = {

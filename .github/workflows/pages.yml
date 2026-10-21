@@ -30,7 +30,7 @@ jobs:
       - name: Assemble site
         run: |
           mkdir _site
-          cp -r index.html assets files files.json uploaders.json courses.json licenses.json _site/
+          cp -r index.html assets files files.json uploaders.json courses.json licenses.json uploads.json _site/
 
       - uses: actions/configure-pages@v5
 

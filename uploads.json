@@ -1,0 +1,9 @@
+{
+  "_about": "Who uploaded a file, when someone shared it on another student's behalf (or when the upload came from an account that can't be linked to a student). Each rule gives 'uploadedBy' (the uploader's registered student number) and either an 'id' (a file ID, or the start of one) or a 'path' (one file, or a folder ending in /). The most specific match wins. The student number in the file's ID is the student the file belongs to.",
+  "rules": [
+    {
+      "id": "01140086_LN_2627W_FULL_800012999",
+      "uploadedBy": "800015240"
+    }
+  ]
+}

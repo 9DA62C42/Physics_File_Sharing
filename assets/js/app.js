@@ -137,7 +137,7 @@
     q: "", type: "All", material: "All", term: "All", lic: "All",
     sort: store.get("sort", "name"), layout: store.get("layout", "grid"),
     favs: new Set(store.get("favs", [])),
-    uploaders: new Map(), loginToCode: new Map(), courses: {}, licenseRules: [],
+    uploaders: new Map(), loginToCode: new Map(), courses: {}, licenseRules: [], uploadRules: [],
     refresh: null // re-renders the visible file list in place while typing
   };
 
@@ -242,28 +242,29 @@
     return h("span", { class: "id-code" + (big ? " big" : "") }, parts);
   }
 
-  // Who uploaded a file, and does it match the student number in its ID?
-  // Verification needs the student to have registered a GitHub username (optional).
+  // Two people can be involved: the student the file belongs to (the student number in its ID)
+  // and the person who uploaded it. The uploader comes from uploads.json when someone shared
+  // the file on another student's behalf, otherwise from the GitHub account that added it.
+  // A GitHub username registered with the student number gives the verified badge.
   function uploaderInfo(f) {
     const code = f.idInfo ? f.idInfo.uploader : null;
     const reg = code ? state.uploaders.get(code) : null;
     const login = f.uploadedBy && f.uploadedBy.login;
     const accountCode = login ? state.loginToCode.get(login.toLowerCase()) : null;
+    const rec = ruleFor(state.uploadRules, f);
+    const byKey = rec ? rec.uploadedBy : accountCode || (login ? "@" + login : f.uploadedBy ? "~" + f.uploadedBy.name : null);
     let status = "unknown";
-    if (code && reg && reg.github) status = !login ? "claimed" : reg.github.toLowerCase() === login.toLowerCase() ? "verified" : "behalf";
-    else if (code && reg) status = "registered";
+    if (code && byKey && byKey !== code && (rec || login)) status = "behalf";
+    else if (code && reg && reg.github && login && !rec) status = reg.github.toLowerCase() === login.toLowerCase() ? "verified" : "behalf";
+    else if (code && rec) status = "recorded";
+    else if (code && reg) status = reg.github && !login ? "claimed" : "registered";
     else if (code) status = "student";
-    else if (f.uploadedBy) status = "account";
-    return { code, reg, login, accountCode, status, name: f.uploadedBy ? f.uploadedBy.name : null };
+    else if (byKey) status = "account";
+    return { code, reg, login, byKey, recorded: !!rec, status };
   }
 
-  // People are keyed by student number, else GitHub login, else commit name.
-  function accountKey(f) {
-    const u = f.up;
-    if (u.accountCode) return u.accountCode;
-    if (u.login) return "@" + u.login;
-    return u.name ? "~" + u.name : null;
-  }
+  // The person who uploaded: a student number, else a GitHub login ("@…"), else a commit name ("~…").
+  const accountKey = (f) => f.up.byKey;
   function personLabel(key) {
     if (!key) return "";
     if (state.uploaders.has(key)) return state.uploaders.get(key).name;
@@ -277,9 +278,11 @@
     const u = f.up, key = accountKey(f);
     switch (u.status) {
       case "verified": return h("span", { class: "up up-ok", title: `Verified: uploaded by GitHub user @${u.login}` }, icon("check"), `${u.reg.name} · ${u.code}`);
-      case "behalf": return h("span", { class: "up up-warn", title: `ID says ${u.code} (${u.reg.name}), uploaded by @${u.login}` }, `${u.code} · via @${u.login}`);
+      case "behalf": return h("span", { class: "up", title: `Uploaded by ${personLabel(key)} on behalf of ${personLabel(u.code)}` },
+        `${personLabel(u.code)} · uploaded by ${personLabel(key)}`);
+      case "recorded":
       case "claimed":
-      case "registered": return h("span", { class: "up" }, `${u.reg.name} · ${u.code}`);
+      case "registered": return h("span", { class: "up" }, `${u.reg ? u.reg.name : "Student " + u.code} · ${u.code}`);
       case "student": return h("span", { class: "up", title: "Student number from the file's ID" }, `Student ${u.code}`);
       case "account": return h("span", { class: "up" }, personLabel(key));
       default: return null;
@@ -708,9 +711,10 @@
   const licensesUrl = () => `${REPO}/blob/${C.branch}/licenses.json`;
   const contentLicenseUrl = () => `${REPO}/blob/${C.branch}/CONTENT-LICENSE.md`;
 
-  function ruleFor(f) {
+  // Most specific rule for a file from licenses.json / uploads.json: exact ID > exact path > ID prefix > folder.
+  function ruleFor(rules, f) {
     let best = null, bestLen = -1;
-    for (const r of state.licenseRules) {
+    for (const r of rules) {
       let len = -1;
       if (r.path) {
         const p = r.path.replace(/^\/+/, "");
@@ -727,7 +731,7 @@
   }
 
   function licenseOf(f) {
-    const rule = ruleFor(f);
+    const rule = ruleFor(state.licenseRules, f);
     if (rule) return { lic: N.licenses[rule.license], source: "licenses.json" };
     if (f.spdx) {
       const known = N.spdx[f.spdx.toLowerCase()];
@@ -775,19 +779,21 @@
 
   function uploaderPanel(f) {
     const u = f.up, key = accountKey(f);
-    const rows = [];
     const who = (k) => k ? h("a", { href: personHref(k) }, personLabel(k)) : null;
     const msg = {
-      verified: [h("span", { class: "up up-ok" }, icon("check"), "Verified"), ` Student number ${u.code} is registered to @${u.login}, who uploaded this file.`],
-      behalf: [h("span", { class: "up up-warn" }, "Uploaded on behalf"), ` The ID says ${u.code} (${u.reg && u.reg.name}), but @${u.login} uploaded it.`],
+      verified: [h("span", { class: "up up-ok" }, icon("check"), "Verified"), ` Uploaded by ${personLabel(u.code)} from their registered GitHub account.`],
+      behalf: [h("strong", null, "Uploaded by "), who(key), h("strong", null, " on behalf of "), who(u.code), "."],
+      recorded: [h("strong", null, "Uploaded by "), who(u.code), "."],
       claimed: [h("span", { class: "up" }, "Not checked"), " Upload history isn't available here, so the student number can't be checked against the uploader."],
       registered: [h("span", { class: "up" }, "Registered"), ` ${u.code} is registered as ${u.reg && u.reg.name}. Adding a GitHub username to the registration gives a verified badge.`],
       student: [h("span", { class: "up" }, "Student number"), ` ${u.code} isn't registered, so no name is shown. Registering is optional.`],
-      account: [h("span", { class: "up" }, "No student number"), " Uploader taken from GitHub."],
+      account: [h("strong", null, "Uploaded by "), who(key), "."],
       unknown: [h("span", { class: "up" }, "Unknown"), " Upload history isn't available on this copy of the site."]
     }[u.status];
+    const rows = [];
     if (u.code) rows.push(["Student no.", h("a", { href: personHref(u.code) }, u.reg ? `${u.code} · ${u.reg.name}` : u.code)]);
-    if (key) rows.push(["Uploaded by", [who(key), u.login && !key.startsWith("@") ? h("span", { class: "muted" }, " @" + u.login) : null]]);
+    if (key && key !== u.code) rows.push(["Uploaded by", [who(key), N.uploader.test(key) ? h("span", { class: "muted" }, " · " + key) : null]]);
+    if (u.recorded) rows.push(["Source", h("a", { href: `${REPO}/blob/${C.branch}/uploads.json`, target: "_blank", rel: "noopener" }, "uploads.json")]);
     return h("div", { class: "side-block" },
       h("p", { class: "side-title" }, "Uploader"),
       h("p", { class: "side-note" }, msg),
@@ -1302,7 +1308,7 @@
         h("div", { class: "stat" }, h("span", { class: "stat-n" }, String(dups.length)), h("span", { class: "stat-l" }, "duplicate groups"))),
       h("div", { class: "section stack" },
         block("IDs with problems", partial, (f) => fileRow(f, f.idInfo.problems.join(" ")), "These start like an ID but break a rule. Renaming them makes them easier to find.", true),
-        block("Uploaded on someone else's behalf", upIssues, (f) => fileRow(f, `ID says ${f.up.code}, uploaded by @${f.up.login}`), "Allowed; listed so the student can check it's theirs."),
+        block("Uploaded on someone else's behalf", upIssues, (f) => fileRow(f, `uploaded by ${personLabel(accountKey(f))} on behalf of ${personLabel(f.up.code)}`), "Allowed; listed so the student can check it's theirs."),
         block("Identical files", dups, (g) => h("li", null, g.map((f, i) => [i ? h("span", { class: "muted" }, "  =  ") : null, h("button", { class: "linkish", type: "button", onclick: () => openPreview(f) }, f.name)])),
           state.source === "index" ? "Same content (SHA-256), whatever the name." : "Content hashes are only available on the deployed site."),
         block("Same ID used more than once", sameId, (g) => h("li", null, h("code", null, g[0].idInfo.idPart), h("span", { class: "muted small" }, ` · ${g.length} files: ${g.map((f) => f.subject).join(", ")}`)),
@@ -1504,7 +1510,7 @@
     });
 
     fill(document.getElementById("view"), h("p", { class: "muted loading" }, "Loading files…"));
-    const [data, naming, ups, courses, licRules] = await Promise.all([loadFiles(), getJson("assets/naming.json"), getJson("uploaders.json"), getJson("courses.json"), getJson("licenses.json")]);
+    const [data, naming, ups, courses, licRules, upRules] = await Promise.all([loadFiles(), getJson("assets/naming.json"), getJson("uploaders.json"), getJson("courses.json"), getJson("licenses.json"), getJson("uploads.json")]);
     setNaming(naming);
     for (const u of (ups && ups.uploaders) || []) {
       const id = String(u.id || "").trim();
@@ -1515,6 +1521,7 @@
     }
     state.courses = (courses && courses.courses) || {};
     state.licenseRules = ((licRules && licRules.rules) || []).filter((r) => r && N.licenses[r.license] && (r.path || r.id));
+    state.uploadRules = ((upRules && upRules.rules) || []).filter((r) => r && N.uploader.test(String(r.uploadedBy || "")) && (r.path || r.id));
     state.files = data.files.filter((f) => !isHidden(f.path)).map(parseFile);
     state.subjects = data.subjects;
     state.source = data.source;

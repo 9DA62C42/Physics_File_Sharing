@@ -32,6 +32,7 @@ A simple website where physics students share notes, problem-set solutions, form
 - [File IDs (recommended)](#file-ids-recommended)
 - [Your student number as uploader ID](#your-student-number-as-uploader-id)
 - [Rules for sharing](#rules-for-sharing)
+- [Licence](#licence)
 - [Updating or removing a file](#updating-or-removing-a-file)
 - [Requesting a file](#requesting-a-file)
 - [FAQ](#faq)
@@ -175,7 +176,26 @@ To register, open **ID system → Uploader IDs** on the website, fill in your nu
 2. **Follow your university's academic-integrity rules.** Don't upload solutions to assignments that are still open, or exam papers that aren't meant to be public.
 3. **No other personal information.** Remove phone numbers, grades, ID photos, etc. before uploading. Your student number appears only if you choose to put it in a file's ID.
 4. **Everything here is public.** Anyone on the internet can see and download it, and Git keeps old versions even after a file is deleted.
-5. Be kind and helpful in pull-request discussions. 🙂
+5. **Your work is shared openly.** Your own files are licensed under CC BY 4.0 unless you write other terms in the file. See [Licence](#licence).
+6. Be kind and helpful in pull-request discussions. 🙂
+
+---
+
+## Licence
+
+This repository has two licences, because it holds two different things:
+
+| What | Licence | In short |
+| --- | --- | --- |
+| **Website code**: `index.html`, `assets/`, `scripts/`, `.github/`, config files | [MIT](LICENSE) | Reuse it freely, e.g. to run the same site for another class. Keep the copyright notice |
+| **Students' own work** in `files/`: solutions, notes, reports, data, code (ID types `HWS`, `PES`, `MES`, `LN`, `TN`, `WSN`, `LBD`, `LBR`) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), unless the file says otherwise | Anyone may reuse and adapt it if they credit the author |
+| **Course and third-party material** in `files/`: question sheets, official answers, handouts, scans, textbooks | **Not licensed by this site.** Copyright stays with the original authors | Shared with permission, for personal study only |
+
+- **Different terms for your file?** Write a licence notice inside the file (e.g. "CC BY-NC 4.0"). It overrides the default.
+- **By uploading,** you confirm you wrote the file or have permission to share it. The pull-request checklist asks you to tick this.
+- **Want something removed?** If you own material shared here, or spot personal information, open an issue and a maintainer will take it down.
+
+Each file's preview on the website shows which licence applies. Full details are in [CONTENT-LICENSE.md](CONTENT-LICENSE.md). This is a plain-language summary, not legal advice.
 
 ---
 
@@ -289,3 +309,6 @@ Create a new folder under `files/`. Git can't store empty folders, so put at lea
 | `.github/ISSUE_TEMPLATE/file-request.yml` | The "File request" issue form |
 | `.github/ISSUE_TEMPLATE/uploader-code.yml` | The "Register your student number" issue form |
 | `files/` | All shared files, organised by subject |
+| `LICENSE` | MIT licence for the website code |
+| `CONTENT-LICENSE.md` | Licence for shared files: CC BY 4.0 for students' own work; course material keeps its copyright |
+| `.github/pull_request_template.md` | Checklist contributors confirm when proposing files |

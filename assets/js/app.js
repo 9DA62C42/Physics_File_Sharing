@@ -645,6 +645,22 @@
   const uploadEmpty = (subject) => emptyState("No files here yet", "Be the first to share something!",
     h("a", { class: "btn primary", href: uploadUrl(subject), target: "_blank", rel: "noopener" }, icon("upload"), "Upload a file"));
 
+  // ---------- licences ----------
+  // Website code: MIT (LICENSE). Shared files: CONTENT-LICENSE.md, i.e. students'
+  // own work is CC BY 4.0 by default; course and third-party material keeps
+  // its original copyright. A licence written inside a file overrides this.
+
+  const CC_BY = "https://creativecommons.org/licenses/by/4.0/";
+  const contentLicenseUrl = () => `${REPO}/blob/${C.branch}/CONTENT-LICENSE.md`;
+  function licenseInfo(f) {
+    const by = f.idInfo && f.idInfo.type ? f.idInfo.type.by : null;
+    if (by === "Student") return { label: "CC BY 4.0", url: CC_BY, note: "Student's own work. Reuse with credit to the author." };
+    if (by) return { label: by === "Published" ? "© publisher" : "© original author", url: contentLicenseUrl(),
+      note: "Course or third-party material. Not licensed by this site; for personal study only." };
+    return { label: "See content licence", url: contentLicenseUrl(), note: "CC BY 4.0 if it's the uploader's own work; otherwise its original copyright." };
+  }
+  const licenseNode = (f) => { const l = licenseInfo(f); return [h("a", { href: l.url, target: "_blank", rel: "noopener" }, l.label), h("span", { class: "muted small" }, " · " + l.note)]; };
+
   // ---------- preview modal ----------
 
   // Files that belong to the same item: same course, term, item number and kind of material.
@@ -728,7 +744,8 @@
       ["Subject", pretty(f.subject)], ["Folder", f.topic], ["File", f.name], ["Size", fmtSize(f.size)],
       ["Uploaded", f.added ? `${fmtDate(f.added)} (${timeAgo(f.added)})` : ""],
       ["Last updated", f.updated && f.updated !== f.added ? fmtDate(f.updated) : ""],
-      ["Edited by", f.contributors.length > 1 ? f.contributors.join(", ") : ""]
+      ["Edited by", f.contributors.length > 1 ? f.contributors.join(", ") : ""],
+      ["Licence", licenseNode(f)]
     ].filter(([, v]) => v);
     const related = relatedFiles(f), dups = duplicatesOf(f);
     const fileList = (title, list, note) => list.length ? h("div", { class: "side-block" },
@@ -1295,7 +1312,10 @@
         h("li", null, "Share your own work, or material that is clearly free to share."),
         h("li", null, "Follow your university's academic-integrity rules. No solutions to open assignments or private exams."),
         h("li", null, "Remove other personal information (phone numbers, grades). Your student number appears only if you put it in the ID."),
-        h("li", null, "Everything here is public, and Git keeps old versions.")),
+        h("li", null, "Everything here is public, and Git keeps old versions."),
+        h("li", null, "Your own work is shared under ", h("a", { href: CC_BY, target: "_blank", rel: "noopener" }, "CC BY 4.0"),
+          " (others may reuse it with credit) unless you write other terms in the file. Course material keeps its original copyright. ",
+          h("a", { href: contentLicenseUrl(), target: "_blank", rel: "noopener" }, "Content licence →"))),
       h("p", null, h("a", { href: `${REPO}#readme`, target: "_blank", rel: "noopener" }, "Read the full guide in the README →")));
   };
 
@@ -1305,6 +1325,10 @@
 
   async function init() {
     document.getElementById("brand-name").textContent = C.title;
+    fill(document.querySelector(".footer p"), "Built by students with GitHub Pages · Site code: ",
+      h("a", { href: `${REPO}/blob/${C.branch}/LICENSE`, target: "_blank", rel: "noopener" }, "MIT"),
+      " · Students' work: ", h("a", { href: CC_BY, target: "_blank", rel: "noopener" }, "CC BY 4.0"),
+      " · Course material: © its authors (", h("a", { href: contentLicenseUrl(), target: "_blank", rel: "noopener" }, "details"), ")");
     document.getElementById("upload-btn").href = uploadUrl();
     fill(document.getElementById("upload-btn"), icon("upload"), h("span", null, "Upload"));
     fill(document.getElementById("menu-btn"), icon("menu"));

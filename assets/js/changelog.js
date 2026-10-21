@@ -6,7 +6,8 @@ window.CHANGELOG = [
     version: "1.3", date: "2026-10-21", title: "Free version numbers",
     changes: [
       { type: "improved", text: "Version numbers in IDs can be anything after `V`: `V1`, `V02`, `V4.1`, `V2.0.3`." },
-      { type: "fixed", text: "A version with a dot (such as `V4.1`) is no longer mistaken for a file extension." }
+      { type: "fixed", text: "A version with a dot (such as `V4.1`) is no longer mistaken for a file extension." },
+      { type: "fixed", text: "The upload bot also runs when the issue's title was changed and no longer starts with `[Upload]`." }
     ]
   },
   {

@@ -491,7 +491,8 @@
     const courses = countBy("course"), cats = countBy("category");
     const nav = document.getElementById("nav");
     fill(nav, 
-      h("div", { class: "nav-section nav-help" }, navLink("#/help", "help", "Help & guide")),
+      h("div", { class: "nav-section nav-help" }, navLink("#/help", "help", "Help & guide"),
+        navLink("#/changelog", "list", "Changelog", window.CHANGELOG && window.CHANGELOG.length ? "v" + window.CHANGELOG[0].version : null)),
       navSection("library", "Library", null,
         navLink("#/", "home", "Home"),
         navLink("#/browse", "files", "All files", state.items.length),
@@ -1663,6 +1664,21 @@
     }
     return null;
   }
+
+  // Changelog text lives in assets/js/changelog.js, newest first.
+  VIEWS.changelog = () => {
+    const log = window.CHANGELOG || [];
+    const TYPES = { new: "New", improved: "Improved", fixed: "Fixed" };
+    return h("div", { class: "help changelog" },
+      h("div", { class: "page-head" }, h("div", null, h("h1", null, "Changelog"),
+        h("p", { class: "muted" }, "What's new on the site, newest first."))),
+      log.length ? log.map((rel) => h("section", { class: "help-section" },
+        h("h2", null, h("span", { class: "rel-version" }, "v" + rel.version), rel.title,
+          h("time", { class: "rel-date", datetime: rel.date }, fmtDate(rel.date))),
+        h("ul", { class: "rel-list" }, rel.changes.map((c) => h("li", null,
+          h("span", { class: "rel-type rel-" + c.type }, TYPES[c.type] || c.type), h("span", null, rich(c.text)))))))
+        : emptyState("No changes recorded yet", null));
+  };
 
   VIEWS.help = (r) => {
     const H = window.HELP;

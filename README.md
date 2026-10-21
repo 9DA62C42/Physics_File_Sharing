@@ -351,7 +351,8 @@ Students can add one with the upload form (**New subject**). To do it yourself, 
 | To change… | Edit |
 | --- | --- |
 | Site title, description, repository, branch | `assets/js/config.js` |
-| Constants, units in the converter, resource links | `assets/js/data.js` |
+| Constants, units in the converter, resource links | `assets/js/changelog.js` | The Changelog page (under Help & guide): add an entry at the top when you change the site |
+| `assets/js/data.js` |
 | ID rules: type codes, terms, tags, item patterns, licence codes | `assets/naming.json` |
 | Licence of each shared file | `licenses.json` |
 | Registered students (number, name, optional GitHub) | `uploaders.json` |

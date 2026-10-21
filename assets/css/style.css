@@ -769,3 +769,14 @@ code.ex { display: block; width: fit-content; margin: var(--s1) 0; }
 .help-table td.mark.no { color: var(--b-pdf); }
 .help[dir="rtl"] .table th, .help[dir="rtl"] .table td { text-align: right; }
 .help[dir="rtl"] .help-table td.mark { text-align: center; }
+
+/* ---------- changelog ---------- */
+
+.rel-version { padding: 2px 8px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); font-size: .85rem; font-variant-numeric: tabular-nums; }
+.rel-date { margin-left: auto; color: var(--muted); font-size: .85rem; font-weight: 400; white-space: nowrap; }
+.help .rel-list { margin: 0; padding: 0; list-style: none; }
+.rel-list li { display: flex; align-items: baseline; gap: var(--s3); padding: var(--s2) 0; }
+.rel-type { flex: none; min-width: 74px; padding: 1px 0; border-radius: 5px; text-align: center; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.rel-new { background: var(--accent-soft); color: var(--accent); }
+.rel-improved { background: var(--surface-2); color: var(--text); }
+.rel-fixed { background: var(--b-code-bg); color: var(--b-code); }

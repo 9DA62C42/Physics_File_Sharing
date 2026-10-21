@@ -28,8 +28,8 @@ body:
   - type: dropdown
     id: github
     attributes:
-      label: Link this GitHub account for a verified badge?
-      description: Optional. If yes, files you upload from the account that opens this issue are shown as verified.
+      label: Link this GitHub account to confirm your uploads?
+      description: Optional. If yes, files you upload from the account that opens this issue are shown as confirmed.
       options:
         - "No"
         - "Yes, link the account opening this issue"

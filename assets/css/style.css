@@ -724,3 +724,9 @@ code.ex { display: block; width: fit-content; margin: var(--s1) 0; }
 .chip-n { min-width: 20px; padding: 0 6px; border-radius: 999px; background: var(--surface); color: var(--muted); font-size: .72rem; text-align: center; }
 .notice p { margin: 0; }
 .notice p + p { margin-top: var(--s2); }
+
+/* maintainer verification */
+.badge.ver { display: inline-flex; align-items: center; gap: 3px; background: var(--b-latex-bg); color: var(--b-latex); }
+.badge.ver .icon { width: 12px; height: 12px; }
+.badge.ver-warn { background: var(--b-code-bg); color: var(--b-code); }
+.side-block .row.tight { display: flex; flex-wrap: wrap; margin: var(--s2) 0; }

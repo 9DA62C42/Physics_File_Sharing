@@ -1,5 +1,5 @@
 {
-  "_about": "Registered students. Optional: a student number in a file ID works without being listed here. Listing it shows your name on your files. id: your 9-digit student number. name: name to show. github: optional GitHub username; files you upload from that account show as verified. Everything here is public.",
+  "_about": "Registered students. Optional: a student number in a file ID works without being listed here. Listing it shows your name on your files. id: your 9-digit student number. name: name to show. github: optional GitHub username; files you upload from that account show as confirmed. Everything here is public.",
   "uploaders": [
     {
       "id": "800012999",

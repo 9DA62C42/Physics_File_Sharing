@@ -266,7 +266,7 @@
   "uploader": {
     "pattern": "^\\d{9}$",
     "example": "123456789",
-    "note": "Your 9-digit student number. It works without registering; register it in uploaders.json to show your name, and add a GitHub username (optional) for a verified badge. It is public."
+    "note": "Your 9-digit student number. It works without registering; register it in uploaders.json to show your name, and add a GitHub username (optional) to confirm your uploads. It is public."
   },
   "byNotes": {
     "School": "Official course material. The uploader only shares it.",

@@ -60,6 +60,7 @@
     auto: '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/>',
     menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
     chevron: '<path d="M6 9l6 6 6-6"/>',
+    shield: '<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',
     close: '<path d="M6 6l12 12M18 6L6 18"/>',
     search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
     download: '<path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/>',
@@ -134,10 +135,10 @@
 
   const state = {
     files: [], items: [], subjects: [], source: "", generated: null, hasDates: false, // items: files grouped (PDF + its source)
-    q: "", type: "All", material: "All", term: "All", lic: "All",
+    q: "", type: "All", material: "All", term: "All", lic: "All", ver: "All",
     sort: store.get("sort", "name"), layout: store.get("layout", "grid"),
     favs: new Set(store.get("favs", [])),
-    uploaders: new Map(), loginToCode: new Map(), courses: {}, licenseRules: [], uploadRules: [],
+    uploaders: new Map(), loginToCode: new Map(), courses: {}, licenseRules: [], uploadRules: [], verifications: [],
     refresh: null // re-renders the visible file list in place while typing
   };
 
@@ -245,7 +246,7 @@
   // Two people can be involved: the student the file belongs to (the student number in its ID)
   // and the person who uploaded it. The uploader comes from uploads.json when someone shared
   // the file on another student's behalf, otherwise from the GitHub account that added it.
-  // A GitHub username registered with the student number gives the verified badge.
+  // A GitHub username registered with the student number confirms the uploader.
   function uploaderInfo(f) {
     const code = f.idInfo ? f.idInfo.uploader : null;
     const reg = code ? state.uploaders.get(code) : null;
@@ -277,7 +278,7 @@
   function uploaderLine(f) {
     const u = f.up, key = accountKey(f);
     switch (u.status) {
-      case "verified": return h("span", { class: "up up-ok", title: `Verified: uploaded by GitHub user @${u.login}` }, icon("check"), `${u.reg.name} · ${u.code}`);
+      case "verified": return h("span", { class: "up up-ok", title: `Uploader confirmed: uploaded from ${u.reg.name}'s registered GitHub account @${u.login}` }, icon("check"), `${u.reg.name} · ${u.code}`);
       case "behalf": return h("span", { class: "up", title: `Uploaded by ${personLabel(key)} on behalf of ${personLabel(u.code)}` },
         `${personLabel(u.code)} · uploaded by ${personLabel(key)}`);
       case "recorded":
@@ -618,7 +619,7 @@
         h("div", { class: "card-tags" },
           h("span", { class: "badge t-" + slug(f.type) }, f.type),
           info && info.type ? h("span", { class: "badge mat", title: info.type.name }, info.type.code) : null,
-          licBadge(f)),
+          licBadge(f), verBadge(f)),
         star),
       h("div", { class: "card-body" },
         h("h3", null, h("button", { class: "title-link", type: "button", onclick: () => openPreview(f) }, f.title)),
@@ -663,6 +664,8 @@
     const typeSel = select("File format", "All formats", types.map((t) => [t, t]), state.type, (e) => { state.type = e.target.value; refresh(); });
     const matSel = mats.length ? select("Material type", "All material", mats.map((m) => [m, `${m} · ${N.types[m].name}`]), state.material, (e) => { state.material = e.target.value; refresh(); }) : null;
     const termSel = terms.length ? select("Term", "All terms", terms.map((t) => [t.code, `${t.code} · ${t.label}`]), state.term, (e) => { state.term = e.target.value; refresh(); }) : null;
+    const verSel = select("Verification", "Any status", [["verified", "Verified"], ["changed", "Changed since verified"], ["none", "Not verified"]], state.ver,
+      (e) => { state.ver = e.target.value; refresh(); });
     const licSel = lics.length ? select("Licence", "All licences", [...lics.map((l) => [l.code, l.short]), ...(anyUnstated ? [["none", "No licence stated"]] : [])], state.lic,
       (e) => { state.lic = e.target.value; refresh(); }) : null;
     const sortSel = h("select", { "aria-label": "Sort by", onchange: (e) => { sortKey = e.target.value; if (!sort) { state.sort = sortKey; store.set("sort", sortKey); } refresh(); } },
@@ -680,7 +683,8 @@
         && (state.type === "All" || f.type === state.type)
         && (state.material === "All" || f.material === state.material)
         && (state.term === "All" || (f.idInfo && f.idInfo.term && f.idInfo.term.code === state.term))
-        && (state.lic === "All" || (state.lic === "none" ? !f.lic.lic : f.lic.lic && f.lic.lic.code === state.lic))).sort(SORTS[sortKey][1]);
+        && (state.lic === "All" || (state.lic === "none" ? !f.lic.lic : f.lic.lic && f.lic.lic.code === state.lic))
+        && (state.ver === "All" || (state.ver === "none" ? ["none", "partial"].includes(itemVerification(f).state) : itemVerification(f).state === state.ver))).sort(SORTS[sortKey][1]);
       count.textContent = `${list.length} ${list.length === 1 ? "file" : "files"}` + (list.length !== base.length ? ` of ${base.length}` : "");
       if (!base.length) fill(results, state.source === "none" ? loadErrorNotice() : empty);
       else if (!list.length) fill(results, emptyState("Nothing matches", "Try a different search or filter.",
@@ -688,8 +692,8 @@
       else fill(results, h("div", { class: "files " + state.layout }, list.map(card)));
     }
     function clearFilters() {
-      state.q = ""; state.type = state.material = state.term = state.lic = "All";
-      [typeSel, matSel, termSel, licSel].forEach((s) => { if (s) s.value = "All"; });
+      state.q = ""; state.type = state.material = state.term = state.lic = state.ver = "All";
+      [typeSel, matSel, termSel, licSel, verSel].forEach((s) => { if (s) s.value = "All"; });
       document.getElementById("search").value = "";
       refresh();
     }
@@ -700,7 +704,7 @@
       h("div", { class: "page-head" },
         h("div", null, h("h1", null, title), desc ? h("p", { class: "muted" }, desc) : null),
         extra || null),
-      h("div", { class: "toolbar" }, count, h("div", { class: "toolbar-right" }, matSel, termSel, licSel, typeSel, sortSel,
+      h("div", { class: "toolbar" }, count, h("div", { class: "toolbar-right" }, matSel, termSel, licSel, verSel, typeSel, sortSel,
         h("div", { class: "segmented", role: "group", "aria-label": "Layout" }, layoutBtn("grid", "grid", "Grid view"), layoutBtn("list", "list", "List view")))),
       results);
   }
@@ -794,11 +798,11 @@
     const u = f.up, key = accountKey(f);
     const who = (k) => k ? h("a", { href: personHref(k) }, personLabel(k)) : null;
     const msg = {
-      verified: [h("span", { class: "up up-ok" }, icon("check"), "Verified"), ` Uploaded by ${personLabel(u.code)} from their registered GitHub account.`],
+      verified: [h("span", { class: "up up-ok" }, icon("check"), "Uploader confirmed"), ` Uploaded by ${personLabel(u.code)} from their registered GitHub account.`],
       behalf: [h("strong", null, "Uploaded by "), who(key), h("strong", null, " on behalf of "), who(u.code), "."],
       recorded: [h("strong", null, "Uploaded by "), who(u.code), "."],
       claimed: [h("span", { class: "up" }, "Not checked"), " Upload history isn't available here, so the student number can't be checked against the uploader."],
-      registered: [h("span", { class: "up" }, "Registered"), ` ${u.code} is registered as ${u.reg && u.reg.name}. Adding a GitHub username to the registration gives a verified badge.`],
+      registered: [h("span", { class: "up" }, "Registered"), ` ${u.code} is registered as ${u.reg && u.reg.name}. Adding a GitHub username to the registration confirms their uploads.`],
       student: [h("span", { class: "up" }, "Student number"), ` ${u.code} isn't registered, so no name is shown. Registering is optional.`],
       account: [h("strong", null, "Uploaded by "), who(key), "."],
       unknown: [h("span", { class: "up" }, "Unknown"), " Upload history isn't available on this copy of the site."]
@@ -811,6 +815,63 @@
       h("p", { class: "side-title" }, "Uploader"),
       h("p", { class: "side-note" }, msg),
       rows.length ? h("dl", { class: "info" }, rows.map(([k, v]) => [h("dt", null, k), h("dd", null, v)])) : null);
+  }
+
+  // ---------- maintainer verification ----------
+  // The owner and collaborators verify files by opening a "[Verify]" issue; the "Verify files"
+  // workflow checks their permission and records path + SHA-256 in verifications.json.
+  // A record still applies after a rename (same content), and is flagged if the content changes.
+
+  function verificationOf(f) {
+    const rec = state.verifications.find((r) => r.path === f.path)
+      || (f.sha256 ? state.verifications.find((r) => r.sha256 === f.sha256 && !state.files.some((g) => g.path === r.path)) : null);
+    if (!rec) return { state: "none" };
+    if (f.sha256 && rec.sha256 && rec.sha256 !== f.sha256) return { state: "changed", rec };
+    return { state: "verified", rec };
+  }
+  // An item (a PDF plus its source, say) is verified when all of its files are.
+  function itemVerification(main) {
+    const all = [main, ...main.alts].map(verificationOf);
+    if (all.some((v) => v.state === "changed")) return { state: "changed", rec: all.find((v) => v.state === "changed").rec };
+    if (all.every((v) => v.state === "verified")) return { state: "verified", rec: all[0].rec, recs: all.map((v) => v.rec) };
+    if (all.some((v) => v.state === "verified")) return { state: "partial", rec: all.find((v) => v.rec).rec };
+    return { state: "none" };
+  }
+  function verifyIssueUrl(main, undo) {
+    const paths = [main, ...main.alts].map((g) => g.path);
+    const title = `${undo ? "[Unverify]" : "[Verify]"} ${main.idInfo ? main.idInfo.idPart : main.title}`;
+    const body = (undo
+      ? "Maintainers: submit this issue to remove the verification of the files below."
+      : "Maintainers: submit this issue to verify the files below.")
+      + " A workflow checks that you're the owner or a collaborator, updates verifications.json and closes the issue.\n\n"
+      + paths.join("\n") + "\n\n" + (undo ? "" : "Note (optional): \n");
+    return `${REPO}/issues/new?title=${enc(title)}&body=${enc(body)}`;
+  }
+  function verBadge(f) {
+    const v = itemVerification(f);
+    if (v.state === "verified") return h("span", { class: "badge ver", title: `Verified by @${v.rec.by} on ${fmtDate(v.rec.date)}` }, icon("shield"), "Verified");
+    if (v.state === "changed") return h("span", { class: "badge ver-warn", title: "Changed since it was verified" }, "Changed");
+    return null;
+  }
+
+  function verificationPanel(main) {
+    const v = itemVerification(main);
+    const by = v.rec ? h("a", { href: "https://github.com/" + enc(v.rec.by), target: "_blank", rel: "noopener" }, "@" + v.rec.by) : null;
+    const issue = v.rec && v.rec.issue ? h("a", { href: `${REPO}/issues/${v.rec.issue}`, target: "_blank", rel: "noopener" }, "#" + v.rec.issue) : null;
+    const text = {
+      verified: [h("span", { class: "up up-ok" }, icon("shield"), "Verified"), " by ", by, ` on ${fmtDate(v.rec && v.rec.date)}`, issue ? [" (", issue, ")"] : null, "."],
+      changed: [h("span", { class: "up up-warn" }, "Changed since verification"), " Verified by ", by, ` on ${fmtDate(v.rec && v.rec.date)}, but the file has changed since. A maintainer should check it again.`],
+      partial: [h("span", { class: "up up-warn" }, "Partly verified"), " Some files in this item are verified, others aren't."],
+      none: [h("span", { class: "up" }, "Not verified yet"), " A maintainer hasn't checked this item."]
+    }[v.state];
+    return h("div", { class: "side-block" },
+      h("p", { class: "side-title" }, "Verification"),
+      h("p", { class: "side-note" }, text),
+      v.rec && v.rec.note && v.state !== "none" ? h("p", { class: "side-note muted small" }, "Note: " + v.rec.note) : null,
+      h("div", { class: "row tight" },
+        v.state !== "verified" ? h("a", { class: "btn small", href: verifyIssueUrl(main, false), target: "_blank", rel: "noopener" }, icon("shield"), v.state === "none" ? "Verify this item" : "Verify again") : null,
+        v.state !== "none" ? h("a", { class: "btn small ghost", href: verifyIssueUrl(main, true), target: "_blank", rel: "noopener" }, "Unverify") : null),
+      h("p", { class: "side-note muted small" }, "Owner and collaborators only. The button opens a pre-filled GitHub issue; submitting it records the verification automatically."));
   }
 
   function itemFilesPanel(main, current) {
@@ -906,6 +967,7 @@
                 h("a", { class: "btn small", href: blobUrl, target: "_blank", rel: "noopener" }, icon("github"), "GitHub"),
                 h("a", { class: "btn small", href: `${REPO}/commits/${C.branch}/${f.href}`, target: "_blank", rel: "noopener" }, icon("clock"), "History"))),
             f.alts.length || f.altOf ? itemFilesPanel(f.altOf || f, f) : null,
+            verificationPanel(f.altOf || f),
             idPanel(f),
             uploaderPanel(f),
             licensePanel(f),
@@ -1288,7 +1350,7 @@
           h("ul", { class: "rules" },
             h("li", null, h("strong", null, "Not registered:"), " the number works as is; files show “Student 123456789”."),
             h("li", null, h("strong", null, "Registered:"), " add your number and name to ", h("code", null, "uploaders.json"), " and your name is shown."),
-            h("li", null, h("strong", null, "Verified (optional):"), " also add your GitHub username. Files you upload from that account get a ✔ badge."),
+            h("li", null, h("strong", null, "Uploader confirmed (optional):"), " also add your GitHub username. Files you upload from that account get a ✔."),
             h("li", null, "Most useful on your own work (", N.raw.types.filter((t) => t.by === "Student").map((t) => t.code).join(", "), "). Optional on school material."))),
         h("div", { class: "id-format" },
           h("h3", null, "Register your name (optional)"),
@@ -1382,7 +1444,7 @@
     return h("div", null,
       h("div", { class: "stats" },
         h("div", { class: "stat" }, h("span", { class: "stat-n" }, `${pct}%`), h("span", { class: "stat-l" }, "files with a full ID")),
-        h("div", { class: "stat" }, h("span", { class: "stat-n" }, String(full.filter((f) => f.up.status === "verified").length)), h("span", { class: "stat-l" }, "verified uploads")),
+        h("div", { class: "stat" }, h("span", { class: "stat-n" }, String(state.items.filter((f) => itemVerification(f).state === "verified").length)), h("span", { class: "stat-l" }, "verified by maintainers")),
         h("div", { class: "stat" }, h("span", { class: "stat-n" }, String(partial.length)), h("span", { class: "stat-l" }, "IDs with problems")),
         h("div", { class: "stat" }, h("span", { class: "stat-n" }, String(dups.length)), h("span", { class: "stat-l" }, "duplicate groups"))),
       h("div", { class: "section stack" },
@@ -1392,6 +1454,10 @@
           state.source === "index" ? "Same content (SHA-256), whatever the name." : "Content hashes are only available on the deployed site."),
         block("Same ID used more than once", sameId, (g) => h("li", null, h("code", null, g[0].idInfo.idPart), h("span", { class: "muted small" }, ` · ${g.length} files: ${g.map((f) => f.subject).join(", ")}`)),
           "Two files of the same format with exactly the same ID. Add a student number, version or tag to tell them apart."),
+        block("Changed since verification", state.items.filter((f) => itemVerification(f).state === "changed"), (f) => fileRow(f, `verified by @${itemVerification(f).rec.by}, content changed since`),
+          "A maintainer should check these again and re-verify.", true),
+        block("Not verified yet", state.items.filter((f) => ["none", "partial"].includes(itemVerification(f).state)), (f) => fileRow(f, pretty(f.subject)),
+          "Open a file and use “Verify this item” (owner and collaborators only)."),
         block("Files without a stated licence", state.files.filter((f) => !f.lic.lic), (f) => fileRow(f, pretty(f.subject)),
           "Nobody may reuse these beyond reading them here. Add a rule for them in licenses.json."),
         block("Files without an ID", none, (f) => fileRow(f, pretty(f.subject)), "Perfectly fine. Add an ID next time you update one of these.")));
@@ -1589,7 +1655,7 @@
     });
 
     fill(document.getElementById("view"), h("p", { class: "muted loading" }, "Loading files…"));
-    const [data, naming, ups, courses, licRules, upRules] = await Promise.all([loadFiles(), getJson("assets/naming.json"), getJson("uploaders.json"), getJson("courses.json"), getJson("licenses.json"), getJson("uploads.json")]);
+    const [data, naming, ups, courses, licRules, upRules, verifs] = await Promise.all([loadFiles(), getJson("assets/naming.json"), getJson("uploaders.json"), getJson("courses.json"), getJson("licenses.json"), getJson("uploads.json"), getJson("verifications.json")]);
     setNaming(naming);
     for (const u of (ups && ups.uploaders) || []) {
       const id = String(u.id || "").trim();
@@ -1600,6 +1666,7 @@
     }
     state.courses = (courses && courses.courses) || {};
     state.licenseRules = ((licRules && licRules.rules) || []).filter((r) => r && N.licenses[r.license] && (r.path || r.id));
+    state.verifications = ((verifs && verifs.records) || []).filter((r) => r && r.path && r.by);
     state.uploadRules = ((upRules && upRules.rules) || []).filter((r) => r && N.uploader.test(String(r.uploadedBy || "")) && (r.path || r.id));
     state.files = data.files.filter((f) => !isHidden(f.path)).map(parseFile);
     state.subjects = data.subjects;

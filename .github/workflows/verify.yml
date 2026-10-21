@@ -1,0 +1,61 @@
+name: Verify files
+
+# Owner and collaborators verify files by opening an issue titled "[Verify] ..."
+# (the website's Verify button pre-fills it). This records the verification in
+# verifications.json, redeploys the site, and replies on the issue.
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+  actions: write
+
+concurrency:
+  group: verify
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: startsWith(github.event.issue.title, '[Verify]') || startsWith(github.event.issue.title, '[Unverify]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check permission and record
+        id: record
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_USER: ${{ github.event.issue.user.login }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPLY_FILE: ${{ runner.temp }}/reply.md
+        run: python3 scripts/verify.py
+
+      - name: Commit and redeploy
+        if: steps.record.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add verifications.json
+          git commit -m "Update verifications (issue #${ISSUE_NUMBER})"
+          git push
+          # Pushes made with the workflow token don't start other workflows, so deploy explicitly.
+          gh workflow run pages.yml --ref "${GITHUB_REF_NAME}"
+
+      - name: Reply and close
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPLY_FILE: ${{ runner.temp }}/reply.md
+        run: |
+          [ -f "$REPLY_FILE" ] || echo "Something went wrong while recording this verification. Please check the workflow run." > "$REPLY_FILE"
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file "$REPLY_FILE"
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"

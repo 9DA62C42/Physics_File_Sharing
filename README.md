@@ -152,7 +152,7 @@ The last part of an ID is your **9-digit student number**. It tells everyone who
 | --- | --- | --- |
 | **Not registered** | Just put your number in the ID | "Student 123456789" |
 | **Registered** (optional) | Add your number and name to [`uploaders.json`](uploaders.json) | Your name |
-| **Verified** (optional) | Also add your GitHub username | Your name with ✔, on files you upload from that account |
+| **Uploader confirmed** (optional) | Also add your GitHub username | Your name with ✔, on files you upload from that account |
 
 To register, open **ID system → Uploader IDs** on the website, fill in your number and name, then either:
 - use the **🆔 Register your student number** issue form, and a maintainer adds you, or
@@ -160,7 +160,7 @@ To register, open **ID system → Uploader IDs** on the website, fill in your nu
   ```json
   { "id": "123456789", "name": "Alice Wang" }
   ```
-  or, for the verified badge, `{ "id": "123456789", "name": "Alice Wang", "github": "your-github-username" }`.
+  or, to have your uploads confirmed, `{ "id": "123456789", "name": "Alice Wang", "github": "your-github-username" }`.
 
 ---
 
@@ -288,13 +288,23 @@ Add course names to [`courses.json`](courses.json) so the sidebar shows `0114008
 
 Two people can be involved in a file: the **student it belongs to** (the student number in its ID) and the **person who uploaded it**.
 
-- **Normally** the uploader is the GitHub account that added the file. If that account is registered with the student number in the ID, the file shows **✔ verified**.
+- **Normally** the uploader is the GitHub account that added the file. If that account is registered with the student number in the ID, the file shows the uploader as **✔ confirmed** (this is separate from maintainer verification below). **✔ verified**.
 - **Uploading for someone else?** Record it in [`uploads.json`](uploads.json), keyed by file ID (or path / folder), with the uploader's student number. The site then shows "Uploaded by Xiangjun Liu on behalf of Shang Wu":
   ```json
   { "rules": [ { "id": "01140086_LN_2627W_FULL_800012999", "uploadedBy": "800015240" } ] }
   ```
 - **Automation accounts are never credited.** Commits by the AI assistant that helps maintain the site, and by GitHub bots, don't count as an uploader or editor. Files they add on someone's behalf need an `uploads.json` entry.
 - The Actions build looks at the commit that **added** each file (renames are followed, copies are not) and asks the GitHub API for the author's username. Email addresses are never published.
+
+### Verify files (owner and collaborators)
+
+Maintainers can mark files as checked. Verified items get a **🛡 Verified** badge, and the preview shows who verified them and when.
+
+1. On the website, open a file and click **Verify this item** in the *Verification* section. GitHub opens a new issue titled `[Verify] …`, already listing the item's files. Add an optional note, then submit it.
+2. The **Verify files** workflow (`.github/workflows/verify.yml`) checks that you're the **owner or a collaborator with write access**. It then records the files' paths and SHA-256 hashes in [`verifications.json`](verifications.json), redeploys the site and closes the issue with a reply. Anyone else's request is refused, and nothing changes.
+3. **Unverify** works the same way (`[Unverify] …`).
+
+If a verified file's content changes later, the site shows **Changed** instead of Verified, and lists it under *ID system → Check files* for re-checking. A verification stays valid if a file is only renamed or moved.
 
 ### Let students upload directly (optional)
 
@@ -328,6 +338,8 @@ Create a new folder under `files/`. Git can't store empty folders, so put at lea
 | `assets/naming.json` | The ID rules |
 | `uploaders.json` | Registered student numbers → names (and optional GitHub accounts) |
 | `uploads.json` | Who uploaded a file on another student's behalf |
+| `verifications.json` | Files verified by the owner or collaborators (written by the Verify files workflow) |
+| `scripts/verify.py`, `.github/workflows/verify.yml` | Check a `[Verify]` issue's author permission and record the verification |
 | `courses.json` | Optional course names |
 | `assets/js/data.js` | Physical constants, unit definitions and the resources list |
 | `assets/js/config.js` | Site settings |

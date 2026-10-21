@@ -1,0 +1,4 @@
+{
+  "_about": "Files checked by the repository owner or a collaborator. Written by the 'Verify files' workflow when a maintainer opens a [Verify] or [Unverify] issue (the website's Verify button pre-fills one). Each record keeps the file's SHA-256, so the site can flag files changed after verification. Edit by hand only if you're a maintainer.",
+  "records": []
+}

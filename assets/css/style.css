@@ -797,12 +797,8 @@ code.ex { display: block; width: fit-content; margin: var(--s1) 0; }
 .btn.disabled { opacity: .45; cursor: not-allowed; pointer-events: auto; }
 .notice-legal + .steps { margin-top: var(--s4); }
 
-/* Full-width red warning inside a step card: reaches from the card's left edge to its right edge. */
-.step .danger-bar {
-  display: flex; align-items: center; justify-content: center; gap: var(--s2);
-  margin: var(--s4) calc(-1 * var(--s5)) var(--s4) calc(-1 * (var(--s4) + 30px + var(--s4)));
-  padding: var(--s3) var(--s5);
-  background: #c81e1e; color: #fff;
-  font-weight: 800; font-size: 1rem; letter-spacing: .04em; text-transform: uppercase; text-align: center;
-}
-.step .danger-bar .icon { color: #fff; }
+/* Red warning block, styled like the notices. */
+.notice-danger { display: flex; gap: var(--s3); align-items: center; margin: var(--s4) 0; padding: var(--s4); background: #c81e1e; color: #fff; border-radius: 10px; font-size: 1rem; }
+.notice-danger > .icon { flex: none; width: 22px; height: 22px; color: #fff; }
+.notice-danger p { margin: 0; color: #fff; }
+.notice-danger strong { text-transform: uppercase; letter-spacing: .03em; }

@@ -6,7 +6,10 @@ body:
   - type: markdown
     attributes:
       value: |
-        Fill in the form and drag your file into the box below. A bot checks it and opens a pull request; a maintainer reviews it, and once it's merged the file appears on the website.
+        ### ⚠️ Only attach your file. Do not change the title.
+        Came from the website's **Open the upload form** button? Everything is already filled in. **The only thing you need to do is attach your file** in the **Files** box below, then click **Create**. **Do not change the title** or the other answers.
+
+        Opened this form directly? Fill in every box and attach your file. A bot checks it and opens a pull request; a maintainer reviews it, and once it's merged the file appears on the website.
 
         **Everything here is public.** Share only your own work or material you have permission to share, and remove personal information first.
 
@@ -16,7 +19,7 @@ body:
     attributes:
       label: Files
       description: |
-        Drag the files into this box and wait until each one shows as a link. PDF is best. Put LaTeX or other source files in one **.zip** (GitHub doesn't accept .tex attachments). Up to 25 MB per file.
+        **This is the only box you need to fill.** Drag the files into this box and wait until each one shows as a link. PDF is best. Put LaTeX or other source files in one **.zip** (GitHub doesn't accept .tex attachments). Up to 25 MB per file.
     validations:
       required: true
   - type: input

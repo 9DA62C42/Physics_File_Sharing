@@ -213,7 +213,6 @@
       const x = tokens[i];
       if (N.version.test(x)) { r.version = x; field(x, "Version", "Version " + Number(x.slice(1)), "", "f-ver"); }
       else if (N.tags[x]) { r.tags.push(N.tags[x]); field(x, "Tag", N.tags[x].name, N.tags[x].note, "f-tag"); }
-      else if (N.licenses[x]) r.problems.push(`"${x}" looks like a licence code. Licences don't go in file names; set it in licenses.json instead.`);
       else if (N.uploader.test(x)) {
         r.uploader = x;
         const reg = state.uploaders.get(x);
@@ -1454,7 +1453,7 @@
     const [data, naming, ups, courses, licRules] = await Promise.all([loadFiles(), getJson("assets/naming.json"), getJson("uploaders.json"), getJson("courses.json"), getJson("licenses.json")]);
     setNaming(naming);
     for (const u of (ups && ups.uploaders) || []) {
-      const id = String(u.id || u.code || "").trim();
+      const id = String(u.id || "").trim();
       if (!N.uploader.test(id)) continue;
       const github = u.github ? String(u.github).replace(/^@/, "") : null;
       state.uploaders.set(id, { code: id, github, name: u.name || "Student " + id });

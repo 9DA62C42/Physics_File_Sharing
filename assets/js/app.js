@@ -429,7 +429,15 @@
   }
 
   // Everyone uploads with the "Upload a file" issue form; a workflow turns it into a pull request.
-  const uploadUrl = () => `${REPO}/issues/new?template=upload.yml`;
+  const uploadUrl = (v) => {
+    let url = `${REPO}/issues/new?template=upload.yml`;
+    if (!v) return url;
+    const type = N.types[v.type], lic = N.licenses[v.license];
+    const fields = { title: "[Upload] " + v.title, file_title: v.title, course: v.course, term: v.term, item: v.item, student: v.uploader,
+      type: type ? `${type.code} · ${type.name}` : "", license: lic ? `${lic.code} · ${lic.name}` : "" };
+    for (const [k, val] of Object.entries(fields)) if (val) url += `&${k}=${enc(val)}`;
+    return url;
+  };
   // Collaborators can also add files straight to the repository.
   const directUploadUrl = (subject) => `${REPO}/upload/${C.branch}/files${subject ? "/" + enc(subject) : ""}`;
 
@@ -722,7 +730,7 @@
       ". The backup listing can't read a private repository."));
 
   const uploadEmpty = (subject) => emptyState("No files here yet", "Be the first to share something!",
-    h("a", { class: "btn primary", href: uploadUrl(), target: "_blank", rel: "noopener" }, icon("upload"), "Upload a file"));
+    h("a", { class: "btn primary", href: "#/contribute" }, icon("upload"), "Upload a file"));
 
   // ---------- licences ----------
   // Every shared file can have its own licence, kept out of the file name. Where it comes from, in order:
@@ -1025,7 +1033,7 @@
         h("p", { class: "lead" }, C.description),
         h("label", { class: "hero-search" }, icon("search"), heroSearch),
         h("div", { class: "row" },
-          h("a", { class: "btn primary", href: uploadUrl(), target: "_blank", rel: "noopener" }, icon("upload"), "Upload a file"),
+          h("a", { class: "btn primary", href: "#/contribute" }, icon("upload"), "Upload a file"),
           h("a", { class: "btn", href: "#/ids" }, icon("id"), "ID system"),
           h("a", { class: "btn", href: "#/requests" }, icon("inbox"), "Request a file"))),
 
@@ -1067,7 +1075,7 @@
 
   VIEWS.subject = (r) => fileListView({
     title: pretty(r.arg), filter: (f) => f.subject === r.arg, empty: uploadEmpty(r.arg),
-    extra: h("a", { class: "btn primary", href: uploadUrl(), target: "_blank", rel: "noopener" }, icon("upload"), "Upload a file")
+    extra: h("a", { class: "btn primary", href: "#/contribute" }, icon("upload"), "Upload a file")
   });
 
   VIEWS.course = (r) => fileListView({
@@ -1265,7 +1273,9 @@
     return h("div", null, input, out);
   };
 
-  ID_TABS.build = () => {
+  // The name builder. On the contribute page it gets the student-number box from step 1
+  // (opts.uploader) and reports every change to opts.onChange.
+  ID_TABS.build = (r, opts = {}) => {
     const types = N.raw.types;
     const now = new Date(), y = now.getFullYear() % 100 - (now.getMonth() < 8 ? 1 : 0);
     const years = []; for (let a = y + 1; a >= 15; a--) years.push(String(a).padStart(2, "0") + String((a + 1) % 100).padStart(2, "0"));
@@ -1283,7 +1293,7 @@
     const tagBoxes = N.raw.tags.map((t) => h("label", { class: "check" }, h("input", { type: "checkbox", value: t.code, checked: (saved.tags || []).includes(t.code) }), ` ${t.code} · ${t.name}`));
     const licSel = h("select", { class: "input" }, h("option", { value: "" }, "— none (not stated) —"),
       N.raw.licenses.map((l) => h("option", { value: l.code, selected: l.code === saved.license }, `${l.code} · ${l.short}`)));
-    const uploader = h("input", { class: "input mono", value: saved.uploader || "", placeholder: "123456789", maxlength: "9", inputmode: "numeric" });
+    const uploader = opts.uploader || h("input", { class: "input mono", value: saved.uploader || "", placeholder: "123456789", maxlength: "9", inputmode: "numeric" });
     const title = h("input", { class: "input", value: saved.title || "", placeholder: "Waves Homework 1 Solution" });
     const ext = h("input", { class: "input mono", value: saved.ext || "pdf", placeholder: "pdf" });
     const result = h("div", { class: "build-out" });
@@ -1298,13 +1308,15 @@
       const tags = tagBoxes.map((l) => l.firstChild).filter((b) => b.checked).map((b) => b.value);
       const fields = [c || "00000000", type.value, term, item.value.trim(), version.value.trim().toUpperCase(), ...tags, uploader.value.trim()].filter(Boolean);
       const idPart = fields.join("_");
-      const name = idPart + (title.value.trim() ? " " + title.value.trim() : "") + (ext.value.trim() ? "." + ext.value.trim().replace(/^\./, "") : "");
+      const name = idPart + (title.value.trim() ? " " + title.value.trim() : "") + (!opts.onChange && ext.value.trim() ? "." + ext.value.trim().replace(/^\./, "") : "");
       store.set("builder", { course: course.value, type: type.value, year: year.value, season: season.value, item: item.value, version: version.value, tags, license: licSel.value, uploader: uploader.value, title: title.value, ext: ext.value });
       const info = parseId(name.replace(/\.[^.]*$/, ""));
       const cat = N.types[type.value].category;
       const lic = N.licenses[licSel.value];
       const rule = lic ? `{ "id": "${idPart}", "license": "${lic.code}" }` : null;
-      fill(licOut,
+      if (opts.onChange) opts.onChange({ name, idPart, info, course: c, type: type.value, term, title: title.value.trim(), license: lic ? lic.code : "",
+        item: [item.value.trim(), version.value.trim().toUpperCase(), ...tags].filter(Boolean).join("_"), uploader: uploader.value.trim() });
+      fill(licOut, opts.onChange ? h("p", { class: "muted small" }, lic ? lic.note + " The upload form records the licence for you." : "Choose a licence. Not sure? Pick ARR (all rights reserved).") :
         lic ? [h("p", { class: "muted small" }, lic.note),
           h("p", { class: "field-l" }, "Add this rule to licenses.json"),
           h("div", { class: "build-name" }, h("code", null, rule), h("button", { class: "btn small", type: "button", onclick: (e) => copyText(rule, e.currentTarget) }, icon("copy"), "Copy")),
@@ -1312,13 +1324,13 @@
             " and put the line inside ", h("code", null, "\"rules\": [ … ]"), " (comma between entries), or just name the licence in your pull request and a maintainer adds it.")]
           : h("p", { class: "muted small" }, "No licence chosen: others may only read the file here. The licence is never part of the file name."));
       fill(result, 
-        h("p", { class: "field-l" }, "Your file name"),
+        h("p", { class: "field-l" }, opts.onChange ? "Your file's ID and name (the upload form applies it)" : "Your file name"),
         h("div", { class: "build-name" }, h("code", null, name), h("button", { class: "btn primary small", type: "button", onclick: (e) => copyText(name, e.currentTarget) }, icon("copy"), "Copy")),
         info ? idNode(info, true) : null,
         info && (info.problems.length || info.hints.length || !c) ? h("ul", { class: "id-notes" },
           !c ? h("li", { class: "bad" }, "Enter the 8-digit course code (6-digit shorthand works too).") : null,
           info.problems.filter((p) => c || !/Course/.test(p)).map((p) => h("li", { class: "bad" }, p)), info.hints.map((p) => h("li", null, p))) : null,
-        h("p", { class: "muted small" }, "Suggested folder: ", h("code", null, `files/<subject>/${cat === "Syllabus" ? "" : cat + "/"}`), " (for collaborators adding files directly). The ", h("a", { href: uploadUrl(), target: "_blank", rel: "noopener" }, "upload form"), " names and files uploads for you."));
+        opts.onChange ? null : h("p", { class: "muted small" }, "Suggested folder: ", h("code", null, `files/<subject>/${cat === "Syllabus" ? "" : cat + "/"}`), " (for collaborators adding files directly). The ", h("a", { href: "#/contribute" }, "upload form"), " names and files uploads for you."));
     }
     [course, type, year, season, item, version, licSel, uploader, title, ext, ...tagBoxes.map((l) => l.firstChild)].forEach((el) => el.addEventListener("input", update));
     update();
@@ -1330,13 +1342,13 @@
         lab("Term", season),
         lab("Item", item, "01, 01b, A, Q01, CA01, PS01, P02, C01, FULL or empty"),
         lab("Version", version),
-        lab("Student number", uploader, h("span", null, "9 digits, will be public. ", h("a", { href: "#/ids?tab=codes" }, "More"))),
+        opts.uploader ? null : lab("Student number", uploader, h("span", null, "9 digits, will be public. ", h("a", { href: "#/ids?tab=codes" }, "More"))),
         lab("Title", title, "Short English title"),
-        lab("Extension", ext)),
+        opts.onChange ? null : lab("Extension", ext)),
       h("div", { class: "field" }, h("span", { class: "field-l" }, "Tags"), h("div", { class: "row" }, tagBoxes)),
       result,
       h("div", { class: "id-format" },
-        h("h3", null, "Licence (optional, not part of the name)"),
+        h("h3", null, opts.onChange ? "Licence (not part of the name)" : "Licence (optional, not part of the name)"),
         h("label", { class: "field" }, h("span", { class: "field-l" }, "How may others reuse this file?"), licSel,
           h("span", { class: "field-h" }, h("a", { href: "#/ids?tab=rules" }, "Compare licences"))),
         licOut));
@@ -1608,19 +1620,50 @@
     subjectSel.addEventListener("change", sync);
     sync();
     const step = (n, title, ...body) => h("li", { class: "step" }, h("span", { class: "step-n" }, String(n)), h("div", null, h("h3", null, title), ...body));
+
+    // Step 1: the student number, shared with the name builder in step 2.
+    const number = h("input", { class: "input mono", value: store.get("builder", {}).uploader || "", placeholder: "123456789", maxlength: "9", inputmode: "numeric", "aria-label": "Student number" });
+    const numberNote = h("p", { class: "field-h" });
+    // Step 3: what's still missing, and the pre-filled form link.
+    const checks = h("ul", { class: "perm checklist" });
+    const open = h("a", { class: "btn primary", target: "_blank", rel: "noopener" }, icon("upload"), "Open the upload form");
+    let last = null;
+    const refresh = () => {
+      const n = number.value.trim(), ok = N.uploader.test(n), reg = ok ? state.uploaders.get(n) : null;
+      fill(numberNote, !n ? "9 digits. It goes at the end of every file ID and credits the file to you. It is public."
+        : !ok ? h("span", { class: "bad" }, "A student number has 9 digits.")
+        : reg ? [h("span", { class: "up up-ok" }, icon("check"), "Registered"), ` as ${reg.name}.`]
+        : ["Not registered yet. Your number works anyway; ", h("a", { href: "#/ids?tab=codes" }, "register your name"), " (optional) to have it shown."]);
+      if (!last) return;
+      const idOk = last.info && last.info.status === "full" && !last.info.problems.length && last.course;
+      const items = [[ok, "Uploader ID (student number)"], [idOk, "File ID: course, type, term and item"], [!!last.title, "Title"], [!!last.license, "Licence"]];
+      fill(checks, items.map(([done, label]) => h("li", { class: done ? "ok" : "no" }, h("span", { class: "mark", "aria-hidden": "true" }, done ? "✓" : "✕"), label)));
+      const ready = items.every(([done]) => done);
+      open.classList.toggle("disabled", !ready);
+      open.setAttribute("aria-disabled", String(!ready));
+      open.href = ready ? uploadUrl(last) : "#/contribute";
+    };
+    open.addEventListener("click", (e) => { if (open.classList.contains("disabled")) e.preventDefault(); });
+    number.addEventListener("input", refresh);
+    const builder = ID_TABS.build(null, { uploader: number, onChange: (v) => { last = v; refresh(); } });
+    refresh();
+
     return h("div", { class: "prose" },
       h("div", { class: "page-head" }, h("div", null, h("h1", null, "How to contribute"),
-        h("p", { class: "muted" }, "You only need a free GitHub account. No Git or coding required."))),
+        h("p", { class: "muted" }, "Three steps: your uploader ID, the file's ID, then the upload form. You need a free GitHub account; no Git or coding."))),
       copyrightNotice(),
-      h("div", { class: "callout" }, h("p", null, h("strong", null, "Upload form: "), "fill in a short form, drag your file in, and submit. A maintainer reviews it before it goes on the site."),
-        h("div", { class: "row" }, h("a", { class: "btn primary", href: uploadUrl(), target: "_blank", rel: "noopener" }, icon("upload"), "Open the upload form"))),
       h("ol", { class: "steps" },
-        step(1, "Open the form", h("p", null, "Click ", h("strong", null, "Upload"), " at the top of any page. GitHub asks you to sign in or create a free account first.")),
-        step(2, "Attach your file", h("p", null, "Drag it into the ", h("strong", null, "Files"), " box and wait until it shows as a link. PDF is best; put LaTeX or other sources in one ", h("code", null, ".zip"), " (GitHub doesn't accept ", h("code", null, ".tex"), "). Up to 25 MB per file.")),
-        step(3, "Describe it", h("p", null, "Give a title, the subject, the kind of material and a licence. For a file ID (recommended), also fill in the course code, term, item and your student number; the ",
-          h("a", { href: "#/ids?tab=build" }, "name builder"), " explains each part. You don't have to name the file yourself.")),
-        step(4, "Submit and wait for review", h("p", null, "A bot checks the form within a minute and replies on the issue. If something is wrong, it says what; edit the issue to fix it. Otherwise it opens a pull request for a maintainer.")),
-        step(5, "It appears on the site", h("p", null, "Once the maintainer merges it, the site rebuilds and your file shows up within a few minutes, credited to your GitHub account (and to your student number if it's in the ID)."))),
+        step(1, "Your uploader ID", h("p", null, "Your uploader ID is your ", h("strong", null, "9-digit student number"), ". Enter it here; the next step uses it."),
+          h("label", { class: "field uploader-field" }, h("span", { class: "field-l" }, "Student number"), number, numberNote)),
+        step(2, "Build the file's ID", h("p", null, "Fill in the course code, kind of material, term, item, a short title and the licence. The builder shows the file's ID; ",
+          h("a", { href: "#/ids" }, "the ID system"), " explains each part. You don't need to rename your file: the upload form does it."), builder),
+        step(3, "Upload", h("p", null, "When everything below is ticked, open the upload form. It opens on GitHub with your answers filled in."),
+          checks, h("div", { class: "row" }, open),
+          h("p", null, "In the form: drag your file into ", h("strong", null, "Files"), " and wait until it shows as a link (PDF is best; put LaTeX or other sources in one ", h("code", null, ".zip"),
+            "; up to 25 MB), choose the ", h("strong", null, "Subject"), " (or ", h("strong", null, "New subject"), "), check the other answers, and submit."),
+          h("p", { class: "muted small" }, "No file ID possible, for example for material from outside the university? ", h("a", { href: uploadUrl(), target: "_blank", rel: "noopener" }, "Upload without an ID"), ".")),
+        step(4, "Review", h("p", null, "A bot checks the form within a minute and replies on the issue. If something is wrong, it says what; edit the issue to fix it. Otherwise it opens a pull request, and a maintainer reviews it.")),
+        step(5, "It appears on the site", h("p", null, "Once the pull request is merged, your file shows up within a few minutes, credited to your student number and GitHub account."))),
       h("h2", null, "Collaborators and many files"),
       h("p", null, "If you have write access, you can add files straight to a subject folder (", h("strong", null, "Add file → Upload files"), "), or use Git for many files at once. Name files yourself with the ",
         h("a", { href: "#/ids?tab=build" }, "name builder"), " and add their licence to ", h("a", { href: licensesUrl(), target: "_blank", rel: "noopener" }, "licenses.json"), "."),
@@ -1629,10 +1672,9 @@
       h("ul", null,
         h("li", null, "Share your own work, or material that is clearly free to share."),
         h("li", null, "Follow your university's academic-integrity rules. No solutions to open assignments or private exams."),
-        h("li", null, "Remove other personal information (phone numbers, grades). Your student number appears only if you put it in the ID."),
+        h("li", null, "Remove other personal information (phone numbers, grades). Your student number is public once it's in a file ID."),
         h("li", null, "Everything here is public, and Git keeps old versions."),
-        h("li", null, "Choose a licence for each file (in the upload form, or in ", h("a", { href: licensesUrl(), target: "_blank", rel: "noopener" }, "licenses.json"),
-          "; never in the file name). Without one, nobody may reuse it beyond reading it here. Only license what you wrote; course material keeps its owner's terms. ",
+        h("li", null, "Choose a licence for each file; it's never part of the file name. Without one, nobody may reuse it beyond reading it here. Only license what you wrote; course material keeps its owner's terms. ",
           h("a", { href: contentLicenseUrl(), target: "_blank", rel: "noopener" }, "Details →"))),
       h("p", null, h("a", { href: `${REPO}#readme`, target: "_blank", rel: "noopener" }, "Read the full guide in the README →")));
   };
@@ -1720,7 +1762,7 @@
       h("a", { href: `${REPO}/blob/${C.branch}/LICENSE`, target: "_blank", rel: "noopener" }, "MIT"),
       " · Shared files: each has its own licence, shown in its preview · ", h("a", { href: contentLicenseUrl(), target: "_blank", rel: "noopener" }, "Copyright and takedown"),
       " · ", h("a", { href: reportUrl(), target: "_blank", rel: "noopener" }, "Report a file"));
-    document.getElementById("upload-btn").href = uploadUrl();
+    document.getElementById("upload-btn").href = "#/contribute";
     fill(document.getElementById("upload-btn"), icon("upload"), h("span", null, "Upload"));
     fill(document.getElementById("menu-btn"), icon("menu"));
     document.querySelector(".search-icon").replaceWith(icon("search"));

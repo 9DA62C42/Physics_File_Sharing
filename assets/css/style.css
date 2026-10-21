@@ -780,3 +780,11 @@ code.ex { display: block; width: fit-content; margin: var(--s1) 0; }
 .rel-new { background: var(--accent-soft); color: var(--accent); }
 .rel-improved { background: var(--surface-2); color: var(--text); }
 .rel-fixed { background: var(--b-code-bg); color: var(--b-code); }
+
+/* ---------- contribute steps ---------- */
+
+.uploader-field { max-width: 260px; margin-top: var(--s3); }
+.steps .builder { margin-top: var(--s4); }
+.checklist { margin: var(--s3) 0 var(--s4); font-size: .9rem; }
+.checklist li { margin-bottom: var(--s1); }
+.btn.disabled { opacity: .45; cursor: not-allowed; pointer-events: auto; }

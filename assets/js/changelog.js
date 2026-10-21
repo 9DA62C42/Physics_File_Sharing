@@ -3,6 +3,13 @@
 // **bold** and `code` work as in the Help guide.
 window.CHANGELOG = [
   {
+    version: "1.1", date: "2026-10-21", title: "Guided upload",
+    changes: [
+      { type: "improved", text: "**Upload** now opens the **How to contribute** page: enter your student number, build the file's ID, then open the upload form, which arrives filled in." },
+      { type: "improved", text: "The upload button stays locked until the uploader ID, file ID, title and licence are complete. Material without an ID can still be uploaded with a separate link." }
+    ]
+  },
+  {
     version: "1.0", date: "2026-10-21", title: "Course File Sharing",
     changes: [
       { type: "new", text: "The site is now **Course File Sharing**: open to any course, not only physics." },

@@ -67,9 +67,9 @@ window.HELP = (function () {
       ] },
       { id: "upload", icon: "upload", title: "Uploading a file", blocks: [
         { ol: [
-          "Click **Upload** at the top. GitHub opens the upload form (sign in or create a free account first).",
+          "Click **Upload** at the top. The **How to contribute** page opens: first enter your **student number** (your uploader ID), then build the file's **ID** with the course code, kind of material, term, item, title and licence. When everything is ticked, click **Open the upload form**: it opens on GitHub with your answers filled in (sign in or create a free account first).",
           "Drag your file into the **Files** box and wait until it shows as a link. PDF is best; put LaTeX or other sources in one `.zip`, because GitHub doesn't accept `.tex` files. Up to 25 MB per file.",
-          "Fill in the title, subject, kind of material and licence. For a file ID (recommended), also fill in the course code, term, item and your student number. Subject or course not listed? Choose **New subject** and write its name, and give the course name. You don't need to rename the file: the bot names it for you.",
+          "Choose the subject and check the answers filled in from the website. Subject or course not listed? Choose **New subject** and write its name, and give the course name. You don't need to rename the file: the bot names it for you.",
           "Submit. Within a minute a bot replies on the issue. If something is missing, it says what; edit the issue (**···** → **Edit**) and it checks again. Otherwise it opens a pull request.",
           "A maintainer reviews the pull request. Once it's merged, the file appears on the site within a few minutes, credited to your GitHub account."
         ] },
@@ -221,9 +221,9 @@ window.HELP = (function () {
       ] },
       { id: "upload", icon: "upload", title: "העלאת קובץ", blocks: [
         { ol: [
-          "לחצו על **Upload** למעלה. ‏GitHub פותח את טופס ההעלאה (התחברו או צרו חשבון חינמי קודם).",
+          "לחצו על **Upload** למעלה. נפתח העמוד **How to contribute**: קודם הזינו את **מספר הסטודנט** (מזהה המעלה), ואז בנו את **מזהה** הקובץ עם קוד הקורס, סוג החומר, הסמסטר, הפריט, הכותרת והרישיון. כשהכול מסומן, לחצו על **Open the upload form**: הטופס נפתח ב-GitHub עם התשובות שלכם (התחברו או צרו חשבון חינמי קודם).",
           "גררו את הקובץ לתיבה **Files** וחכו עד שהוא מופיע כקישור. עדיף PDF; קבצי LaTeX או מקור אחר שימו בקובץ `.zip` אחד, כי GitHub לא מקבל קבצי `.tex`. עד ‎25 MB לקובץ.",
-          "מלאו כותרת, מקצוע, סוג חומר ורישיון. כדי לתת לקובץ מזהה (מומלץ), מלאו גם קוד קורס, סמסטר, פריט ומספר סטודנט. המקצוע או הקורס לא ברשימה? בחרו **New subject** וכתבו את שמו, ומלאו את שם הקורס. אין צורך לשנות את שם הקובץ: הבוט נותן לו שם.",
+          "בחרו מקצוע ובדקו את התשובות שמולאו מהאתר. המקצוע או הקורס לא ברשימה? בחרו **New subject** וכתבו את שמו, ומלאו את שם הקורס. אין צורך לשנות את שם הקובץ: הבוט נותן לו שם.",
           "שלחו. תוך דקה בוט עונה ב-issue. אם חסר משהו, הוא כותב מה; ערכו את ה-issue (**···** → **Edit**) והבדיקה תרוץ שוב. אחרת הוא פותח pull request.",
           "מתחזק בודק את ה-pull request. אחרי המיזוג הקובץ מופיע באתר תוך כמה דקות, בשם חשבון ה-GitHub שלכם."
         ] },
@@ -375,9 +375,9 @@ window.HELP = (function () {
       ] },
       { id: "upload", icon: "upload", title: "上传文件", blocks: [
         { ol: [
-          "点击顶部的 **Upload**，GitHub 会打开上传表单（需先登录或注册免费账号）。",
+          "点击顶部的 **Upload**，会打开 **How to contribute** 页面：先输入你的 **学号**（上传者 ID），再用课程代码、资料类型、学期、条目、标题和许可证生成文件 **ID**。全部打勾后点击 **Open the upload form**：GitHub 上的表单会自动填好你的答案（需先登录或注册免费账号）。",
           "把文件拖进 **Files** 框，等它显示为链接。最好上传 PDF；LaTeX 等源文件请打包成一个 `.zip`，因为 GitHub 不接受 `.tex` 文件。每个文件最大 25 MB。",
-          "填写标题、学科、资料类型和许可证。若要给文件编 ID（推荐），还要填写课程代码、学期、条目和学号。学科或课程不在列表里？选择 **New subject** 并写上名称，再填写课程名称。不用自己改文件名，机器人会替你命名。",
+          "选择学科，并检查从网站自动填入的答案。学科或课程不在列表里？选择 **New subject** 并写上名称，再填写课程名称。不用自己改文件名，机器人会替你命名。",
           "提交。一分钟内机器人会在 issue 中回复。如果缺少信息，它会说明缺什么；编辑该 issue（**···** → **Edit**）后会重新检查。否则它会创建一个拉取请求（pull request）。",
           "维护者审核这个拉取请求。合并后，文件会在几分钟内出现在网站上，并署名你的 GitHub 账号。"
         ] },
@@ -529,9 +529,9 @@ window.HELP = (function () {
       ] },
       { id: "upload", icon: "upload", title: "Subir un archivo", blocks: [
         { ol: [
-          "Haz clic en **Upload** arriba. GitHub abre el formulario de subida (antes inicia sesión o crea una cuenta gratuita).",
+          "Haz clic en **Upload** arriba. Se abre la página **How to contribute**: primero escribe tu **número de estudiante** (tu ID de quien sube) y luego crea el **ID** del archivo con el código del curso, el tipo de material, el cuatrimestre, el elemento, el título y la licencia. Cuando todo esté marcado, haz clic en **Open the upload form**: se abre en GitHub con tus respuestas ya puestas (antes inicia sesión o crea una cuenta gratuita).",
           "Arrastra tu archivo al cuadro **Files** y espera a que aparezca como enlace. Mejor en PDF; pon LaTeX u otras fuentes en un solo `.zip`, porque GitHub no acepta archivos `.tex`. Hasta 25 MB por archivo.",
-          "Rellena el título, la asignatura, el tipo de material y la licencia. Para darle un ID (recomendado), rellena también el código del curso, el cuatrimestre, el elemento y tu número de estudiante. ¿La asignatura o el curso no aparecen? Elige **New subject**, escribe su nombre e indica el nombre del curso. No hace falta renombrar el archivo: el bot le pone nombre.",
+          "Elige la asignatura y revisa las respuestas que vienen del sitio. ¿La asignatura o el curso no aparecen? Elige **New subject**, escribe su nombre e indica el nombre del curso. No hace falta renombrar el archivo: el bot le pone nombre.",
           "Envíalo. En un minuto un bot responde en la incidencia. Si falta algo, dice qué; edita la incidencia (**···** → **Edit**) y vuelve a comprobarla. Si todo está bien, abre una solicitud de cambios (pull request).",
           "Un responsable revisa la solicitud. Cuando se fusiona, el archivo aparece en el sitio en pocos minutos, atribuido a tu cuenta de GitHub."
         ] },
@@ -683,9 +683,9 @@ window.HELP = (function () {
       ] },
       { id: "upload", icon: "upload", title: "Envoyer un fichier", blocks: [
         { ol: [
-          "Cliquez sur **Upload** en haut. GitHub ouvre le formulaire d’envoi (connectez-vous ou créez d’abord un compte gratuit).",
+          "Cliquez sur **Upload** en haut. La page **How to contribute** s’ouvre : saisissez d’abord votre **numéro d’étudiant** (votre identifiant d’envoi), puis construisez l’**identifiant** du fichier avec le code du cours, le type de document, le semestre, l’élément, le titre et la licence. Quand tout est coché, cliquez sur **Open the upload form** : il s’ouvre sur GitHub avec vos réponses déjà remplies (connectez-vous ou créez d’abord un compte gratuit).",
           "Glissez votre fichier dans la zone **Files** et attendez qu’il apparaisse sous forme de lien. Le PDF est préférable ; mettez les sources LaTeX ou autres dans un seul `.zip`, car GitHub n’accepte pas les fichiers `.tex`. 25 Mo maximum par fichier.",
-          "Indiquez le titre, la matière, le type de document et la licence. Pour un identifiant (recommandé), indiquez aussi le code du cours, le semestre, l’élément et votre numéro d’étudiant. Matière ou cours absent de la liste ? Choisissez **New subject**, écrivez son nom et indiquez le nom du cours. Inutile de renommer le fichier : le bot le nomme pour vous.",
+          "Choisissez la matière et vérifiez les réponses reprises du site. Matière ou cours absent de la liste ? Choisissez **New subject**, écrivez son nom et indiquez le nom du cours. Inutile de renommer le fichier : le bot le nomme pour vous.",
           "Envoyez. En une minute, un bot répond sur le ticket. S’il manque quelque chose, il l’indique ; modifiez le ticket (**···** → **Edit**) et la vérification recommence. Sinon, il ouvre une demande de fusion (pull request).",
           "Un responsable examine la demande. Une fois fusionnée, le fichier apparaît sur le site en quelques minutes, crédité à votre compte GitHub."
         ] },
@@ -837,9 +837,9 @@ window.HELP = (function () {
       ] },
       { id: "upload", icon: "upload", title: "Eine Datei hochladen", blocks: [
         { ol: [
-          "Klicke oben auf **Upload**. GitHub öffnet das Upload-Formular (vorher anmelden oder ein kostenloses Konto anlegen).",
+          "Klicke oben auf **Upload**. Die Seite **How to contribute** öffnet sich: Gib zuerst deine **Matrikelnummer** (deine Uploader-ID) ein und erstelle dann die **ID** der Datei mit Kurscode, Art des Materials, Semester, Eintrag, Titel und Lizenz. Wenn alles abgehakt ist, klicke auf **Open the upload form**: Es öffnet sich auf GitHub mit deinen Angaben ausgefüllt (vorher anmelden oder ein kostenloses Konto anlegen).",
           "Ziehe deine Datei in das Feld **Files** und warte, bis sie als Link erscheint. Am besten PDF; LaTeX- oder andere Quelldateien kommen in eine einzige `.zip`, weil GitHub keine `.tex`-Dateien annimmt. Bis 25 MB pro Datei.",
-          "Gib Titel, Fach, Art des Materials und Lizenz an. Für eine Datei-ID (empfohlen) zusätzlich Kurscode, Semester, Eintrag und deine Matrikelnummer. Fach oder Kurs fehlt? Wähle **New subject**, schreibe den Namen hin und gib den Kursnamen an. Du musst die Datei nicht umbenennen: Der Bot benennt sie für dich.",
+          "Wähle das Fach und prüfe die von der Website übernommenen Angaben. Fach oder Kurs fehlt? Wähle **New subject**, schreibe den Namen hin und gib den Kursnamen an. Du musst die Datei nicht umbenennen: Der Bot benennt sie für dich.",
           "Absenden. Innerhalb einer Minute antwortet ein Bot im Issue. Fehlt etwas, sagt er was; bearbeite das Issue (**···** → **Edit**), dann prüft er erneut. Sonst öffnet er einen Pull Request.",
           "Ein Betreuer prüft den Pull Request. Nach dem Zusammenführen erscheint die Datei innerhalb weniger Minuten auf der Website, deinem GitHub-Konto zugeordnet."
         ] },

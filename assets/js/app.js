@@ -508,6 +508,7 @@
     const nav = document.getElementById("nav");
     fill(nav, 
       h("div", { class: "nav-section nav-help" }, navLink("#/help", "help", "Help & guide"),
+        navLink("#/help?part=admin", "shield", "Maintainer guide"),
         navLink("#/changelog", "list", "Changelog", window.CHANGELOG && window.CHANGELOG.length ? "v" + window.CHANGELOG[0].version : null)),
       navSection("library", "Library", null,
         navLink("#/", "home", "Home"),
@@ -545,6 +546,7 @@
     if (["subject", "material"].includes(r.name)) current += "/" + enc(r.arg);
     if (r.name === "course") current += "/" + r.arg;
     if (r.name === "u") current = "#/uploaders";
+    if (r.name === "help" && r.params.get("part") === "admin") current = "#/help?part=admin";
     if (r.name === "file") {
       const f = state.files.find((x) => x.path === r.arg);
       current = f ? "#/subject/" + enc(f.subject) : "#/browse";
@@ -1052,6 +1054,10 @@
     const tool = (href, ic, name, text) => h("a", { class: "tile", href }, icon(ic), h("span", { class: "tile-name" }, name), h("span", { class: "tile-text" }, text));
 
     return h("div", null,
+      h("a", { class: "start-here", href: "#/help" }, icon("help"),
+        h("span", { class: "start-text" }, h("strong", null, "New here? Read the Help & guide first."),
+          h("span", null, "Before you upload a file, register your name or request something, take two minutes to see how the site works. Available in English, Hebrew, Chinese, Spanish, French and German.")),
+        h("span", { class: "btn primary small" }, "Open Help & guide →")),
       h("section", { class: "hero" },
         h("p", { class: "eyebrow" }, "Shared by students, for students"),
         h("h1", null, C.title),
@@ -1787,14 +1793,29 @@
         : emptyState("No changes recorded yet", null));
   };
 
+  // Help is split into a student guide and a maintainer guide (owner and collaborators).
+  const ADMIN_SECTIONS = new Set(["verify", "delete", "setup"]);
+  const HELP_PARTS = {
+    en: ["Student guide", "Maintainer guide", "For the owner and collaborators who look after the website: verifying files, removing files and repository settings. Students don't need this part."],
+    he: ["מדריך לסטודנטים", "מדריך למתחזקים", "לבעלים ולמשתפי הפעולה שמתחזקים את האתר: אימות קבצים, הסרת קבצים והגדרות המאגר. סטודנטים לא צריכים את החלק הזה."],
+    zh: ["学生指南", "维护者指南", "供维护网站的所有者和协作者使用：审核文件、删除文件和仓库设置。学生不需要阅读这一部分。"],
+    es: ["Guía para estudiantes", "Guía para responsables", "Para el propietario y los colaboradores que mantienen el sitio: verificar archivos, retirar archivos y configurar el repositorio. Los estudiantes no necesitan esta parte."],
+    fr: ["Guide des étudiants", "Guide des responsables", "Pour le propriétaire et les collaborateurs qui gèrent le site : vérifier des fichiers, retirer des fichiers et configurer le dépôt. Les étudiants n’ont pas besoin de cette partie."],
+    de: ["Anleitung für Studierende", "Anleitung für Betreuer", "Für Eigentümer und Mitwirkende, die die Website betreuen: Dateien prüfen, Dateien entfernen und Repository-Einstellungen. Studierende brauchen diesen Teil nicht."]
+  };
+
   VIEWS.help = (r) => {
     const H = window.HELP;
     if (!H) return emptyState("Help couldn't be loaded", "assets/js/help.js is missing.");
     const has = (c) => (c && H.text[c] ? c : null);
     let lang = has(r.arg) || has(store.get("helpLang", "")) || has((navigator.language || "en").slice(0, 2).toLowerCase()) || "en";
+    let part = r.params.get("part") === "admin" ? "admin" : "user";
     const wrap = h("div", { class: "help" });
+    const go = () => { history.replaceState(null, "", "#/help/" + lang + (part === "admin" ? "?part=admin" : "")); highlightNav(); };
     function draw() {
       const T = H.text[lang], L = H.languages.find((l) => l.code === lang);
+      const P = HELP_PARTS[lang] || HELP_PARTS.en;
+      const sections = T.sections.filter((sec) => ADMIN_SECTIONS.has(sec.id) === (part === "admin"));
       store.set("helpLang", lang);
       wrap.setAttribute("lang", lang);
       wrap.setAttribute("dir", L.dir);
@@ -1802,13 +1823,16 @@
         h("div", { class: "page-head" }, h("div", null, h("h1", null, T.title), h("p", { class: "muted" }, T.subtitle))),
         h("div", { class: "lang-bar", role: "group", "aria-label": "Language" }, H.languages.map((l) =>
           h("button", { type: "button", class: "tab" + (l.code === lang ? " on" : ""), lang: l.code, "aria-pressed": String(l.code === lang),
-            onclick: () => { lang = l.code; history.replaceState(null, "", "#/help/" + lang); draw(); } }, l.name))),
-        T.note ? h("p", { class: "notice notice-info" }, rich(T.note)) : null,
+            onclick: () => { lang = l.code; go(); draw(); } }, l.name))),
+        h("div", { class: "help-parts", role: "tablist" }, [["user", P[0], "users"], ["admin", P[1], "shield"]].map(([k, label, ic]) =>
+          h("button", { type: "button", role: "tab", class: "help-part" + (part === k ? " on" : ""), "aria-selected": String(part === k),
+            onclick: () => { part = k; go(); draw(); window.scrollTo(0, 0); } }, icon(ic), label))),
+        part === "admin" ? h("p", { class: "notice notice-info" }, P[2]) : T.note ? h("p", { class: "notice notice-info" }, rich(T.note)) : null,
         h("nav", { class: "help-toc", "aria-label": T.contents },
           h("p", { class: "field-l" }, T.contents),
-          h("ol", null, T.sections.map((sec) => h("li", null, h("button", { type: "button", class: "linkish",
+          h("ol", null, sections.map((sec) => h("li", null, h("button", { type: "button", class: "linkish",
             onclick: () => document.getElementById("help-" + sec.id).scrollIntoView({ behavior: "smooth", block: "start" }) }, sec.title))))),
-        T.sections.map((sec) => h("section", { class: "help-section", id: "help-" + sec.id },
+        sections.map((sec) => h("section", { class: "help-section", id: "help-" + sec.id },
           h("h2", null, icon(sec.icon), h("span", null, sec.title)),
           sec.blocks.map(helpBlock))));
     }

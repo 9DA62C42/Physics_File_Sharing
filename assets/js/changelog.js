@@ -3,6 +3,14 @@
 // **bold** and `code` work as in the Help guide.
 window.CHANGELOG = [
   {
+    version: "1.5", date: "2026-10-21", title: "Two guides",
+    changes: [
+      { type: "new", text: "Help is split into a **Student guide** and a **Maintainer guide** (owner and collaborators), with a direct **Maintainer guide** link in the sidebar." },
+      { type: "new", text: "Home starts with **New here? Read the Help & guide first.**" },
+      { type: "fixed", text: "On phones, the How to contribute steps no longer stick out past the right edge." }
+    ]
+  },
+  {
     version: "1.4", date: "2026-10-21", title: "Clearer forms",
     changes: [
       { type: "improved", text: "Every form field is marked: a red asterisk (*) when it's required, **(optional)** when it isn't. Tags and version are optional." },

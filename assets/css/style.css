@@ -144,6 +144,18 @@ code {
   font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
   color: var(--muted);
 }
+.nav-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  width: calc(100% - var(--s3) * 2);
+  padding: var(--s1) 0;
+  border: 0; border-radius: 4px; background: none;
+  font-family: inherit; text-align: left; cursor: pointer;
+}
+.nav-toggle:hover { color: var(--text); }
+.nav-toggle .icon { width: 14px; height: 14px; transition: transform .15s ease; }
+.nav-section.folded .nav-toggle .icon { transform: rotate(-90deg); }
+.nav-section.folded .nav-body { display: none; }
+.nav-section.folded:has(.nav-link.active) .nav-toggle { color: var(--accent); }
 .nav-link {
   display: flex; align-items: center; gap: var(--s3);
   width: 100%; min-height: 36px;

@@ -59,6 +59,7 @@
     moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
     auto: '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/>',
     menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
+    chevron: '<path d="M6 9l6 6 6-6"/>',
     close: '<path d="M6 6l12 12M18 6L6 18"/>',
     search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
     download: '<path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/>',
@@ -456,34 +457,44 @@
       count != null ? h("span", { class: "nav-count", id }, String(count)) : null);
   }
 
+  // A sidebar section whose heading folds it away; folded sections are remembered per browser.
+  function navSection(key, title, ...links) {
+    const folded = store.get("navFold", {});
+    const body = h("div", { class: "nav-body", id: "nav-" + key }, links);
+    const btn = h("button", { class: "nav-heading nav-toggle", type: "button", "aria-expanded": String(!folded[key]), "aria-controls": "nav-" + key,
+      onclick: () => {
+        const now = store.get("navFold", {});
+        now[key] = !sec.classList.contains("folded");
+        sec.classList.toggle("folded", now[key]);
+        btn.setAttribute("aria-expanded", String(!now[key]));
+        store.set("navFold", now);
+      } }, h("span", null, title), icon("chevron"));
+    const sec = h("div", { class: "nav-section" + (folded[key] ? " folded" : "") }, btn, body);
+    return sec;
+  }
+
   function buildNav() {
     const counts = subjectCounts();
     const courses = countBy("course"), cats = countBy("category");
     const nav = document.getElementById("nav");
     fill(nav, 
-      h("div", { class: "nav-section" },
-        h("p", { class: "nav-heading" }, "Library"),
+      navSection("library", "Library",
         navLink("#/", "home", "Home"),
         navLink("#/browse", "files", "All files", state.items.length),
         navLink("#/recent", "clock", "Recently added"),
         navLink("#/favorites", "star", "Favorites", state.favs.size, "fav-count"),
         navLink("#/ids", "id", "ID system")),
-      h("div", { class: "nav-section" },
-        h("p", { class: "nav-heading" }, "Subjects"),
+      navSection("subjects", "Subjects",
         Object.keys(counts).sort().map((s) => navLink("#/subject/" + enc(s), "folder", pretty(s), counts[s]))),
-      Object.keys(courses).length ? h("div", { class: "nav-section" },
-        h("p", { class: "nav-heading" }, "Courses"),
+      Object.keys(courses).length ? navSection("courses", "Courses",
         Object.keys(courses).sort().map((c) => navLink("#/course/" + c, "course", courseLabel(c), courses[c]))) : null,
-      Object.keys(cats).length ? h("div", { class: "nav-section" },
-        h("p", { class: "nav-heading" }, "Material"),
+      Object.keys(cats).length ? navSection("material", "Material",
         CATEGORY_ORDER.filter((c) => cats[c]).map((c) => navLink("#/material/" + enc(c), "tag", c, cats[c]))) : null,
-      h("div", { class: "nav-section" },
-        h("p", { class: "nav-heading" }, "Community"),
+      navSection("community", "Community",
         navLink("#/uploaders", "users", "Uploaders"),
         navLink("#/requests", "inbox", "File requests"),
         navLink("#/contribute", "help", "How to contribute")),
-      h("div", { class: "nav-section" },
-        h("p", { class: "nav-heading" }, "Study tools"),
+      navSection("tools", "Study tools",
         navLink("#/constants", "atom", "Physical constants"),
         navLink("#/converter", "swap", "Unit converter"),
         navLink("#/resources", "book", "Resources")),

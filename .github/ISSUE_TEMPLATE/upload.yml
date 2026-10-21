@@ -78,7 +78,7 @@ body:
     id: item
     attributes:
       label: Item
-      description: e.g. 01, 01b, A, Q01, PS01, C01 or FULL. You can add a version or tags after it, e.g. 01_V02 or 01_AN.
+      description: "e.g. 01, 01b, A, Q01, PS01, C01 or FULL. You can add a version (any numbering: V1, V02, V4.1) or tags after it, e.g. FULL_V4.1 or 01_AN."
       placeholder: e.g. 01
   - type: input
     id: student

@@ -79,9 +79,10 @@ def build_id(course, type_code, term, item, student):
         raise ValueError(f"The item `{tokens[0]}` isn't valid. Use e.g. 01, 01b, A, Q01, PS01, C01 or FULL.")
     version = re.compile(NAMING["version"]["pattern"])
     tags = {t["code"] for t in NAMING["tags"]}
-    for tok in tokens[1:]:
+    for i, tok in enumerate(tokens[1:], 1):
+        tokens[i] = tok = tok.upper()
         if not (version.match(tok) or tok in tags):
-            raise ValueError(f"`{tok}` in the item box isn't a version (V01, V02, ...) or a tag ({', '.join(sorted(tags))}).")
+            raise ValueError(f"`{tok}` in the item box isn't a version (V1, V02, V4.1, ...) or a tag ({', '.join(sorted(tags))}).")
     return "_".join([course, type_code, term, *tokens, student])
 
 
@@ -204,9 +205,11 @@ def existing_ids():
     ids = set()
     for _, _, names in os.walk(FILES):
         for name in names:
-            first = name.split(" ", 1)[0]
+            # The ID is everything before the first space; without a title, before the extension.
+            # (Not splitext on the ID itself: a version such as V4.1 contains a dot.)
+            first = name.split(" ", 1)[0] if " " in name else os.path.splitext(name)[0]
             if "_" in first:
-                ids.add(os.path.splitext(first)[0])
+                ids.add(first)
     return ids
 
 

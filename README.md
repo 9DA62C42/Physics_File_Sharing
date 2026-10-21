@@ -136,7 +136,7 @@ A file's **ID** is the start of its name. IDs are **recommended, not required**:
 | **TYPE** | What it is, and who wrote it (School = official, Student = your own work) | `HWQ` homework question · `HWS` homework solution · `HWA` homework answer · `LP` lecture paper · `LN` lecture note · `TP`/`TN`/`TS` tutorial · `PEQ`/`PES`/`PEA` past exam · `LBR` lab report · `SY` syllabus · `XT` textbook |
 | **term** | `<start yy><end yy><letter>`, academic year. `W` Winter, `S` Spring, `A` Summer, `F` Fall. Or `LEGACY` / `Undated`. Left out for `XT` | `2627W` = Winter 2026–27 · `2526S` = Spring 2026 |
 | **item** | Serial (at least 2 digits) or a pattern. Optional for handouts and readings | `01` · `01b` supplement · `A` exam paper · `Q01` quiz · `PS01` problem set · `C01` chapter · `FULL` |
-| **version** | Optional | `V01`, `V02` |
+| **version** | Optional | `V` + any number: `V1`, `V02`, `V4.1`, `V2.0.3` |
 | **TAG** | Optional | `AN` annotated · `DR` draft · `GR` graded |
 | **student number** | Your 9-digit student number. Recommended for your own work. **It will be public** | `123456789` |
 | **title** | Short English title after **one space**. Use `_` between ID fields, never `-` | `Waves Homework 1 Solution` |

@@ -259,9 +259,9 @@
     }
   ],
   "version": {
-    "pattern": "^V\\d{2,}$",
-    "example": "V02",
-    "note": "Versions of the same item (LBP_2627W_01_V01 old, _V02 new)."
+    "pattern": "^V\\d+(?:\\.\\d+)*$",
+    "example": "V4.1",
+    "note": "Versions of the same item, numbered any way you like: V1, V02, V4.1, V2.0.3 (LN_2627W_FULL_V4 old, _V4.1 new)."
   },
   "uploader": {
     "pattern": "^\\d{9}$",

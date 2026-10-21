@@ -3,6 +3,13 @@
 // **bold** and `code` work as in the Help guide.
 window.CHANGELOG = [
   {
+    version: "1.3", date: "2026-10-21", title: "Free version numbers",
+    changes: [
+      { type: "improved", text: "Version numbers in IDs can be anything after `V`: `V1`, `V02`, `V4.1`, `V2.0.3`." },
+      { type: "fixed", text: "A version with a dot (such as `V4.1`) is no longer mistaken for a file extension." }
+    ]
+  },
+  {
     version: "1.2", date: "2026-10-21", title: "Smarter upload page",
     changes: [
       { type: "new", text: "Typing a known course code shows the **course name** and picks the **subject**. A new course or subject asks for its name." },

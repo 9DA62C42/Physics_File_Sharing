@@ -145,7 +145,7 @@
   // ---------- ID system ----------
   // <course>_<TYPE>_<term>_<item>[_V..][_TAG]_<uploader> <title>.ext
 
-  const N = { raw: null, types: {}, seasons: {}, placeholders: {}, tags: {}, licenses: {}, spdx: {}, serials: [], version: /^V\d{2,}$/, uploader: /^\d{9}$/ };
+  const N = { raw: null, types: {}, seasons: {}, placeholders: {}, tags: {}, licenses: {}, spdx: {}, serials: [], version: /^V\d+(?:\.\d+)*$/, uploader: /^\d{9}$/ };
   function setNaming(d) {
     if (!d) return;
     N.raw = d;
@@ -213,7 +213,7 @@
 
     for (; i < tokens.length; i++) {
       const x = tokens[i];
-      if (N.version.test(x)) { r.version = x; field(x, "Version", "Version " + Number(x.slice(1)), "", "f-ver"); }
+      if (N.version.test(x)) { r.version = x; field(x, "Version", "Version " + x.slice(1).replace(/^0+(?=\d)/, ""), "", "f-ver"); }
       else if (N.tags[x]) { r.tags.push(N.tags[x]); field(x, "Tag", N.tags[x].name, N.tags[x].note, "f-tag"); }
       else if (N.uploader.test(x)) {
         r.uploader = x;
@@ -1290,7 +1290,7 @@
       N.raw.termPlaceholders.map((p) => h("option", { value: p.code, selected: p.code === saved.year }, p.code)));
     const season = h("select", { class: "input" }, N.raw.seasons.map((s) => h("option", { value: s.letter, selected: s.letter === (saved.season || "W") }, `${s.letter} · ${s.name}`)));
     const item = h("input", { class: "input mono", value: saved.item || "01", placeholder: "01" });
-    const version = h("input", { class: "input mono", value: saved.version || "", placeholder: "V02 (optional)" });
+    const version = h("input", { class: "input mono", value: saved.version || "", placeholder: "e.g. V2 or V4.1 (optional)" });
     const tagBoxes = N.raw.tags.map((t) => h("label", { class: "check" }, h("input", { type: "checkbox", value: t.code, checked: (saved.tags || []).includes(t.code) }), ` ${t.code} · ${t.name}`));
     const licSel = h("select", { class: "input" }, h("option", { value: "" }, "— none (not stated) —"),
       N.raw.licenses.map((l) => h("option", { value: l.code, selected: l.code === saved.license }, `${l.code} · ${l.short}`)));
@@ -1332,7 +1332,7 @@
       const name = idPart + (title.value.trim() ? " " + title.value.trim() : "") + (!opts.onChange && ext.value.trim() ? "." + ext.value.trim().replace(/^\./, "") : "");
       store.set("builder", { course: course.value, type: type.value, year: year.value, season: season.value, item: item.value, version: version.value, tags, license: licSel.value, uploader: uploader.value, title: title.value, ext: ext.value,
         courseName: courseNameIn.value, subject: subjectSel.value, newSubject: newSubject.value });
-      const info = parseId(name.replace(/\.[^.]*$/, ""));
+      const info = parseId(idPart + (title.value.trim() ? " " + title.value.trim() : ""));
       const cat = N.types[type.value].category;
       const lic = N.licenses[licSel.value];
       const rule = lic ? `{ "id": "${idPart}", "license": "${lic.code}" }` : null;
@@ -1459,7 +1459,7 @@
 
       h("h2", null, "5  Item patterns"),
       tbl(["Pattern", "Kind", "Meaning"], [...N.raw.serials.map((s) => tr(h("code", { class: "f-item" }, s.example), h("span", { class: "nowrap" }, s.kind), s.note)),
-        tr(h("code", { class: "f-ver" }, "V01, V02"), "Version", N.raw.version.note),
+        tr(h("code", { class: "f-ver" }, "V1, V02, V4.1"), "Version", N.raw.version.note),
         tr("Ranges", "", "Use the first number; the range goes in the title: LP_2526A_08 Lectures 8-10. No hyphens inside an ID.")]),
 
       h("h2", null, "6  Licences"),

@@ -395,6 +395,7 @@ Students can add one with the upload form (**New subject**). To do it yourself, 
 | `scripts/upload.py`, `.github/workflows/upload.yml` | Turn an upload-form issue into a pull request with the file named and licensed |
 | `courses.json` | Optional course names |
 | `assets/js/data.js` | The Resources list (Study tools) |
+| `docs/DESIGN.md` | Full design of the site, data, ID system and workflows |
 | `assets/js/config.js` | Site settings |
 | `assets/css/style.css` | Styling (light and dark) |
 | `scripts/build_index.py` | Builds `files.json` from the `files/` folder and git history: sizes, dates, uploaders, content hashes |

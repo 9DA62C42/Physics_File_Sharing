@@ -2,3 +2,5 @@
 files.json
 _site/
 verifications.json
+__pycache__/
+*.pyc
